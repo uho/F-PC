@@ -1,0 +1,30 @@
+\ FL.HLP        File selection.                         by Tom Zimmer
+
+getfile         ( --- <a1> f1 )
+        A defered word that will contain a function that returns f1
+        true and a1 the counted string representing a filename
+        selected, or will return f1 false, indicating no file was
+        selected.
+
+file>tib        ( a1 --- )
+        Move the counted string at a1 to the terminal input buffer.
+        BL WORD can then be used to read in the contents of TIB in
+        a program.
+
+GFL             ( --- )
+        Check TIB to see if there is a name waiting there. If there
+        is a name waiting to be used in TIB then no other function
+        is performed. If TIB is empty, then use the function in
+        GETFILE to get a filename from the user, and put it in TIB.
+
+FILE            ( | filename --- )
+        Open "filename" the file as the current file for read, write
+        edit ect.
+
+OPEN            ( | filename --- )
+FL              ( | filename --- )
+        Both FL and OPEN are pseudonyms for FILE, which opens a
+        specified file as the current file for misc operations.
+
+
+

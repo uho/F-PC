@@ -1,0 +1,7 @@
+\ SEARCH.HLP    Some string search and replace routines.
+
+SEARCH          ( sadr slen badr blen -- n f )
+        Search for string sadr,slen contained in badr,blen. Returns
+        f1 equal true if found, and n1 equal to the offset into the
+        string where sadr,slen was found.
+

@@ -1,0 +1,38 @@
+\ CASE.HLP      Case statment                           by Bob Smith
+
+
+CASE            ( -- )
+        Start a CASE statment, as follows:
+
+                value1
+                CASE    value2 OF  func2                ENDOF
+                        value3 OF  func3                ENDOF
+                                   otherwise_func
+                                   DROP
+                ENDCASE
+
+        Allows an arbitrary value to specify a function be performed.
+        Value1 is compared agains value2 and value3. The appropriate
+        func2, func3, or otherwise_func is performed. If your values
+        are sequential, the EXEC: word is much faster, and more space
+        efficient.  See also EXEC:
+
+ENDOF           ( -- )
+                See CASE.
+
+OF              ( n1 n2 -- n1 )  ( n1 n1 -- )
+                See CASE.
+
+ENDCASE         ( -- )
+                See CASE.
+
+NRESOLVE        ( 0 n1 n2 ... n -- )
+                Primitive used by ENDCASE to resolve the previous case
+                references.
+
+(OF)            ( n1 n2 -- n1 )  ( or )  ( n1 n1 -- )
+                Primitive case comparison word, compiled by OF. Performs
+                a comparison between n1 and n2.
+
+
+  

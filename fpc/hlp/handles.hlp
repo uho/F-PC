@@ -1,0 +1,161 @@
+HANDLES.HLP     Hnadles documentation
+
+HANDLE          ( | name --- )
+        creates an array/handle for name, which holds the files
+        attributes, handle number, and null terminated name.
+
+>ATTRIB         ( handle --- attrib-addr )
+        Step to the attribute field of the handle.
+
+>HNDLE          ( handle --- handle-addr )
+        Step to the handel storage field of the handle array.
+
+>NAM            ( handle --- name-string-addr )
+        Step to the null terminated name field of the handle
+
+FILE1           ( --- a1 )
+FILE2           ( --- a1 )
+        Define a couple of handles for testing
+
+DEFEXT          ( --- a1 )
+        An array holding the default extention "SEQ".
+
+?DEF.EXT        ( --- )
+        If the specified file name has no "." indicating the
+        extension, then supply one from the default.
+
+$>HANDLE        ( filename1  handle1 --- )
+        Move a counted filename1 string into handle1 for use by
+        the following words.
+
+!HCB            ( a1 | name --- )
+        Get "name" from the input stream and move it into the handle a1.
+
+FCB>HANDLE      ( a1 a2 --- )
+        Copy the file name and extention from the specified FCB a1 to
+        handle a2.
+
+HANDLE>EXT      ( a1 --- a2 )
+        Moves the address from the handle to the decimal point in the
+        filename, if it exists.  Otherwise it steps to the null
+        immediately following the filename.
+
+$>EXT           ( a1 n1 a2 --- )
+        Move the specified string a1,n1 to the extension field of the
+        handle a2. The string a1,n1 should be the file extension
+        EXCLUDING THE DECIMAL POINT. i.e. " XYZ"  not  " .XYZ"
+
+HDOS1           ( cx dx fun -- ax cf | error-code 1 )
+        Define a dos call assembly word, which is later used by
+        HOPEN and HCREATE.
+
+HDOS3   Yet another DOS call.
+HDOS4   Still another native DOS call.
+
+MovePointer     ( double-offset handle --- )
+        Move the file pointer for handle to the position
+        double-offset in the file already open in handle.
+
+EndFile         ( handle --- double-end )
+        Return the double-end pointer for the file open in
+        handle, also sets the pointer to the end of the file.
+        Useful for finding the end of a file, and for appending
+        to the end of a file.
+
+PATHSET         ( handle --- f1 )
+        Set the current drive path into handle. returns boolean f1
+        true if an error occured while performing this operation.
+
+<HRENAME>
+        Code primitive for the HRENAME function below.
+
+HRENAME         ( handle1 handle2 --- return-code )
+        Change the name of the file specified in handle1 to the
+        name specified in handle2. Can be used to move a file
+        from one directory to another on the same drive.
+        Returns 18 if the rename was good, not zero.
+
+HCREATE         ( handle --- error-code )
+        Create the file specified in handle, if the file already exists,
+        then it is ZEROed !! Returns zero if no error occured. The file
+        is automatically created ready for write operations.
+
+RWMODE          ( --- a1 )
+        The variable rwmode, which defaults to a value of 2,
+        controls the read write mode of the file being opened,
+        the value 2 is read, or write, a value of 1 specifies
+        write only, and a value of 0 specifies read only.
+
+R/W-DMODE       ( -- n1 )
+        Return the value of the current default read/write mode. This
+        value is used to restore the default mode after each HOPEN is
+        performed. See also DEF-RWMODE
+
+DEF-RWMODE      ( -- )
+        This word allow you to set the default read/write mode used
+        by F-PC for all file open operations. It is used as follows:
+
+                        READ-WRITE DEF-RWMODE
+                or      READ-ONLY  DEF-RWMODE
+
+        All further file open operations will be in the newly
+        specified mode.
+
+READ-ONLY       ( -- )
+        The next file opened can be accessed with read operations only.
+
+READ-WRITE      ( -- )
+        Open a file for read and write operations. See also READ-ONLY
+        and WRITE-ONLY.
+
+WRITE-ONLY      ( -- )
+        Open a file for write only. See also READ-ONLY and READ-WRITE.
+        This word and the previous two words effect only the next HOPEN
+        operation to be performed. After the open is done, RWMODE
+        reverts to the default mode for later file opens.
+
+HOPEN           ( handle --- error-code )
+        Open the file specified in handle, return error-code zero if the
+        file was opened properly. Unless otherwise specified, the file is
+        opened for both read and write operations.
+
+HCLOSE          ( handle --- f1 )
+        Close the file specified by handle, return bool f1
+        non-zero if an error occured.
+
+HDELETE         ( handle --- f1 )
+        Delete the file specified by handle, return bool f1
+        non-zero if an error occured.
+
+EXHREAD         ( a1 n1 handle seg1 --- n2 )
+        Read from the file specified by handle to the extended segment
+        area specified by seg1, a1 for length n1. Returns n2 the
+        length actually read.
+
+EXHWRITE        ( a1 n1 handle seg1 --- )
+        Write from memory a1,n1 in segment seg1 to the file specified
+        by handle.
+
+HWRITE          ( a1 n1 handle --- n2 )
+        Write to a file specified by a handle from a1,n1 in the code
+        segment. Return n2 the length actually written.
+
+HREAD           ( a1 n1 handle --- n2 )
+        Read from a file specified by a handle to a1,n1 in the
+        code segment.  Returns n2 the length actually read.
+
+FINDFIRST       ( string --- f1 )
+        Begin a search for files specified by filespec string.
+        String is a null terminated un-counted string. F1 returned
+        indicates whether any files matched. The found file is placed
+        in the Data Transfer Area (DTA).
+
+
+FINDNEXT        ( --- f1 )
+        Continue the file search for a specified string. Returns
+        the bool f1 true if another match was found.
+
+SET-DTA         ( a1 --- )
+        Set the Disk Transfer Area as a1.
+
+  

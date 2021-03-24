@@ -1,0 +1,236 @@
+\ FDISASS.SEQ   Floating point disassembler extensions  by Robert L. Smith
+\       Prefix version  Modified  10/21/92  R.L.S.
+
+NEEDS DIS8086.SEQ
+
+\ Floating Point disassembler
+
+HEX  DIS8086 DEFINITIONS
+
+: NOTYPE ;
+
+.SELF INTEGER*2     .SELF INTEGER*4      .SELF INTEGER*8
+.SELF REAL*4        .SELF REAL*8         .SELF TEMP_REAL
+.SELF BCD
+
+: FTYPE7    ( op ext -- op ext )
+     DUP 3 2/S 1 ANDD EXEC:  BCD INTEGER*8 ;
+
+.SELF ST      .SELF ST(0)    .SELF ST(1)    .SELF ST(2)
+.SELF ST(3)   .SELF ST(4)    .SELF ST(5)    .SELF ST(6)
+.SELF ST(7)
+
+comment:
+\ Disassembler definitions
+
+NOTYPE       Print nothing for "type."
+             Various self-printing types.
+
+FTYPE7       There are two possibilities for an ESC-7 code type:
+             either BCD or INTEGER*8.
+
+ST(i)        Various self-identifying ST registers
+
+comment;
+\ Print floating point arguments
+
+: .STI   ( ext -- ext )
+\        2 SPACES
+        DUP 7 ANDD
+        EXEC:   ST(0)  ST(1)  ST(2)  ST(3)
+                ST(4)  ST(5)  ST(6)  ST(7) ;
+
+: FTYPE   ( op ext -- op ext )
+        DUP C0 =
+        IF   NOTYPE EXIT
+        THEN
+        OVER 7 ANDD 2* OVER 20 ANDD
+        IF  1+
+        THEN
+        EXEC:   REAL*4     REAL*4     REAL*4     NOTYPE
+                INTEGER*4  INTEGER*4  INTEGER*4  TEMP_REAL
+                REAL*8     REAL*8     REAL*8     NOTYPE
+                INTEGER*2  INTEGER*2  INTEGER*2  FTYPE7 ;
+
+comment:
+\ Floating Point Arguments
+
+.STI      Print an ST register, depending on the low order
+          3 bits.
+
+FTYPE     Print the operand types.
+
+comment;
+
+: FST,STI
+        .STI ." , " ST ;
+
+: FSTI,ST
+        ST ." , " .STI ;
+
+: FSTARGS  ( op ext -- op ext )
+        OVER DE =
+        IF      DUP 30 ANDD 10 -
+                IF      FSTI,ST
+                THEN
+                EXIT
+        THEN
+        OVER D9 =
+        IF      DUP 30 ANDD 0=
+                IF      .STI
+                THEN
+                EXIT
+        THEN
+        OVER 7 ANDD
+        EXEC:   FST,STI  NOTYPE  NOTYPE  NOTYPE
+                FSTI,ST  .STI    NOTYPE  NOTYPE ;
+
+: FARGS  ( op ext -- op ext )
+\        2 SPACES
+        DUP C0 ANDD C0 =
+        IF      FSTARGS EXIT
+        THEN
+        FTYPE SPACE OVER 1 ANDD 0=
+        IF      ST
+        THEN
+        .MREG ;
+
+comment:
+
+FST,STI     Print an argument of the form  ST, ST(i)
+FSTI,ST     Print an argument of the form  ST(i), ST
+
+FSTARGS     Print the arguments for the mod=11 case.  These
+            are typically of the form  ST,ST(i)  or  ST(i),ST
+            or none.
+
+comment;
+
+SELF.L FADD      SELF.L FMUL      SELF.L FCOM      SELF.L FCOMP
+SELF.L FSUB      SELF.L FSUBR     SELF.L FDIV      SELF.L FDIVR
+SELF.L FLD       SELF.L FST       SELF.L FSTP      SELF.L FLDENV
+SELF.L FLDCW     SELF.L FSTENV    SELF.L FSTCW     SELF.L FRSTOR
+SELF.L FXCH      SELF.L FNOP      SELF.L FCHS      SELF.L FRNDINT
+SELF.L FTST      SELF.L FXAM      SELF.L FLD1      SELF.L FLD2T
+SELF.L FLDL2E    SELF.L FLDPI     SELF.L FLDLG2    SELF.L FLDLN2
+SELF.L FLDZ      SELF.L FENI      SELF.L FDISI     SELF.L FCLEX
+SELF.L FINIT     SELF.L FADDP     SELF.L FMULP     SELF.L FSUBP
+SELF.L FSUBRP    SELF.L FDIVP     SELF.L FSCALE    SELF.L FFREE
+SELF.L FDIVRP    SELF.L F2XM1     SELF.L FYL2X     SELF.L FPTAN
+SELF.L FPATAN    SELF.L FXTRACT   SELF.L FDECSTP   SELF.L FINCSTP
+SELF.L FPREM     SELF.L FYL2XP1   SELF.L FSTSW
+
+WARNING OFF
+SELF.L FSAVE     SELF.L FABS      SELF.L FSQRT
+WARNING ON
+
+: FCOMPP   ( op ext -- op ext )
+        DUP 7 ANDD 1 =
+        IF      .ME EXIT
+        THEN
+        ESC, EXIT ;
+
+: F1FX   ( op ext -- op ext )
+        DUP 0F ANDD
+        EXEC:   F2XM1    FYL2X    FPTAN    FPATAN
+                FXTRACT  ESC,     FDECSTP  FINCSTP
+                FPREM    FYL2XP1  FSQRT    ESC,
+                FRNDINT  FSCALE   ESC,     ESC, ;
+
+: F1EX   ( op ext -- op ext )
+        DUP 0F ANDD
+        EXEC:   FCHS    FABS    ESC,    ESC,
+                FTST    FXAM    ESC,    ESC,
+                FLD1    FLD2T   FLDL2E  FLDPI
+                FLDLG2  FLDLN2  FLDZ    ESC,  ;
+
+: F1MOD11   ( op ext -- op ext )
+        DUP 38 ANDD 8 =
+        IF      FXCH FARGS EXIT
+        THEN
+        DUP F8 ANDD C0 =
+        IF  FLD FARGS EXIT
+        THEN
+        DUP D0 =
+        IF      FNOP  EXIT
+        THEN
+        DUP E0 <
+        IF      ESC, EXIT
+        THEN
+        DUP 4 2/S 1 ANDD
+        EXEC:   F1EX   F1FX  ;
+
+: FXOP   ( op ext -- op ext )
+        EXEC:   FFREE  .NA   FST  FSTP ;
+
+: F5MOD11   ( op ext -- op ext )
+        DUP 3 2/S 7 ANDD DUP 3 >
+        IF  DROP ESC, EXIT
+        THEN
+        FXOP .STI ;
+
+: FBASICP   ( op ext -- op ext )
+        EXEC:   FADDP  FMULP   ESC,   FCOMPP
+                FSUBP  FSUBRP  FDIVP  FDIVRP ;
+
+: F6MOD11   ( op ext -- op ext )
+        DUP 3 2/S 7 ANDD FBASICP FARGS ;
+
+: F3MOD11   ( op ext -- op ext )
+        DUP 38 ANDD 20 -
+        IF      ESC,
+        ELSE    DUP 7 ANDD
+                EXEC:   FENI  FDISI  FCLEX  FINIT
+        THEN ;
+
+: FBASIC   ( op ext -- op ext )
+        EXEC:   FADD  FMUL   FCOM  FCOMP
+                FSUB  FSUBR  FDIV  FDIVR ;
+
+: FEVEN   ( op ext -- op ext )
+        DUP 3 2/S 7 ANDD FBASIC FARGS ;
+
+: FMOD11OP  ( op ext -- op ext )
+        OVER 7 ANDD
+        EXEC:   FEVEN  F1MOD11  FEVEN    F3MOD11
+                FEVEN  F5MOD11  F6MOD11  ESC,  ;
+
+: FLD/FST2  ( op ext -- op ext )
+        EXEC:   FLD  ESC,  FST  FSTP ;
+
+: FODD0  ( op ext -- op ext )
+        DUP 3 2/S 3 ANDD FLD/FST2
+        FARGS ;
+
+: FLD/FST1
+        EXEC:   FLDENV  FLDCW  FSTENV  FSTCW
+                ESC,    FLD    FSTP    ESC,
+                FRSTOR  FSAVE  ESC,    FSTSW
+                FLD     FLD    FSTP    FSTP  ;
+
+: FODD4  ( op ext -- op ext )
+        OVER 6 ANDD 2* OVER 3 2/S 3 ANDD ORR FLD/FST1
+        FARGS ;
+
+: FODD   ( op ext -- op ext )
+        DUP 38 ANDD 20 <
+        IF      FODD0
+        ELSE    FODD4
+        THEN ;
+
+: FOPS  ( op ext -- op ext )
+        DUP C0 ANDD C0 =
+        IF      FMOD11OP EXIT
+        THEN
+        OVER 1 ANDD
+        IF  FODD
+        ELSE  FEVEN
+        THEN ;
+
+' FOPS IS ESCCODE   \ Enable Floating Point
+
+FORTH DEFINITIONS
+
+DECIMAL
+
+  

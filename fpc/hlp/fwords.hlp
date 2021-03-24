@@ -1,0 +1,55 @@
+\ FWORDS.HLP    File searching                          by Tom Zimmer
+
+look$           ( --- a1 )
+        An array of 32 characters that holds the string we are currently
+        searching for.
+
+donfile         ( --- )
+        A function to DO-ON-all-FILEs. This defered word is set before
+        the function FALLON is called to perform something on all files
+        in the current directory that match the file spec.
+
+fstime          ( --- a1 )
+        A primitive variable used to hold a flag. This variable tells
+        us if we have already printed the filename once.
+
+.file-once      ( --- )
+        Print the filename of the file we are processing, but only the
+        first time we are called.
+
+searchfile      ( --- )
+        Search the current file for the string in LOOK$. If the string
+        is found, print the line number, and the line contents.
+
+$>tib           ( a1 --- )
+        Move the string at a1 into the Terminal Input Buffer.
+
+withname        ( --- a1 )
+        A flag to tell us if we are printing the filename with each
+        first line of a file we print.
+
+.firstline      ( --- )
+        Print the first line of the current file.
+
+fallof          ( func | file_specs --- )
+        A generalized function. By setting the defered word DONFILE,
+        a function can be performed on all files matching the filespec
+        the user has given. See FLOOK, INDEX, and FPRINT for examples
+        of how to use this word.
+
+xflook          ( search_string file_specs --- )
+        Same as FLOOK, but case sensitive. See also FLOOK.
+
+flook           ( search_string file_specs --- )
+        Search all files in file_spec for search_string. Print each
+        occurance found to the display with a line number.
+
+index           ( file_spec --- )
+        display an index of the first line of each file that matches
+        the file_specs included on the line following INDEX.
+
+fprint          ( file_specs --- )
+        Print listing files of all files that match the file_specs
+        included on the line following FPRINT.
+
+

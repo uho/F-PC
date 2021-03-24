@@ -1,0 +1,401 @@
+
+øPreferences         User Selectable Preferences in F-PC
+                     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  On this and the following screens, we will see many of the user selectable
+attributes of the F-PC system.
+
+
+
+        ùAuto-Edit      ùAuto-Save      ùLeave-Prompt   ùBackup-Files
+
+        ùColorizer      ùConfig-File    ùDate-Format    ùDebug-Decom
+
+        ùDisplay-Speed  ùForth-Path     ùNumber-BASE    ùPrint-Redirect
+
+        ùRe-Defining    ùReverse-Scrn   ùScreen-Colors  ùStatus-Line
+
+        ùVoc-Stack      ùCGA-Blanking
+
+
+
+
+øAuto-Edit              Automatically Edit on Error
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+  As shipped F-PC will automatically enter the editor when an error is
+encountered while compiling source code from a file.  Words are available
+to both disable and enable this function as follows:
+
+
+                        ùAutoEditOn     ùAutoEditOff
+
+
+
+
+
+
+
+
+
+
+
+øAuto-Save               Automatic Save of Changes
+                         ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  As shipped F-PC will automatically save any changes you have made to a
+file you are editing if you stop touching the keyboard for 10 minutes.
+
+
+              ùAutoSaveOn     ùAutoSaveOff    ùAutoSave-Minutes
+
+
+
+
+
+
+
+
+
+
+
+
+
+øLeave-prompt              Prompt on edit exit
+                           ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  As shipped, F-PC will ask you if you want to open another file, as you
+leave the editor with F10. If you want to always just exit the editor, and
+return to Forth, there is an option to select that default.
+
+                     ùLeavePromptOn   ùLeavePromptOff
+
+
+
+
+
+
+
+
+
+
+
+
+
+øBackup-Files           Keep Backup Copies of Edits
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  At installation time F-PC allows you to specify whether you want backup
+copies of you file edits kept. One of the following commands is normally
+included in the F-PC.CFG (configuration) file to select your preference.
+
+
+                        ùBackUpOn       ùBackUpOff
+
+
+
+
+
+
+
+
+
+
+
+
+øCGA-Blanking           Display Blank on Write to CGA
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  At installation time F-PC allows you to specify whether you want text
+displayed on the screen to be done with direct screen writes. ( See also
+ùDisplay-Speed ) If  ùFAST display mode is selected on a computer using a
+CGA video board, an undesirable amount of screen "Sparkle" or "Snow" may
+occur when F-PC is typing text to the screen. If this is the case on your
+computer, you may use the word BLANKON to make F-PC blank the screen while
+it is writting text to the display.  This solution is only marginally
+better than not blanking the display, but it's better than nothing if you
+want fast text display performance.
+
+
+                        ùBlankOn        ùBlankOff
+
+
+
+
+
+
+øColorizer              Display Word Classes in Colors
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+During installation F-PC allows you to specify whether you want different
+word classes in F-PC to be shown in different colors when using the WORDS
+and SEE tools. Here are the Forth commands to enable and disable this
+function:
+
+
+                        ùColorizeOn     ùColorizeOff
+
+
+
+
+
+
+
+
+
+
+
+øConfig-File            Preferences Auto Select File
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  At installation time the INSTALL.EXE program allows you to specify certain
+preferences. These preferences are then written into a file called F-PC.CFG.
+This is a standard text file, and contains normal Forth commands which are
+executed at the time F-PC is beginning execution after you type F or F-PC at
+the DOS command line.  You can edit this file like any other source file,
+to add or delete commands. Any Forth operations you want to done when F-PC
+is first starting up can be placed in this file.
+
+  F-PC will look through the compiled-in Forth Path at startup time to try
+to find the F-PC.CFG file. If F-PC was installed properly then F-PC will
+be able to find its configuration file regardless of where you are working
+on your harddisk drive.  You can even change the name of the F-PC
+configuration file to one of your own choosing. Simply place the new filename
+into the ùHANDLE ùCFGHNDL with the word ù!HCB . When F-PC is later saved to
+disk as a new executable file with ùFSAVE , the new filename will be opened
+and loaded.
+
+
+øDate-Format                Displayed Date Format
+                            ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  F-PC supports three display date formats. The default date format is M/D/Y.
+Others are available as shown:
+
+
+                ùD.M.Y          ùY-M-D          ùM/D/Y
+
+
+
+
+
+
+
+
+
+
+
+
+
+øDebug-Decom          Display Decompile while Debugging
+                      ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  When using the Debugger, F-PC will by default display a de-compiled view
+of the word being debugged on the upper several lines of the display.  This
+view can be turned on or off with the following words:
+
+
+                        ùSRCON          ùSRCOFF
+
+
+
+
+
+
+
+
+
+
+
+
+øDisplay-Speed        Use Direct Screen Writes or BIOS
+                      ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  During installation, you can tell F-PC whether you want it to use direct
+screen writing for text display.  This requires display memory to be located
+at either $B000 for Monocrome display cards, or $B800 for Color display
+cards.  Direct display memory writing is enabled and disabled with the
+following words:
+
+
+                        ùFAST           ùSLOW
+
+
+
+
+
+
+
+
+
+
+øForth-Path           Where Should F-PC look for Files
+                      ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  During installation F-PC sets a Forth Path through which F-PC will search
+when a file is to be opened. Normally this path is acceptable for all uses.
+The exceptions are FLOOK and EDITALL, which require the path to be
+specified explicitly.  You can change the path with ùFPATH , or add to the
+path with ù FPATH+ . The current Forth Path can be displayed with ù.FPATH .
+
+
+
+
+
+
+
+
+
+
+
+
+
+øNumber-BASE        Should F-PC restore the BASE on Error
+                    ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  The default base for F-PC is normally ùDECIMAL . When an error occurs
+while working in F-PC, the ùBASE will be changed to DECIMAL.  Words are
+provided to specify either HEX or DECIMAL as the default base, as well as
+telling F-PC not to assume a default base.
+
+
+        ùDECIMALBASE    ùHEXBASE        ùNOBASE         ùDEFBASE
+
+
+
+
+
+
+
+
+
+
+
+øPrint-Redirect     Where Should F-PC Send Printed Output
+                    ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  F-PC normally sends text directed to a printer to the PRN device.  A
+HANDLE is used to specify the actual place to send printed text, and words
+are available to direct printing to a file if desired.
+
+
+        ùPFILE          ù$PFILE         ùPCLOSE         ùPRNHNDL
+
+        ùPEMIT          ù(PRINT)
+
+
+
+
+
+
+
+
+
+
+øRe-Defining     Do I want to be warned about Re-Definitions?
+                 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  F-PC will normally warn you when you re-define a word, but this can be
+changed by modifying the variable ùWARNING to a value of zero with WARNING
+ON or WARNING OFF.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+øReverse-Scrn      Reverse Video is Available on Monocrome
+                   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  When you are using a Monocrome or Liquid Crystal display, you can tell
+F-PC to invert the black and white sections of the screen.  This is
+sometimes useful on true BLACK and WHITE monitors. The words to change the
+display mode are:
+
+
+                     ùBLACK-ON-WHITE  ùWHITE-ON-BALCK
+
+
+
+
+
+
+
+
+
+
+
+øScreen-Colors        What Screen Colors should I Use?
+                      ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  Normally F-PC displays white characters on a black background.  Color
+attributes are used to hilight special sections of text, but the normal
+text typed in by you appears as white on black. On color systems you may
+want to experiment with a different colors. The word ù>NORM selects the
+character attributes of"normal" text. >NORM is a defered word that performs
+the word ù>NONE . The word >NONE sets the attribute variable ùATTRIB to
+the value stored in the ùVALUE ùNORMVAL .  By changing NORMVAL, you can
+change the colors F-PC uses to display "normal" text.
+
+
+
+
+
+
+
+
+
+
+øStatus-Line        Should F-PC Display the Status Line?
+                    ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  F-PC normally displays a status line at the top of the screen.  This line
+contains information about what file is open, how much memory is still
+available, the context and current vocabularies, the stack depth, and what
+the current time is.  This status display can interfere with certain
+types of operations, like interactive printing of Forth command lines as
+they are entered.  You can enable and disable the status display with the
+following words:
+
+                        ùSTATON         ùSTATOFF
+
+
+  See also ùVoc-Stack on the following screen.
+
+
+
+
+
+
+øVoc-Stack               Vocabulary Stack Display
+                         ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  F-PC normally displays the current status of the vocabulary stack at
+the upper right of the display below the status line. You can choose to
+turn this display off or on with the following words.
+
+
+                        ùVOCON          ùVOCOFF
+
+
+  See also ùStatus-Line on the previous screen.
+
+
+
+
+
+
+
+
+
+

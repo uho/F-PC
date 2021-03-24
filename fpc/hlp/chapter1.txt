@@ -1,0 +1,324 @@
+CHAPTER 1.  WHAT IS F-PC?
+
+
+
+
+1.1.    HOW DID WE GET HERE?
+
+
+Over the past several years, the programming community for other
+languages has changed somewhat.  Several years ago, Forth had enormous
+advantages over Fortran, Pascal, and C in terms of development
+interactivity.  The Forth development cycle was very short, and new code
+modules could be put together for experimentation very quickly.  As the
+years went by, programmers for these other languages began to realize
+there had to be something better than their traditional debug cycle:
+EDIT-COMPILE-LINK-DEBUG and repeat.  This debugging loop could be
+measured in days, and each error correction session was normally at least
+30 minutes long.
+
+Forth did away with much of the above delays.  The editor was integrated
+into the Forth operating system environment, so the time to start up or
+leave the editor was zero.  The compiler was incremental, so programs
+could be debugged a piece at a time, and there was no linker at all.
+This naturally resulted in a productivity improvement and a significant
+reduction in programmer frustration.
+
+As the years went by, other programmers noticed how much easier BASIC was
+to use than other compiled languages, since it had a built in editor, and
+didn't have to be compiled at all.  Of course it was so slow..., but then
+along came TURBO PASCAL.  It created fast compiled code, had an
+integrated SCREEN editor, and compiled like blazes.
+
+We now start to see some similarities to Forth, a much superior
+development environment, where the development iteration cycle has been
+reduced to a very small number.  But Turbo Pascal still lacked the Forth
+interactivity, and the ability to incrementally debug programs as they
+were developed.
+
+Finally along came the Macintosh and Light Speed Pascal (LSP).  It had
+evolved from Mac Pascal, an interactive and pseudo interpreted Pascal for
+the Mac.  LSP had windows, a built-in screen editor, compiled modules, a
+very fast compiler and a light speed linker, with the ability to test
+small segments of code, and two built-in debuggers: one for Pascal, and
+one for Assembly.  The only problem was that it was PASCAL, not Forth.
+
+It is interesting to ask: "What is holding Forth back and preventing it
+from being more popular?" In spite of the strength Forth has in
+conciseness, interactiveness, and speed, there are weaknesses which
+hinders it's rapid spread in the general computing community.  The most
+important weaknesses are in its user interface and its interface to
+standard operating systems, which can be attributed directly to the use
+of blocks in storing source code.
+
+In the early days of personal computing, programmers had their one and
+only choice of editor: the line editor ED and its clone EDLIN.  Comparing
+to this environment, the polyForth or figForth block editor was obviously
+superior.  However, after WordStar and its derivatives established a firm
+position in programmers' toolboxes, most people would reject the Forth
+block editor as too primitive a tool for substantial coding efforts.
+After IBM-PC's replaced CPM machines, the majority of programmers and
+users expect and demand source code and data being made available in
+sequential files on 5.25" DOS diskettes.  Blocked text files as used in
+F83 was only a half- hearted effort to come to term with reality.
+
+Forth systems perform better if they can access the hardware resources
+directly, rather than through the arbitration of an inefficient operating
+system.  This was one reason why Chuck Moore invented Forth in the first
+place.  Ignoring the operating systems in the early days of main frames
+and minicomputers was advantageous because there were as many
+incompatible operating systems as there were brands of computers.  In
+personal computing, this advantage is rapidly diminishing as the species
+of operating systems disappeared rapidly due to natural selection.  It
+looks like we will end up with DOS, MAC, and UNIX (may be OS2).  In this
+situation, Forth systems must provide smooth and efficient interface to
+the operating systems, to be accessed conveniently by the users.
+
+F-PC provides a much polished interface between a user and his
+IBM-PC/XT/AT or compatible computer.  Sequential files are adopted as the
+principal means of programming and documentation. The user is comforted
+by a very sophisticated and intuitive text editor to enter and modify his
+code and documentation, not constrained by the very limiting block
+structure.  The interface to the underlying DOS is seamless to allow the
+user full access to tools and services provided by DOS and other
+utilities.  In so doing, F-PC can be installed on all DOS compatible
+machines.
+
+Speed is another major character in F-PC.  Most of its text interpreter
+and compiler are coded in assembly to make sure that it matches the speed
+and convenience of a block based system.  64K byte memory limit is
+removed by placing code, names, colon definitions, and text files in
+different segments in the 1M byte addressing space.  Utility is also
+provided to address extended memory.
+
+Since F-PC is a public domain software package, it has attracted many
+experienced Forth programmers to contribute utilities and applications.
+It is quickly becoming a huge resource pool where old and new Forth users
+can draw inspirations and practical solutions to their programming needs.
+
+Because the sequential files were the major focus of F-PC when it was
+first evolved it is important that we summarize the distinct advantages
+of using sequential files to store source code.  Here is a partial list:
+
+1.      Source files are smaller, so backing up or transporting files is
+        easier.
+
+2.      Sequential source files can be manipulated or examined by editors
+        that other people have, not just by the Forth block editor.
+
+3.      There is no artificial limit on the size of a file.  The file can
+        be extended as needed.  White space in a file does not take up
+        extra bytes.
+
+4.      There is no artificial limit placed on the size of word
+        definitions.  In the block based system we usually give up line
+        zero for a comment line, and line 15 for nudge space.
+
+5.      There is no artificial limit placed on the amount of comments one
+        can place with the source.  Again, compared to blocks with
+        shadows, 16 lines of shadow were either too much or too little.
+
+6.      Sequential files provide a much more natural interface to the
+        operating systems which were designed to handle them.
+
+7.      It allows plenty of room for inserting a new line in the middle
+        of a source file, without having to drop out of the editor, and
+        use special commands to move things around.  All we have to do is
+        pressing <enter>.
+
+So here we are at the end (or beginning) of a long road, looking back at
+what we have done, and looking forward to the future.  Blocks were
+certainly very useful for forcing us to modularize our code.  That was a
+big advantage while we were learning Forth.  Maybe newcomers to Forth
+should be required to learn the system on a BLOCK version.  But now that
+we have come of age, we should know where to modularize our code better
+than the computer does.
+
+
+1.2.    F-PC, WHAT IS IT ALL ABOUT?
+
+
+This Forth was implemented by Tom Zimmer, with substantial help from
+Robert L. Smith.  Some of the direct threaded low level code
+modifications came from a LaForth implementation by Bob and LaFarr Stuart
+.  George Hawkins contributed the Browser.  This is yet another step in
+the Forth evolution being undertaken to obtain the ideal Forth system.
+This Forth maintains very high compatibility with F83, which was its
+predecessor.
+
+F-PC is a Forth that uses three main segments for Forth itself, and
+additional segments for other purposes, like the editor, screen saving,
+etc.  The three main segments in F-PC are:  First, a 64K Code Segment for
+code, variables, and any user arrays that are not specifically placed in
+an external segment.  The compiler also places the code field of all
+colon definitions in this Code Segment.  Code fields in F-PC are three
+(3) bytes in length.  The second List Segment contains the bodies of
+colon definitions and strings.  Its size is not limited to 64K bytes, and
+can use as much memory as allowed by the operating system.  The third
+segment of 64k contains the heads, or symbols in F-PC.
+
+Since a typical program is about half program and half data, the
+separation of code and colon space results in an easy doubling or more of
+effective program space.  About 300K of total data/program space is
+available, with most useful utilities already loaded.  This can be
+increased to over 400k by deleting things you don't need. A small loss
+(about 5%) in performance resulted from this separation of colon
+definitions from the code space, but the benefits of expanded program
+space greatly exceeds the disadvantages.
+
+The primary difference from other Forth systems that you are likely to
+encounter is that code fields are three (3) bytes rather than 2, and the
+code field of a low level code word does not point to code, but contains
+code.  This is generally known as 'direct threaded code (DTC).'   F-PC
+has moved the address list in a colon word to a separate List segment, so
+there are two bytes in the body (parameter field) of each colon
+definition that points into the List space of the colon definition which
+contains a list of code field addresses.  The List space can expand to
+fill all available RAM memory.  It is not limited to a single 64K byte
+segment.
+
+Variables, constants, and strings are handled in the same way as in F83.
+That is, they are in the Code space.  This segmentation seems to provide
+a reasonable balance.  As the dictionary expands, more user data space is
+needed, which works well with F-PC, as most of the free space is in
+Code/Data space.
+
+This system comes with a meta compiler.  It can thus regenerate itself
+with user extensions.  DOS batch files are provided to ease the meta
+compilation.  Users can also produce turnkey systems without having to go
+through the meta compilation process.
+
+As F-PC currently exists, there is about 27k of List dictionary space, 27
+K of Head space, and 35k of Code space.  The List space can be increased
+by changing the number of segments assigned to it and save the system.
+The new system thus saved will have a larger List space when executed.
+The usable memory can also be expanded by removing some of the optional
+files from the list of load files in F-PC.SEQ. The removable files are
+marked in F-PC.SEQ. Some of these files are listed as follows:
+
+                PATHSET.SEQ     WORDS.SEQ       COLOR.SEQ      DUMP.SEQ
+                DECOM.SEQ         DEBUG.SEQ       STATUS.SEQ MACROS.SEQ
+                PATCHER.SEQ     FILSTAT.SEQ     FWORDS.SEQ
+
+If some of these files are removed, a significant savings in dictionary
+space will result. Fairly large programs can now be coded in F-PC,
+although there are still some obvious limits.  It is doubtful that
+ZoomRacks the database Tom coded while at QuickView Systems could be
+compiled in F-PC without overlays.  ZoomRacks consisted of more than 2M
+bytes of source screens, and used all RAM outside the program as
+contiguous data space for the user.
+
+
+1.3.    FEATURES IN F-PC 2.25
+ 
+
+The first thing you should know is that F-PC is trying to achieve a
+number of conflicting goals.  It is intended to be a Forth system that
+provides all of the following:
+
+        Compatible to F83 and Forth-83 Standard
+        Smooth Interface to DOS, using sequential files
+        Fast compilation and execution
+        Integrated text file editor for easy programming and documentation
+        Many utilities and tools
+        Room for very large application programs
+
+Impossible, you say.  Perhaps, but if you give F-PC a chance you may find
+some things you like. In line with the above goals, here is a list of
+some of F-PC's major features:
+
+        Direct threaded dictionary for speed
+        Separated lists and heads to increase space
+        Prefix assembler to enhance readability
+        Postfix assembly syntax for compatibility with  F83
+        Full DOS access from system and command shell level control
+        Full directory/path based file system
+        Viewing words across directory boundaries
+        Full user configurable sequential text editor provided in source
+        Full DOS memory management interface
+        Headers can be selectively removed
+        Many contributions from users on a wide range of applications
+ 
+
+F-PC is a Forth derived from many sources. Henry Laxen, and Michael Perry
+being the original developers of F83. Tom Zimmer, along with Robert L.
+Smith, Charles Curley, and Jerry Modrow put together the original
+version.  A F-PC Working Group was organized in the Silicon Valley
+Chapter of Forth Interest Group to coordinate the testing and
+documentation of this system.  F-PC 2.25 was released in November, 1988,
+and F-PC 3.5 is released in November 1989.
+
+F-PC is a Direct Threaded Code (DTC) Forth. That is it contains code in
+the code field rather than pointing to code.  DTC gives a noticeable
+boost in performance, which was needed to counteract the next
+enhancement.
+
+F-PC keeps the body or the list portion of colon definitions in a
+separate segment-the List space. This substantially increases the space
+available for your program. There is a penalty to pay in performance,
+with an extra level of indirect jump required in NEST.
+
+F-PC has a prefix assembler. Code definitions are coded with a syntax
+similar to MASM, in the form " MOV AX, BX ".  We have found this syntax
+to be much more readable to "traditional" programmers than the standard
+F83 postfix assembler.  To reduce the pain to current F83 users, the
+assembler supports the old F83 assembler syntax as well. Just use the
+word POSTFIX to select postfix assembler syntax, and then use PREFIX to
+switch back to the prefix syntax.  An 8086 family disassembler is
+provided. The disassembler was written by Charles Curley, and includes
+8087 support added by Robert L. Smith.
+
+F-PC supports full pathnames and file handles. File names may be up to 63
+characters in length including path.  All source is in sequential files.
+No blocks in this system. The original F83 BLOCK system is available as a
+load-on if needed.  Several powerful file words have been included. FLOOK
+allows searching through one or many files for a particular character
+sequence. FPRINT allows you to make formatted listings of one, all, or a
+set of Forth source files. EDITALL allows you to edit a string through
+many files.  INDEX displays the first line of a set of files.
+
+The compiler itself has been substantially optimized, with almost all of
+WORD being in code. The system currently uses 64 threads, which is just
+at the point of diminishing return for a 2000 word vocabulary. With the 8
+vocabularies this system has, only about 1k bytes of Code space is used
+for the vocabulary head pointers.
+
+A help file is provided with each source file, these can be used like F83
+shadow screens were used, that is to hold comments about the words in the
+source file. The word VIEW accesses the .SEQ file, and the word HELP
+accesses the .HLP file. As much or as little text can be placed in the
+help file for each word compiled.
+
+Many utilities are included. An enhanced debugger allows nesting and
+unnesting of colon definitions.
+
+
+1.4.    NEW FEATURES IN F-PC 3.5
+
+
+F-PC version 2.25 was released in November 1988.  Tom Zimmer agreed, with
+great reluctance, not to make any changes so that it can be distributed
+among Forth users as a common programming environment for information
+exchange.  Modifications, enhancements, and bug-fixes implemented and
+tested over the ten month period were distributed privately by Tom under
+the name F-TZ.  The F-PC Working Group in their September 23, 1989
+meeting decided to adopt F- TZ and distribute it as F-PC version 3.5.  A
+partial list of the added features are:
+
+        Hypertext on-line help and documentation
+        Browser to examine code and documentation
+        Mouse support in editor
+        Enhanced pull down menu and pop up windows
+        Expanded memory support
+        Lots of bug fixes and minor enhancements
+        Update and corrections on kernel help files
+
+For those who have used F-PC 2.25 and like to know more about the
+differences between it and F- PC 3.5, please consult the file
+FPCNOTES.TXT where Tom Zimmer logged the bug fixes and the enhancements.
+
+User contributed programs are deleted from the new version because of
+disk space limitations. However, user contributions will be continually
+solicited.  The Silicon Valley Chapter of the Forth Interest Group will
+coordinate the consolidation and distribution of user contributed works.
+

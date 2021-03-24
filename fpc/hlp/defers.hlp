@@ -1,0 +1,39 @@
+\ DEFERS.HLP    help definitions for DEFERS type words  Tom Zimmer
+
+DEFERS          ( <name> --- )
+        installs the contents of a defered word in the current definition
+        being defined. This is used to build a chain of words to be
+        performed.
+
+        Here is an example of how to build a DEFERS chain:
+
+        DEFER FUNC      ' NOOP IS FUNC
+
+        : FUNCTION1     ( --- )
+                        DEFERS FUNC
+                        ... THE DEFINITION ... ;        ' FUNCTION1 IS FUNC
+
+        : FUNCTION2     ( --- )
+                        DEFERS FUNC
+                        ... THE DEFINITION ... ;        ' FUNCTION2 IS FUNC
+
+        Now if you were to use SEE on FUNCTION1 is would look like this:
+
+        : FUNCTION1     NOOP ... THE DEFINITION ... ;
+
+        And also on FUNCTION2:
+
+        : FUNCTION2     FUNCTION1 ... THE DEFINITION ... ;
+
+        As you can see whatever was currently in FUNC got compiled into
+        the new definition being created.  The result of the above technique
+        is that each new function added to the chain, is performed after
+        all of the previous functions have been performed.  Truely a chain.
+
+UNDEFER         <name> ( -- )
+        This is sort of an undo for DEFERS.  UNDEFER removes one level from
+        the chain of a defered word.  Must be used with EXTREME caution,
+        as there is no protection from trying to use it at the wrong time
+        in the wrong place.  YOU ARE ON YOUR OWN with this one.  See also
+        DEFERS above.
+

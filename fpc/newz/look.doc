@@ -1,0 +1,61 @@
+LOOK.DOC               Mini DOC for LOOK.COM           by Tom Zimmer
+
+  LOOK is a text search program, it will look for words or phrases in one or
+more files in one or more directories.
+
+LOOK can be used in any of the follows ways:
+
+    LOOK mytext <enter>                search all (*.*) file in the
+                                       current directory for "mytext".
+
+    LOOK "my text" <enter>             search all (*.*) files in the
+                                       current directory for "my text".
+
+    LOOK 'my text' *.txt *.doc         search all .TXT and all .DOC files
+                                       for "my text".
+
+    LOOK !my text! *.txt>mytext.lst    search all .TXT files for "my text"
+                                       and write the found list of occurances
+                                       to the file MYTEXT.LST
+
+    LOOK "my text" -g<dir> *.txt       GLOBAL search all .TXT files in <dir>
+                                       and lower directories for "my text".
+
+  If LOOK is entered on a line without any parameters, then it will prompt
+for the string to search for, and the file specs to search.
+
+  As can be seen in the examples above, the first "NON-ALPHANUMERIC"
+character following the LOOK command will be used as the text string
+delimiter character.
+
+  A full DOS pathed filespec or specs can be used in any of the above
+examples. Here are some typical filespecs:
+
+        C:\UTILS\*.DOC   A:\*.TXT   C:\TC\INCLUDE\*.H
+
+  LOOK scans files at the rate of about 40,000 bytes per second on a 8MHz
+PC-AT class harddisk machine.
+
+  You can pause LOOKing by pressing the space bar, or terminate with
+the ESCape key.
+
+  LOOK automatically breaks non-text files into 64 character lines, so it
+can be used for searching Forth .BLK and .SCR files as well as text files.
+
+  LOOK was written in Forth, and compiled with the TCOM optimizing
+compiler on the F-PC Forth system using IBM-PC/AT compatible hardware. A
+machine with at least 512k of memory and a harddisk is required. LOOK is
+public domain, as is F-PC, and TCOM. To obtain the latest version of
+LOOK, F-PC, and TCOM send $50.00 to the address listed below:
+
+                       Tom Zimmer
+                       292 Falcato Drive
+                       Milpitas, Ca. 95035
+
+                               Home (408) 263-8859
+                               Work (408) 432-4643
+
+  LOOK, F-PC, and TCOM come with the complete source, and can each can be
+completely regenerated without any additional software tools.
+
+

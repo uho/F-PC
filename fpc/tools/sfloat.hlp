@@ -1,0 +1,65 @@
+                    SFLOAT -- Software Floating Point Package
+
+                            By Robert L. Smith
+
+
+        This is a software floating point package for use with the F-PC Forth
+system.  It follows most of the recommendations of the FVG (Forth Vendors
+Group) Standard Floating-Point Extension.  It is my intention that the
+functions be as accurate as is reasonable, consistent with speed as the
+secondary goal.  The basic four functions plus square root should be precise to
+one half a bit in the least significant bit of the representation.  It is my
+intention that the higher functions have intrinsic errors no larger than one
+bit in the least significant place.  The representation uses a 16 bit word for
+the sign and biased exponent of the floating point number, and 32 bits for the
+significand (sometimes called the "mantissa").  That means that the intrinsic
+accuracy is approximately 9 and a half decimal digits.  The largest and
+smallest representable numbers cover roughly the range from 10 to the plus and
+minus 4000 power, which is far greater than almost anyone would ever need.
+The representation does NOT include special cases for infinity, unnormalized
+numbers, and Not-A-Number.  The format is definitely NOT the IEEE Floating
+Point Standard format.  The reason is basically one of speed.  The functions
+in this package are approximately 5 (FIVE) times faster than software
+implementations using the IEEE standard.  In spite of that, I do attempt to
+meet the basic requirement of having the basic four functions be accurate to
+within one-half a bit.  The precision is somewhat greater than one would
+obtain from the 32-bit IEEE format.
+
+        To load the package from F-PC, type  FLOAD SFLOAT  followed by a
+carriage return.
+
+        After SFLOAT has been loaded, you may enter floating point numbers
+in exponential format.  The following is a list of possible entries:
+
+                -1.2345E4
+                .9876E-3
+                123.456(10)
+                12.345X-5
+
+The rules are: If the number is negative, it must be preceeded with a
+minus sign.  Do not use "+" with positive numbers.  The separator between
+the mantissa and exponent may be almost any character other than a digit,
+"+" sign, "-" sign, or comma.  In the examples above, the "E" is used for
+compliance with FVG, but the left parenthesis or "X" may be used, especially
+if you desire to enter your numbers in another base.  The terminating symbol
+may be omitted, but you may wish to use a right parenthesis, as in the third
+example above.
+
+        If you wish to enter floating point numbers without having to specify
+the exponential part, type the word  FLOATS .  That will allow numbers with
+imbedded decimal points (or commas) to be interpretted as floating point
+numbers.  A trailing decimal point will still cause the number to be treated
+as a double precision number.  To turn off that feature, invoke the word
+DOUBLES .
+
+        The simplest numeric output is  E. .  Other possible functions are:
+E.R , F. , and F.R .  There is also a floating point stack printout word, .FS .
+If you wish to turn off the Floating Point interpreter, enter  NOFLOATING .
+To re-enter the floating point interpreter, enter  FLOATING .  If you wish
+to FORGET all or part of the floating point package, it is important to
+invoke  NOFLOATING  prior to using FORGET .
+
+        The FVG Standard Floating-Point Extension has been published in Dr.
+Dobb's Journal, Sept., 1984.  The authors are Ray Duncan and Martin Tracy.
+
+

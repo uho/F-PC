@@ -1,0 +1,92 @@
+\ EXEC.HLP      A utility for calling DOS from Forth.   by Tom Zimmer
+
+exec.param      ( --- a1 )
+        The EXEC parameter area array.
+
+ss_save         ( --- a1 )
+        Stack segment save variable.
+
+sp_save         ( --- a1 )
+        Stack Pointer save variable.
+
+<exec>          ( string --- return-code )
+        Pass the NULL terminated string to DOS interupt 21 hex
+        command 4B hex as the name of a program to execute.
+        return-code is a value that tells you if the program
+        completed properly.
+
+cmdpath         ( --- a1 )
+        A handle that contains the complete file specification to
+        the COMMAND.COM used to boot the system.
+
+initcmdpath     ( --- )
+        Initialize CMDPATH to contain the current path to COMMAND.COM.
+        This word is automatically performed at Forth cold start time.
+
+$sys            ( countedstring --- f1 )
+        Pass the countedstring to COMMAND.COM as a command line.
+        A shell is spawned in the process with the "/c" parameter
+        included so COMMAND.COM terminates on completion of the
+        command line. If a NULL string is passed then the DOS shell
+        will be spawned for you to enter one or several command
+        lines. You can then return to Forth by typing EXIT <enter>.
+
+?syserror       ( n1 --- )
+        Check for three specific error codes n1. The codes examined
+        are 2 can't find COMMAND.COM, 8 Not enough memory, and -2
+        Requires DOS 3 or higher.
+
+sys             ( | command --- )
+        Accept the command line following SYS as a DOS command line.
+
+`               ( command --- )
+        A pseudonym for SYS. See also SYS.
+
+cmdbuf          ( --- a1 )
+        A small buffer inserted in the return stack. Used to hold
+        the command that gets build for the following DIS commands.
+
+"syscommand     ( a1 n1 c1 --- )
+        Perform a DOS command as specified by a1,n1 the DOS command
+        like DIR or COPY, automatically append the remainder of the
+        forth command line up to delimiter c1.
+
+dir             ( <filespec> --- )
+        Pass the filespec following DIR to DOS and print a directory
+        of the matching filespecs.
+
+del             ( <filespec> --- )
+        Delete the files specified by filespec.
+
+chdir           ( | <filespec> --- )
+        Change the directory to the directory specified by filespec.
+
+cd              ( | <filespec> --- )
+        A pseudonym for CHDIR. See also CHDIR.
+
+copy            ( <filespec> --- )
+        Perform a DOS COPY with the filespec following the COPY
+        command.
+
+ren             ( <filespec> --- )
+        Perform a RENAME with the filespec following the REN command.
+
+rename          ( | <filespec> --- )
+        Perform a RENAME with the filespec following the RENAME
+        command.
+
+"setdrive       ( a1 n1 --- )
+        Set the drive specified by the string a1,n1 to be the current
+        drive. the string should be in the format: " D:" "SETDRIVE.
+
+a:              ( --- )
+        set drive a: as default drive.
+
+b:              ( --- )
+        set drive b as default drive.
+
+c:              ( --- )
+        set drive c as default drive.
+
+
+

@@ -1,0 +1,66 @@
+\ TIMER.HLP      Time measurment words for F-PC.
+
+
+GETDATE         ( --- Y MD )
+        Get the DOS format double date.
+
+SETDATE         ( NM Y --- )
+        Set the DOS date given the double date.
+
+GETTIME         ( --- HM Sh )
+        Get the DOS format double time.
+
+SETTIME         ( HM Sh --- )
+        Set the DOS time given the double time.
+
+.##             ( N1 --- )
+        Display the first two least significant digits of n1.
+
+<.HM>           ( D1 --- N1 )
+        Display the Hours and Minutes portion of the D1 DOS time.
+
+<.SH>           ( N1 --- )
+        Display the seconds and hundreds portion of the n1 result
+        from the DOS time.
+
+<.TIME>         ( d1 --- )
+        Print the DOS d1 time.
+
+.TIME           ( --- )
+        Get the time from DOS, and display it.
+
+<.DATE>         ( D1 --- )
+        Display the Dos d1 date.
+
+.DATE           ( --- )
+        Get and display the DOS date.
+
+STIME           ( --- a1 )
+        A double variable that holds the BINARY start time for various
+        timing operations.
+
+TTIME           ( --- a1 )
+        A double variable that holds the DOS total time.
+
+T>B             ( d1 --- d2 )
+        Convert the d1 DOS double time value to d2 the BINARY time.
+
+B>T             ( d1 --- d2 )
+        Convert the d1 BINARY time value to d2 the DOS time format.
+
+TIME-RESET      ( --- )
+        Reset the start time to the current time.
+
+TIME-ELAPSED    ( --- d1 )
+        Return d1 the binary time elapsed since the last TIME-RESET.
+
+B>SEC           ( D1 - N1 )
+        Convert the BINARY time d1 to seconds. Overflows at 18 hours.
+
+.ELAPSED        ( --- )
+        Display the elapsed time. Overflows at 18 hours.
+
+TIMER           ( | forth_commands --- )
+        Measure the time it takes to interpret the forth commands
+        on the following command line.
+

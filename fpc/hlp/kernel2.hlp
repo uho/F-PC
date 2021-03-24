@@ -1,0 +1,668 @@
+\ KERNEL2.HLP   Help file for the KERNEL2.SEQ file
+
+TOS             ( -- a1 )
+        Top OF Stack, Saved during Task switching.
+
+ENTRY           ( -- a1 )
+        Jumped to during multitasking.
+
+LINK            ( -- a1 )
+        Points to next task in the circular queue
+
+ES0             ( -- a1 )
+        ES register initial segment.
+
+SP0             ( -- a1 )
+        Empty parameter stack for this task.
+
+RP0             ( -- a1 )
+        Empty return stack for this task.
+
+DP              ( -- a1 )
+        Size of dictionary.  Next available location.
+
+OFFSET          ( -- a1 )
+        Added to all block references.
+
+BASE            ( -- a1 )
+        The current numeric base for number input output.
+
+HLD             ( -- a1 )
+        Points to a converted character during numeric output.
+
+PRINTING        ( -- a1 )
+        A variable which holds a flag that Indicates whether printing is
+        enabled.
+
+EMIT            ( c1 -- )
+        A defered word which sends a character to the output device.
+
+KEY?            ( -- f1 )
+        A defered word that returns a true flag if a key waiting.
+
+KEY             ( -- c1 )
+        A defered word to get a key from user.
+
+TYPE            ( a1 n1 -- )
+        A defered word used to Print a string to the current output device
+        from the segment specified in the variable TYPESEG.
+
+EXTYPE          ( seg a1 n1 -- )
+        A defered word used to print a string to the current output device
+        from external memory specified in segment SEG.
+
+PRIOR           ( -- a1 )
+        Points to the last vocabulary that was searched.
+
+STATE           ( -- addr )
+        A variable that holds the compilation state.  If the contents of
+        STATE are 0 , then the Forth system is in interpret mode.  Otherwise
+        the system is in compilation mode.
+
+WARNING         ( -- a1 )
+        Checked by WARN for duplicate warnings.
+
+DPL             ( -- a1 )
+        The decimal point location for number input.
+
+R#              ( -- a1 )
+        The cursor position during editing.
+
+LAST            ( -- a1 )
+        Points to the name of the most recently CREATEd word.
+
+CSP             ( -- a1 )
+        Used for compile time error checking.
+
+CURRENT         ( -- a1 )
+        New words are added to the CURRENT vocabulary.
+
+#VOCS           ( -- a1 )
+        The number of elements in the search order array.
+
+CONTEXT         ( -- a1 )
+        The array specifying the search order.
+
+'TIB            ( -- a1 )
+        Points to characters entered by user.
+
+WIDTH           ( -- a1 )
+        Number of characters to keep in name field.
+
+VOC-LINK         ( -- a1 )
+         Points to the most recently defined vocabulary.
+
+>IN             ( -- a1 )
+        Number of characters interpreted so far.
+
+SPAN            ( -- a1 )
+        Number of characters input by EXPECT.
+
+#TIB            ( -- a1 )
+        Used by WORD, when interpreting from the terminal.
+
+END?            ( -- a1 )
+        True if input stream exhausted, else false.
+
+#OUT            ( -- a1 )
+        A variable that holds the column number of the most recent type or
+        emit to the display.
+
+#LINE           ( -- a1 )
+        A variable that holds the line number of the current line on which
+        text is being typed.
+
+XDP             ( -- a1 )
+        A variable that holds the address in dictionary list space of
+        the top of the top of the dictionary.
+
+XDPSEG          ( -- a1 )
+        A variable that holds the segment of the top of the list dictionary.
+
+YDP             ( -- a1 )
+        A variable that holds the address in HEAD space of the next
+        available byte.
+
+YSTART          ( -- a1 )
+        A variable that holds the offset to the starting head in head space.
+
+DPSTART         ( -- a1 )
+        Beginning of list space in .COM or .EXE file.
+
+XSEGLEN         ( -- n )
+        Length of list space, in segments.
+
+XMOVED          ( -- n )
+        A flag to tell if Lists have been moved.
+
+SSEG            ( -- n )
+        The Search and Scan Segment.
+
+SEQHANDLE       ( -- n )
+        The sequential handle file.
+
+LOADLINE        ( -- n )
+        The line number last returned by LINEREAD .
+
+BL              ( -- c1 )
+        Return hex 20, decimal 32 the value of an Ascii space.
+
+BS              ( -- c1 )
+        Return the value 8, an Ascii Back Space.
+
+BELL            ( -- c1 )
+        Return the value 7, an Ascii BELL char.
+
+CAPS            ( -- a1 )
+        If true, then convert names to upper case
+
+FILL            ( a1 n1 c1 -- )
+        FILL the string starting at a1 for count n1 bytes
+        with the character c1. Both BLANK and ERASE are
+        special cases of FILL.
+
+LFILL           ( seg a1 n1 c1 -- )
+        FILL for a segment.
+
+ERASE           ( a1 n1 -- )
+        Fill the string with zeros
+
+BLANK           ( a1 n1 -- )
+        Fill the string with blanks
+
+COUNT           ( a1 -- a2 n1 )
+        Given the address on the stack, returns the address
+        plus one and the byte at that address.  Useful for strings.
+
+LENGTH          ( a1 -- a2 n1 )
+        Given the address on the stack, returns the address
+        plus two and the two byte contents of the address.
+
+COUNTL          ( seg addr -- seg addr+1 len )
+        Like COUNT, but works with a LONG (seg/offset) address.
+
+MOVE            ( a1 a2 n1 -- )
+        Move the specified bytes n1 from address a1 ro address a2. No
+        overlapping of data will occur.
+
+ATBL            ( -- a1 )
+        Address of a table for Upper Case conversion.
+
+UPC             ( c1 -- c2 )
+        Convert a Char to upper Case
+
+UPPER           ( addr cnt -- )
+        Take the string at the specified address and convert it to
+        upper case.  It converts the string in place, so be sure to
+        make a copy of the original if you need to use it later.
+
+?UPPERCASE      ( a1 -- a1 )
+        Test the contents of the variable CAPS .  If the contents are
+        non-zero, convert the characters in the counted string to
+        upper case.
+
+HERE            ( -- a1 )
+        Return the address of the top of the dictionary
+
+PAD             ( -- a1 )
+        Floating Temporary Storage area.
+
+-TRAILING       ( a1 n1 -- a1 n2 )
+        Return the address and length of the given string ignoring
+        trailing blanks.
+
+COMP            ( a1 a2 n1 -- f1 )
+        This performs a string compare.  If the two strings are
+        equal, then COMPARE returns 0.  If the two strings differ,
+        then COMPARE returns -1 or +1.  -1 is returned if string 1
+        is less than string 2.  +1 is returned if string 1 is
+        greater than string 2.  All comparisons are relative to
+        ASCII order.
+
+CAPS-COMP       ( a1 a2 n1 -- f1 )
+        The code on this screen handles the case where case is not
+        significant.  Each character is converted to upper case
+        before the comparison is made.  Thus, lower case a and upper
+        case A are considered identical.  The strings are not changed
+        in memory.
+
+COMPARE         ( a1 a2 n1 -- f1 )
+        Performs a string compare. If CAPS is true, characters from
+        both strings are converted to upper case before comparing.
+        The strings are not changed in memory.
+
+?CS:            ( -- seg )
+        leave FORTH code segment CS on stack
+
+?ES:            ( -- seg )
+        Return the extra segment ES on the stack.
+
+@L              ( seg adr - n )
+        load word long from seg and adr.
+
+C@L             ( seg adr - byt)
+        char load long from seg and adr.
+
+C!L             ( byt seg adr -)
+        char store long in seg and adr.
+
+!L              ( n seg adr -- )
+        word store long
+
+<BDOS>          ( n1 func# -- areg )
+        The default DOS system call.
+
+BDOS            ( n1 func# -- areg )
+        Load up the registers and do a DOS system call. Return the
+        result placed in the A register on the stack.  BDOS is a
+        defered word.
+
+BDOS2           ( cx dx func# -- cx' dx' ax' )
+        Similiar to BDOS, except that an additional register, CX , 
+        is used.
+
+OS2             ( cx dx func# -- cx' dx' ax' )
+        Similiar to BDOS, except that an additional register, CX , 
+        is used.  Also, the high order part of ax' is set to 0.
+
+BIOSCHAR        ( -- addr )
+        Holds the char from BIOS on scan by BIOSKEY?
+
+BIOSKEYVAL      ( -- addr )
+        Holds the key value from BIOSKEY
+
+BIOSKEY?        ( -- f1 )
+        Return a true flag if a key, other than control break, 
+        has been pressed.
+
+BIOSKEY         ( -- c1 )
+        Return the value of the next key to be depressed, ignoring
+        control break.
+
+KEYFILTER       ( n1 -- n2 )
+        A defered word to filter the action or code of a key.
+
+BGSTUFF         ( -- )
+        A defered word for background task operation.
+
+(KEY?)          ( -- f1 )
+        Returns true if the user pressed a key, otherwise false.
+
+(KEY)           ( -- c1 )
+        Pauses until a key is ready, and returns it on the stack.
+
+OUTPAUSE        ( -- )
+        A defered word to perform a background task while sending
+        characters to the screen.  Normally NOOP . 
+
+CONSOLE         ( char -- )
+        A defered word for sending characters to the screen.
+
+CMOVEL          ( sseg sptr dseg dptr cnt -- )
+        Move cnt bytes long from source seg sseg and sptr, to
+        destination seg dseg and dptr.  The sequence goes from 
+        low addresses to high addresses.
+
+CMOVEL>         ( sseg sptr dseg dptr cnt -- )
+        Move cnt bytes from the source segment and offset to the
+        destination segment and offset.  The sequence goes from
+        high addresses to low addresses.
+
+#CODESEGS       ( -- n1 )
+        Number of segments needed for CODE.  64k
+
+#LISTSEGS       ( -- n1 )  
+        Number of segments needed for : definitions. 64k
+
+#HEADSEGS       ( -- n1 )
+        Number of segments needed for HEADS. 64K
+
+MEMCHK          ( f1 -- )
+        If the flag is true, print an error message "Insufficient
+        Memory", and terminate execution by returning to DOS.
+
+DEALLOC         ( seg -- f1 )
+        Release a block of memory back to DOS.  Flag = 0 means ok.
+        Flag = 9 means segment is not valid.
+
+ALLOC           ( size -- seg2 seg flag )
+        Allocate "size" segments from DOS.   If no error, flag is
+        set to 0.  If not enough segments are available, flag = 8.
+        "seg" is the base of the allocated memory.  "seg2" is the
+        maximum number of segments available.
+
+SETBLOCK        ( seg siz -- f1 )
+        Re-adjust the memory block specified by "seg" to the new size "siz"
+        in segments.
+
+DOSVER          ( -- n1 )
+        get DOS version number
+
+CURSORSET       ( -- )
+        A defered word for setting the cursor?
+
++XSEG           ( n1 -- n2 )
+        Add the contents of the variable XSEG to n1, returning n2.
+        Used to convert a relative segment address to a physical
+        segment address.
+
+SETYSEG         ( -- )
+        Set the segment variables as needed.
+
+YHERE           ( -- addr )
+        The next available location in "Head" space.
+
+YS:             ( n -- seg n )
+        Tuck the base of the head segement under the offset at the
+        top of the stack.
+
+Y@              ( offset -- n )
+        Fetch the word at the specified offset in the head segment.
+
+Y!              ( n offset -- )
+        Store word n at the offset in the head segment.
+
+YC@             ( offset -- c1 )
+        Fetch the byte at the offset in the head segment.
+
+YC!             ( c1 offset -- )
+        Store the byte at the specified offset in the head segment.
+
+Y,              ( n -- )
+        Add the 16 bit value  n  to the end of the working head space.
+
+YCSET           ( b offset -- )
+        Set the bits at offset in the head segment according to "b".
+
+YHASH           ( ystr vocaddr -- thread )
+        Find the vocabulary thread corresponding to a counted string in 
+        head space.
+
+XHERE           ( -- seg adr )
+        Returns segment an offset of next available byte in list space.
+
+X,              ( n -- )
+        Adds a 16 bit value to the end of list space.
+
+XC,             ( n -- )
+        Adds an 8 bit value to the end of list space.
+
+PR-STATUS       ( n1 -- b1 )
+        n1 is the printer number.  Return the printer status byte.
+
+<?PTR.READY>    ( -- f1 )
+        Return the status of the printer port.  $090 is printer 
+        not busy & printer selected.
+
+?PRINTER.READY  ( -- f1 )
+        A defered word.  Returns  TRUE  if the printer is ready.
+
+CR              ( -- )
+        Typically set to CRLF, above. PR-STAT Return printer status,
+        if implemented, else TRUE (PRINT) The value of the DEFERRED
+        word EMIT when you want to send a character to the printer.
+
+PEMIT           ( c1 -- )
+        A version of  EMIT  that sends a character to the printer.
+
+(EMIT)          ( c1 -- )
+        Send a character to the console, and optionally to the printer.
+
+CRLF            ( -- )
+        Sends a carriage return line feed sequence.
+
+FEMIT           ( c1 -- )
+        A fast version of EMIT.  Control characters show graphic equivalence.
+
+SPACE           ( -- )
+        Send a space to the terminal
+
+SPCS            ( -- a1 )
+        The address of an array of 132 spaces.
+
+SPACES          ( n1 -- )
+        Send a set of spaces to the terminal
+
+BACKSPACES      ( n1 -- )
+        Send a set of Backspaces to the terminal.
+
+BEEP            ( -- )
+        Ring the bell on the terminal
+
+BS-IN           ( n c -- 0 | n-1 )
+        If at beginning of line, beep, otherwise back up 1.
+
+(DEL-IN)        ( n c -- 0 | n-1 )
+        If at beginning of line, beep, otherwise back up and erase 1.
+
+DEL-IN          ( n c -- 0 | n-1 )
+        If at beginning of line, beep, otherwise back up and erase 1.
+
+BACK-UP         ( n c -- 0 c )
+        Wipe out the current line by overwriting it with spaces.
+
+RESET-IN        ( -- )
+        Reset the system to a relatively clean state.
+
+RES-IN          ( -- )
+        Reset the system to a relatively clean state.
+
+P-IN            ( -- )
+        Toggle the printer on or off
+
+(ESC-IN)        ( a n char -- a n+1 char )
+        Default handler of ESC character
+
+ESC-IN          ( a n char -- a n+1 char )
+        A defered word to handle ESC character
+
+CR-IN           ( m a n c -- m a m c )
+        Finish input and remember the number of chars in SPAN
+
+(CHAR)          ( a n char -- a n+1 char )
+        Process an ordinary character by appending it to the buffer.
+
+CHAR            ( a n char -- a n+1 char )
+        is usually (CHAR). Executed for most characters.
+        DEL-IN is usually (DEL-IN). Executed for delete characters.
+
+^CHAR           ( a n char -- a n+1 char )
+        Similiar to  CHAR  for control characters.
+
+NORM-KEYTABLE   ( a n1 char n2 -- a n1+1 char )
+        Execute the control character corresponding to n2
+
+KEYTABLE        ( a n1 char n2 -- a n1+1 char )
+        A defered word to execute the control character corresponding to n2 .
+
+NEXPECT         ( adr len start -- )
+        Type the first "start" characters from the buffer at "adr" and
+        wait for additional characters (in-line editing allowed) to be
+        entered by the user.  The "start" characters may also be modified.
+        The entry stops when the user types the "Enter" key, or when the
+        buffer is filled, whatever happens first.
+
+(EXPECT)        ( adr len -- )
+        Text entered by the user is entered into the buffer at "adr".
+        Entry is terminated by a carraige return or after "len" bytes
+        have been entered, whichever occurs first.  A limited amount of
+        in-line corrections is allowed.
+
+EXPECT          ( a1 n1 -- )
+        Get a string from the terminal and place it in the buffer
+        provided.  Performs a certain amount of line editing.
+        Saves the number of characters input in the Variable SPAN.
+        Processes control characters per the array pointed to by CC.
+
+TIB             ( -- a1 )
+        Leaves address of text input buffer.
+
+MORE?           ( -- f1 )
+        Return a flag f1 true if there are words left in input stream,
+        else return false.
+
+QUERY           ( -- )
+        Get more input from the user and place it at TIB.
+
+DISK-ERROR      ( -- addr )
+        Returns the address of a variable which contains error 
+        information on the most recent attempt to access the disk.
+
+LIMIT           ( -- n )
+        The highest address in the Code Segment used by Forth.
+
+FIRST           ( -- n )
+        This is a simple constant having the value 10 less than  LIMIT .
+
+INIT-R0         ( -- addr )
+        Address of the base of the Return Stack.
+
+HEX             ( -- )
+        All subsequent numeric IO will be in Hexadecimal.
+
+DECIMAL         ( -- )
+        All subsequent numeric IO will be in Decimal.
+
+OCTAL           ( -- )
+        All subsequent numeric IO will be in Octal.
+
+
+DEFAULT         ( -- )
+        Opens the default file per the execute line.
+        This does nothing if no file was given.
+
+DIGIT           ( char base -- n f )
+       Returns a flag indicating whether or not the character is a
+       valid digit in the given base.  If so, returns converted
+       value and true,  otherwise returns char and false.
+
+DOUBLE?         ( -- f )
+        Returns non-zero if a period was encountered during last numeric 
+        scan. 
+
+CONVERT         ( +d1 adr1 -- +d2 adr2 )
+        Starting with the unsigned double number ud1 and the string
+        at adr1, convert the string to a number in the current base.
+        Leave result and address of unconvertable digit on stack.
+
+(NUMBER?)       ( adr -- d flag )
+        Given a string containing at least one digit, convert it
+        to a number.
+
+NUMBER?         ( adr -- d flag )
+        Convert the count delimited string at addr to a double
+        number.  NUMBER? takes into account a leading minus sign,
+        and stores a pointer to the last delimiter in DPL.
+        The string must end with a blank.
+        Leaves a true flag if successful.
+
++1=$?           ( a1 -- a1 f1 )        
+        If second char in a1 is a "$", return a  TRUE  flag.
+
++1='?           ( a1 -- a1 f1 )        
+        If second char in a1 is a "'", return a  TRUE  flag.
+
++1=^?           ( a1 -- a1 f1 )        
+        If second char in a1 is a "^", return a  TRUE  flag.
+
+%NUMBER         ( a1 -- d1 f1 ) 
+        Convert the string at  a1  into a double number.  A leading "-"
+        sign is allowed, and special prefixes like  $ , ^ , and ' are
+        allowed.
+
+(NUMBER)        ( a1 -- d1 )
+        Convert the count delimited string at addr to a double
+        number.  (NUMBER) takes into account a leading minus sign,
+        and stores a pointer to the last period in DPL.  Note the
+        actual string must be at least one byte longer than indicated
+        by the byte count, and the additional byte must contain a
+        blank or an error message will be issued.
+
+NUMBER          ( a1 -- d1 )
+        Convert a count delimited string to a number.  Normally (NUMBER)
+
+HOLD            ( char -- )
+        Save the char for numeric output later.
+
+<#              ( -- )
+        Start numeric conversion.
+
+#>              ( d# -- addr len )
+        Terminate numeric conversion.
+
+SIGN            ( n1 -- )
+        If n1 is negative insert a minus sign into the string.
+
+#               ( d1 -- d2 )
+        Convert a single digit in the current base.
+
+#S              ( d -- 0 0 )
+        Convert a number until it is finished.
+
+(U.)            ( u1 -- a1 n2 )
+        Convert an unsigned 16 bit number to a string.
+
+U.              ( u1 -- )
+        Output as an unsigned single number with trailing space.
+
+U.R             ( u1 n -- )
+        Output u1 as an unsigned single number right justified in a field
+        of n spaces.
+
+(.)             ( n1 -- a1 n2 )
+        Convert a signed 16 bit number to a string.
+
+.               ( n1 -- )
+        Output as a signed single number with a trailing space.
+
+.R              ( n1 n2 -- )
+        Output n1 as a signed single number right justified in a field of
+        n2 spaces.
+
+(UD.)           ( d1 -- a1 n1 )
+        Convert an unsigned double number to a string.
+
+UD.             ( d1 -- )
+        Output as an unsigned double number with a trailing space
+
+UD.R            ( d1 n -- )
+        Output d1 as an unsigned double number right justified in a
+        field of n spaces.
+
+(D.)            ( d1 -- a1 n1 )
+        Convert a signed double number to a string.
+
+D.              ( d1 -- )
+        Output as a signed double number with a trailing space.
+
+D.R             ( d1 n -- )
+        Output d1 as a signed double number right justified in a field
+        of n spaces.
+
+SKIP            ( a1 n1 c1 -- a2 n2 )
+        Given the address and length of a string, and a character to
+        look for, run through the string while we continue to find
+        the character.  Leave the address of the mismatch and the
+        length of the remaining string.
+
+SCAN            ( a1 n1 c1 -- a2 n2 )
+        Given the address and length of a string, and a character to
+        look for, run through the string until we find
+        the character.  Leave the address of the match and the
+        length of the remaining string.
+
+/STRING         ( addr len n -- addr' len' )
+        Index into the string by n.  Returns addr+n and len-n.
+
+SOURCE          ( -- a1 n1 )
+        Return a string from the current input stream.
+
+PARSE           ( c1 -- a2 n1 )
+        Scan the input stream until char is encountered.  Update >IN
+        pointer. Leaves the address and length of the enclosed
+        string.
+
+WORD            ( c1 -- a1 )
+        Parse the input stream for char and return a count delimited
+        string at here.  Note there is always a blank following it.
+

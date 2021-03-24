@@ -1,0 +1,293 @@
+ZIMMER.TXT      Extra stuff included with F-PC
+
+        AUTOLOAD.SEQ                            by Tom Zimmer
+
+          A simple utility to make F-PC load a file automatically at
+        boot time. Add this to the system and resave the system.
+        Place your forth commands in the file F-PC.CFG and they will
+        be executed before F-PC handles the command line.
+
+        AUTOFOR.SEQ                             by Tom Zimmer
+
+          A completely automatic forward reference manager.
+
+        BLINKER.SEQ     *** MOVED TO F-PC ***   by Tom Zimmer
+
+          Adds words to enable/disable the blink attribute when background
+        color 8 to 15 are used. Also provides words to read and set the
+        border color and color palette.
+
+        BLKTOSEQ.SEQ                            by Tom Zimmer
+
+          This file contains the source for a utility to convert your
+        .BLK files into .SEQ files.  Type the following to convert a
+        file:
+
+                FLOAD BLKTOSEQ <enter>
+                CONV <enter>                    you will be prompted
+                <file_to_convert> <enter>       for the filename to
+                                                convert.
+
+          The .BLK file will be converted to a sequential file, with
+        the new extension .SEQ.  All extra blank lines will be
+        omitted.  Shadow screens in .BLK files will be enclosed in
+        DF's "Comment:" mechanism, and appended to each source block.
+        If a BLOCK file does not have shadows, then change its
+        extension to .SCR, and DF will convert all screens
+        sequentially.
+
+        BLOCK.SEQ                               by Tom Zimmer
+
+          A new virtual block system for Forth.  This is my own
+        implimentation, and it is very fast, and uses a true LRU
+        buffer allocation mechanism.  You can also change the block
+        size to be anything you want, as well as specify as many
+        or as few block buffers as you can hold in memory.
+
+        CODEBUG.SEQ                             by Tom Zimmer
+
+          A simple assembly language debugger for F-PC. You might find
+        this very useful when trying to debug your new CODE words. It
+        doesn't have many functions, but it will allow you to set a
+        breakpoint, and step through a CODE word watching the stack and
+        registers.
+
+        CODEHIGH.SEQ
+
+          Utility to allow calling high level words from assembly (code)
+        definitions.
+
+        COLOURS.SEQ                             by Mike Mayo
+
+          A utility that displays most of the text color combinations
+        available on a color display. Useful when you are trying to pick
+        color combinations for a program.
+
+        COLPLAY.SEQ                             by Michael Schroeder
+
+          Fancy color setup for F-PC, neat but needs too much memory to
+        make if part of the system all the time.
+
+        COMMAND.SEQ                             by Tom Zimmer
+
+          A nestable comment line entry routine.  Can be placed in a
+        program to allow entering Forth commands without fear of
+        aborting the currently running Forth word.
+
+        CONSTANT.SEQ                            by Tom Zimmer
+
+          A utility to allow defining multiple constants and variables as
+        follows:
+
+                CONSTANTS       3 george        12 robert
+                               14 betty         72 bongo    ;
+
+                VARIABLES       Gort!           clatoo
+                                borada          nicto       ;
+
+          Note the ";" terminating the list of constants. If you use
+        multiple lines, you can put "\" delimited comments on the same line
+        as the constants or variables.
+
+        DOSIO.SEQ                               by Tom Zimmer
+
+          A conversion utility to allow F-PC to accept re-directed
+        input and output from the DOS command line.  You can make
+        filters that use all of the power of Forth.
+
+        EMMEXMPL.SEQ                            by Tom Zimmer
+
+          An example of how to use the Expanded Memory Manager. Tests and
+        uses expanded memory to save a bunch of screens and display them
+        on the screen very quickly.
+
+        EVAL.SEQ
+
+          A utility to allow runtime interpretation of compiled strings.
+        This implements text macros.
+
+        EXPANDED.SEQ    *** MOVED INTO F-PC ***
+
+        FORWARD.SEQ                             by Tom Zimmer
+
+          A neat mechanism to handle forward references, and have
+        them automatically resolved.
+
+        FUNKEY.SEQ                              by Tom Zimmer
+
+          A simple utility to allow the 10 function keys to be
+        assigned to forth words. Saves some key strokes.
+
+        LASERJET.SEQ    ** MOVED INTO F-PC ***
+
+        Adds LaserJet printer support to F-PC. Also works with the DeskJet
+        series of printers.
+
+        LISTED.SEQ      suggested by J”rg Staben, re-written by Tom Zimmer
+
+        Implements a function list, to which new functions can be added,
+        or old functions removed. The list of functions can be executed,
+        or displayed. Provides the functionality of DEFERS and UNDEFERS
+        in a more general way.
+
+        LOCALS.SEQ                              by Tom Zimmer
+
+        An implimentation of local variables for F88, places then in a
+        seperate stack for flexibility. Four locals are defined, LOCALA
+        through LOCALD. A simple syntax is provided for allocating these
+        variables, and deallocation is automatic at definition end.
+
+        MIDNIGHT.SEQ                            by Peter Midnight
+
+          A visual demo of the towers of hanoi problem and solution.
+        Written by Peter Midnight as his single most significant claim
+        to fame up to 1980. Since that time, Peter has done many more
+        things, but claims no fame.
+
+        MONITOR.SEQ
+
+          An on screen editor, allows you to cursor up and change all
+        the stuff on the screen, then re-enter it by pressing <enter>
+        on a line. Neat stuff.
+
+        MORE.SEQ                                by Tom Zimmer
+
+          A set of words that will control the screen update rate of
+        F-PC.  The words include a word PAGED to select way to wait for a
+        key from the user after 100 calls to ?KEYPAUSE. SLOWER and FASTER
+        insert a delay into ?KEYPAUSE, and can be called repeated to
+        increase or decrease the delay.  NORMAL restores full speed
+        screen performance.
+
+        NEW-WFL.SEQ                             by a Russian engineer
+
+          An improved version of my window file selection utility. This
+        version is much nicer than mine, its only drawback is size, being
+        around 12k of compiled code.
+
+        NEWCOM.SEQ                              by Tom Zimmer
+
+          A utility to allow the easy creation of VERY SMALL .COM
+        files.
+
+        OBJECT.SEQ                              by Rick Hoselton
+
+          Object oriented utility words from Forth Dimmensions Volume
+        10, number 2. Sightly modified to run on F-PC.
+
+        OVERLAY.SEQ                             by Tom Zimmer
+
+        A relatively simple overlay mechanism for F-PC. The overlays are
+        placed below the normal list segment. They can save you memory,
+        but you will still need room for the largest overlay.
+
+        PICTURE.SEQ                             by Tom Zimmer
+
+        Pictured numeric output for F-PC and TCOM. This file lets you
+        specify a picture string to be used when converting a single or
+        double number to a string in preperation for output. This can be
+        very handy in an application where you want a number to look a
+        certain way.
+
+        PROFILE.SEQ                             by Tom Zimmer
+
+        Provides a transparent way of profiling the colon definition
+        performance of your large F-PC applications.
+
+        RS232IB.SEQ                             by Tom Zimmer
+
+        Interrupt driven input support for RS232 communications ports 1
+        and 2. Also polled output support. Mostely in CODE, so it works
+        fine upto at least 19.2k baud. Also includes routines to install
+        and remove the interrupt vectors as needed to prevent your
+        computer from crashing after you leave F-PC.
+
+        SELECT.SEQ                              by Tom Zimmer
+
+        An easy to use on screen menuing system for F-PC. you can now give
+        your programs a good user interface without having to go to a lot
+        of work.
+
+        SETJMP.SEQ                              by Tom Zimmer
+
+        Adds a 'C' like SETJUMP capability to F-PC. Used in error
+        handling, to abort operations while nested down many levels,
+        without having to call ABORT. Cleans up the return and data stacks
+        to where they were at the start of SETJMP.
+
+        SCROLL.SEQ                              by Tom Zimmer
+
+        Some simple code utilities to allow scrolling an area of the
+        screen as specified by two pairs of x/y coordinates up or down
+        one line.
+
+        SEQTOBLK.SEQ                            by Tom Zimmer
+
+        This file contains the source for a utility to convert your
+        .SEQ files back to .SCR files.  Type the following to convert
+        a file:
+
+                FLOAD SEQTOBLK <enter>
+                CONV <enter>                    you will be prompted
+                <file_to_convert> <enter>       for the filename to
+                                                convert.
+
+        The .SEQ file will be converted to a BLOCK file, with the
+        new extension .SCR.  Screen 0 will be blank.  The first line
+        of each block will be blank, preceded by a "\".  The last
+        line of each block will also be blank.  The resulting will
+        be an exact multiple of 1024 bytes in length.  The resulting
+        file will need to be substantially edited, to move entire
+        definitions onto one screen, as they are likely to be split
+        across screens in the move.
+
+        SPREAD.SEQ                              by Craig Lindley
+
+        A simple Forth spreadsheet, published in FORTH Dimensions Volume
+        VII, 1 & 2.  This is a good tutorial on how spreadsheets work, the
+        code is clear and easy to read.
+
+        UNLINK.SEQ                              by Tom Zimmer
+
+        A utility to search for and unlink a word from a defered word
+        chain.
+
+        UNREF.SEQ                               by Tom Zimmer
+
+        A utility suggested by Jerry Boutelle & Robert Smith, that
+        determines which words in an application are not referenced.
+
+        VMOVE.SEQ                               by Dr. C. H. Ting
+
+        Modified by Tom Zimmer to move a word from the CONTEXT vocabulary
+        to the CURRENT vocabulary.
+
+        WINDOW.SEQ
+
+        A nice window package for Forth, Much assembly, so its very
+        fast. Primarily useful in an application package. Try the
+        demo. Again Zimmer did not write this, it was sent to him, and
+        he modified it to work under F-PC.
+
+        WYSE50.SEQ                              by Tom Zimmer
+
+        A simple package to allow EMITted Wyse 50 terminal escape
+        codes to be emulated on the IBM screen.  This has limited
+        functionality, since only a few of the sequences are
+        implemented.
+
+        XMS.SEQ                                 by Claus Vogt
+
+        Extended Memory Suport.
+
+        ANSI.SEQ                                by Uli Hoffmann
+
+        fairly complete ANSI standard support for F-PC.
+
+
+
+
+
+
+
+

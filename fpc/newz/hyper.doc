@@ -1,0 +1,122 @@
+HYPER.DOC       HYPERTEXT compile, searches and viewer   by Tom Zimmer
+
+  HYPER.COM is a replacement for INDEX.COM, which could compile hypertext
+index files for the NEWZ editor.  The hypertext compile function was
+already built into the NEWZ editor, but there are times when it is
+convenient to perform the compiles from a batch file. Thus INDEX.COM was
+born.  HYPER.COM takes that functionality one step further, and provides
+search capability.  You can look for matching index entries and even view
+the areas of the  source files that were indexed using HYPERs view
+feature.
+
+HYPER's help looks something like this:
+
+ HYPER V2.2  03/08/94   ESC=cancel, SPACE=pause
+ Usage: HYPER                   Display this help information.
+        HYPER /B                Build HYPER.NDX using HYPER.CFG.
+        HYPER word              Browse source files for word.
+        HYPER /F  word          Find 'word' references in HYPER.NDX
+        HYPER /FI substring     Find 'substring' references in HYPER.NDX
+        HYPER /FS startstring   Find 'startstring' references in HYPER.NDX
+        HYPER /S                Show all entries in HYPER.NDX.
+
+  A filename can also follow any of the above commands (preceeding the word or
+ string) in the form:  `HYPER /F filename word'   to specify the name of the
+ hypertext index file to use or build.
+
+  HYPER is a utility for creating and searching hypertext index files.
+ This program is particularly useful for maintaining various types of program
+ source files written in ASSEMBLER or FORTH.
+
+
+CONFIGURING THE HYPERTEXT COMPILER
+
+HYPER.CFG Documentation
+
+                        Index Compiler Directives
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  Three index compiler directives are currently supported, they each start
+with the word "TYPE" followed by a type number and a "string" parameter:
+
+        0 "string"  Pick up and index the word IMMEDIATELY following
+                    string. No space delimiter is required. If you
+                    want to space delimit the string, include a space
+                    within the quotes. Examples: ": "  "CONSTANT "
+                    "CODE " etc.
+
+                    This type can pick up words following, as will be
+                    the case with the above examples, or you can pick
+                    up words starting with a character by not
+                    including a space at the end of the string. An
+                    example of this is the graphic symbol above "ø",
+                    which compiles any word starting with this
+                    symbol. That is any hypertext destination link.
+
+        1 ":"           Pick up and index the word preceeding this
+                        symbol. That is index all words that end in a ":"
+                        character. Normally used for assembler labels.
+
+                                name:
+
+                        This will include name in the index file.
+
+        2 "string "     Pick up and index the word at the start of this
+                        line preceeding this string. Again this is
+                        typically used to include references to the
+                        assembler word LABEL as it is used in some
+                        assemblers. here is an example:
+
+                                symbol_name     LABEL
+
+                        Symbol_name will be included in the index file.
+
+        3               Originally supposed to parse a 'C' file, but
+                        doesn't work properly, use the CTAGS program.
+
+        4 "string "     Index a matching word at found at the start of
+                        a line.
+
+        5 "string ,,"   Index a word following string, contained within
+                        the delimiting characters following the space
+                        delimited string.  Example:
+
+                        Configuration entry:
+                                        TYPE 5 "header ,,"
+
+                        Will parse a file entry:
+
+                                        header 4, COLD, normal
+
+                        When the above entry is found, then characters
+                        after "header" are skipped until the "," is found,
+                        then spaces as skipped, then any text following
+                        upto the next "," in the line is put in the index
+                        as an entry.
+
+                        Other characters besides ","'s can be used, for
+                        example the quote " character could pick up a
+                        quoted string following a TYPE 5 string as in:
+
+                                        TYPE 5 "header """
+
+
+    Several of the above index commands can be included one per line
+  before the line starting with a ";" character. The index compiler
+  currently supports up to sixteen (16) index compiler commands in the
+  above format.
+
+HYPER.CFG, Example lines
+
+  The following lines can be included in HYPER.NDX tell the compiler to
+index forth functions, constants and variables.  These are only examples
+of the type of entries that can be incuded.
+
+        TYPE 0 "CODE "
+        TYPE 0 "CREATE "
+        TYPE 0 "CONSTANT "
+        TYPE 0 "DEFER "
+        TYPE 0 "VARIABLE "
+        TYPE 0 "VALUE "
+        TYPE 0 "ARRAY "
+
+

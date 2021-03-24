@@ -1,0 +1,1012 @@
+FPCNOTES.TXT  This file documents changes in F-PC, Version 3.5500 up
+¯Whats-New
+
+  Note:  The notes file entries before 116 (covering F-PC version 2.25
+         through 3.5402) can be found on the installation floppy on
+         disk four in the file named NOTES354.TXT in the NOTES.ZIP file.
+
+             SUMMARY of some new things  (item number):
+
+DELETED WORDS:  XFDOS (26), TYPESEG (83) <EXEC> (122)
+
+NEW WORDS:      FPATH  FPATH+  .FPATH (4), DELIMITER (5), MCROWS (9),
+                CLOSEALL (11), { } (19) (20), VIEWFROM (34), TONE (54),
+                +PLACE (107), 14 more words (83), FPCVER# (109),
+                LEAVEPROMPTON LEAVEPROMPTOFF (111),
+                OTHER.CHECK MLOAD (115), <EMMEXEC> FPC>EMM (122),
+                UBETWEEN -SKIP (127),
+                BLINKON, BLINKOFF, BLINK!, PAL!, BORDER@ and BORDER! (131),
+                LISTSET (135), MAKEDEFER (136),
+                UNHEAD, UNVOC, UNTHREAD, I: (140),
+                EMM-POINTER (153)
+
+NEW FEATURES:   Hypertext (24) (31) (36) (42) (43)
+                Mouse     (25) (40) (41) (129)
+                Pull-down stack (15)
+                Rotate thru files (44) (45) (46) (47)
+                Scroll PgUp, PgDn (51)
+                Escape sequences in ."  (57)
+                Help in editor (16) (23) (33)
+                Visual vocabulary stack (86)
+                Load marked lines from editor (115)
+                New memory management (116)
+                Bug fixes in multi-tasking (119)
+                Expanded memory support (122)
+                Swap to EMM, DISK support for Shell (124)
+                Watch point support in debugger (132)
+                Expanded memory POINTER support (153)
+
+116.    02/06/91        **** FPC Version 3.5500 *****
+        Reworked FPC to use a new memory management mechanism. This version
+        introduces the POINTER concept. A pointer is a word that returns a
+        physical memory paragraph number (16bits) to the user when
+        executed, after allocating the needed memory if it hasn't already
+        been allocated. If a pointer fails to allocate the desired memory,
+        then a zero (0) is returned indicating an out of memory condition.
+        Pointers are defined as follows:
+
+                <double_number_size_in_bytes> POINTER <pointer_name>
+
+                1024. (a double number, note the ".") POINTER XYZ
+
+        A small data structure is created to hold the pointer information.
+        No space is actually allocated for the pointer until it is first
+        used.
+
+        memory allocated with pointers is appended to the memory FPC
+        already uses in a "heap". Another word "UNPOINTER>" can be used to
+        release the memory allocated to a pointer. It is sued as follows:
+
+                : release_XYZ   ( -- )
+                                UNPOINTER> XYZ ;
+
+        UNPOINTER> can only be used in a definition. If you need to release
+        a pointer interactively, use the sequence:
+
+                ' XYZ %UNPOINTER <enter>
+
+        Not pretty I admit, but normally this operation is done only while
+        in a program.
+
+        Several words have been added to FPC, to support the new memory
+        management system, here is a list:
+
+        #PARS           holds the number of paragraphs currently allocated.
+        PHEAD           Variable that points to the head of the pointer
+                        list.
+        UD16/           Unsigned double number divide by 16.
+        DPARAGRAPH      Convert the double number to a number of
+                        paragraphs.
+        SIZEOF!>        Set the size in double bytes of the POINTER
+                        following.  Exmpl: <double_num> SIZEOF!> XYZ
+        0POINTERS       System word that clears out all pointers. Don't
+                        ever use this word in any of your programs.
+        CMOVE-PARS
+        CMOVE-PARS>     Move paragraphs of memory. See their source for
+                        the syntax of how they are used.
+        MAXBLOCK        Returns the maximum number of paragrahs that can be
+                        allocated without getting an allocation error.
+
+        All of FPC and TCOM have been modified to work with this new memory
+        management system. I recommend you use it as well, rather than the
+        old ALLOC and DEALLOC.
+
+        Also added .VERSION to display the whole version number including
+        the least digits.
+
+117.    02/12/91        ***** Version 3.5501 *****
+        Installed the code from POSTHEX.SEQ into KERNEL2.SEQ. This effects
+        "%NUMBER". Now you can use sufixes of H to specify, Hex or B to
+        specify Binary. This is in addition to  a $ prefix meaning HEX, and
+        'letter' meaning ascii, and ^letter meaning CONTROL. Has no effect
+        on your ability to define word names, but if you define a word that
+        fits into any of the above catagories, then it will be a function
+        rather than a number!
+
+        Also added expanded memory support into the kernel. This is in
+        preparation for later enhancements that I hope will move most of
+        F-PC out of memory into expanded memory when performing a shell to
+        DOS.
+
+        Also added ".MEM" which tells you how your F-PC memory is being
+        used along with the names of the pointers using the memory. The
+        last line of .MEM tells how much DOS memory is still available.
+
+118.    02/13/91
+        Installed a new editor status line from John Peters. Editor status
+        line now shows current and max values for line, column, page and
+        lines. Very nice, thank you John.
+
+        Added SELECT to the ZIMMER.ZIP file. SELECT.SEQ is an onscreen
+        menu system. Provides automatic handling of many menu functions,
+        and gives the user a good interface at the same time. TRY IT!
+
+        Added LASERJET.SEQ as a loaded part of F-PC. So F-PC now supports
+        either the IBM ProPrinter, or the HP LaserJet/DeskJet family of
+        printers.
+
+119.    02/20/91
+        Enhanced .MEM to display the status of expanded memory as well as
+        normal DOS type REAL memory.
+
+        Fixed some bugs in MULTASK.SEQ, that was preventing the
+        multi-tasking data structure from being relocatable. This was
+        preventing any application that used multi-tasking from running
+        properly unless it was reloaded into exactly the same memory space
+        as it was first created. This was NOT GOOD. It is now fixed,
+        although there was a small performance penalty due to a runtime
+        conversion from absolute to relative and back again on each task
+        switch.
+
+120.    02/25/91               ***** Version 3.5502 *****
+
+121.    02/27/91
+        A new command 'S' under the Alt-O menu in the editor, allows
+        editing of files containing TABs.  SED will expand the tabs on the
+        display, and only expand the tabs in the file of those lines you
+        change.
+
+        Fixed SED so you can now edit .BAK file. When you select such a
+        file, SED switches into NOBACKUP mode, and allows the file to be
+        edited. If you make changes and save the file, then the changes are
+        saved into the .BAK file.   The NOBACKUP mode has also been
+        adjusted to not bother .BAK and .$$$ files when you are editing the
+        primary source file. This is incase you are editing a primary file,
+        and a >BAK file together, and making changes to one, then other or
+        both.
+
+122.    02/28/91        05/13/91 see also 139.
+        Added a command to the editor, "Ctrl-]" that displays the current
+        memory usage in the computer.
+
+        F-PC now moves itself into EXPANDED memory when you shell out to
+        DOS if there is enough expanded memory available. If there isn't,
+        then is just shells out, and leaves itself in memory. The Expanded
+        memory allocated is only allocated while you are shelling out, and
+        is then deallocated upon return to F-PC.  The file EMMEXEC.SEQ and
+        a modified version of EXEC.SEQ make this all possible.
+
+123.    03/04/91
+        Fixed a minor bug in ".FILES". It had an escape sequence in it to
+        print 8 spaces followed by a dash ( \s8- ), unfortunately the \s
+        escape sequence needs two digits following it, not one so 80 spaces
+        were being displayed not 8. Corrected as ( \s08- ) to display 8
+        spaces followed by a "-".
+
+        While I'm at it, I might as well document the list of escape
+        sequences available in "dot quotes":
+
+        This utility allows the creation of special ." strings that contain
+        imbedded escape sequences to select various display operations.
+
+        The leading character is "\", followed by:
+
+        0               Normal display attributes
+        1 to 8          Attributes 1 through 8
+        :xx             Delay xx tenths of a second
+        <               Save the current cursor position     (not nestable)
+        >               Restore the previous cursor position (not nestable)
+        @xxyy           Move cursor to xx,yy
+        B               Beep the speaker
+        D               Dark (clear screen)
+        N               Newline (CRLF)
+        R               Select Reverse video
+        Sxx             Display xx spaces
+        T               Perform a Tab
+        \               Display a \ character
+        `               Display a " character
+        |               Display a linefeed character
+
+        The performance of this version of ." will be somewhat slower than
+        a normal TYPE, as the string must be scanned for the "\" escape
+        character.
+
+124.    03/05/91
+        Fixed the bug? in /STRING that was preventing it from extending the
+        length of a string when fed a negative number.
+
+        Added a variable USE-EMM, and words EMMON and EMMOFF to set it.
+        The state of USE-EMM set to FALSE, will cause the word EMM-PRESENT?
+        to return a false even if Expanded Memory is present.  EMMON is the
+        default state of USE-EMM (TRUE).
+
+        Added variable USE-DISK, and words DISKON and DISKOFF to set it.
+        The state of USE-DISK set to FALSE, will cause F-PC NOT to flush
+        itself to DISK when no Expanded memory is available. Setting it to
+        DISKON will make F-PC flush itself to disk whenever a SYS command
+        is performed.  Currently a file "FPCIMAGE.$$$" in the handle
+        EXTHNDL is being created to hold the F-PC image during the shell.
+        DISKOFF is the default state of USE-DISK (FALSE).  EXTHNDL can be
+        filled with any "DRIVE:\PATH\FILENAME.EXT", to cause the FPC image
+        to be written to any ramdisk or drive desired.  the default name
+        will be used if no other file is specified.  Expanded memory is
+        given preference over disk even if DISKON is used, so type EMMOFF
+        and DISKON to force F-PC to save its image to disk.  On a real disk
+        drive, this can take several seconds both for the save, and later
+        for the recover.  This facility is primarily useful for those
+        people that don't have expanded memory, but do have EXTENDED Memory
+        that can be changed into a ramdisk.  For maximum performance, don't
+        let F-PC save its image anywhere, use EMMOFF and DISKOFF (default).
+        Note, a disk full error on image save will still cause F-PC to
+        perform the shell to DOS, but F-PC will not save itself to disk.
+        Also note that F-PC deletes the FPCIMAGE.$$$ file after the shell
+        is performed and lastly, FPCIMAGE.$$$ can be almost as large as
+        your computers memory (greater than 500k), so be sure you have a
+        lot of memory on you EXTHNDL file drive before using DISKON, or
+        you will use time and gain no benefit.
+
+125.    03/06/91
+        Added "SWAPFILE" which is followed by a name, and sets the disk
+        swapfile drive and name. DISKON is also performed, to cause F-PC to
+        swap to disk when a shell is performed.
+
+        Added ">HANDLE to take an a1,n1 string rather than a counted string
+        and move it into the specified handle.
+
+126.    03/07/91
+        Added words to ZIMMER.ZIP to control blinking background colors,
+        and to read and set the border colors. *** MOVED INTO F-PC ***
+
+127.    03/13/91          ***** Version 3.5503 *****
+        Added UBETWEEN and -SKIP to F-PC.
+
+128.    03/15/91
+        Added DOBORDER to <REEDIT> in SEDIT2.SEQ, to assure that a border
+        would be shown even if the user types commands while the editor is
+        loading the current file.
+
+129.    03/30/91
+        Integrated the new mouse driver from Mike Christopher.  there is
+        now a cursor for the mouse, and another one for F-PC.
+
+130.    04/05/91
+        Located and removed all references to things like "1 -1 d+" which
+        were used to shorted an address and length on the stack. Changed
+        all of these occurances to the equivelant "1 /string" which doesn't
+        have the carry problem from the count to the address if an
+        underflow occurs.
+
+131.    04/08/91
+        Moved the file BLINKER.SEQ from the TOOLS directory, into the SRC
+        directory, and now load it as a normal part of F-PC.  This adds the
+        words BLINKON, BLINKOFF, BLINK!, PAL!, BORDER@ and BORDER!.
+
+132.    04/10/91          ***** Version 3.5504 *****
+        Fixed a bug in DOBORDER, that was keeping it from displaying the
+        corner symbol at the upper right of the screen.
+
+        At the recomendation of Jerry Boutelle, I have added watch point
+        support to the debugger. This allows a 16 byte area ofCODE memory
+        to be monitored between each step of the debugger. It can be very
+        handy for watching HERE. The "W" command in the debugger, brings up
+        a watch set command line, so you can type in an address that will
+        be watched. If you type a word that returns an address, then that
+        address will be watched. If you want to watch a word that doesn't
+        return an address, enter it as " 'WORD " (without the "s ), and the
+        CFA will be the watch address.
+
+133.    04/12/91
+        Added for Mike Mayo, a new variable, and three instructions to
+        WORD. The variable is called ">IN_WORD", and it is set by WORD to
+        be the line offset in TIB of the most recent word parsed out with
+        WORD.  For example is you did a WORD on the first word in this
+        line, then >IN_WORD would contain an 8.  This is useful for
+        building index files, that want to know exactly where in the source
+        file a particular word came from.  The performance penalty is
+        insignificant.
+
+134.    04/23/91        ***** Version 3.5505 *****
+        Added LISTSET to the F-PC dictionary, it allows the user to adjust
+        the amount of dictionary space desired, as the number of paragraphs
+        of free space F-PC should retain on the next startup. The value
+        #LISTSEGS is adjusted, and the memory image is resaved to the same
+        name as the currently executing file.
+
+        Correction to the mouse driver, it seems Mike Christopher modified
+        the OLD MOUSE.SEQ file, not the current one, so when I included his
+        new file, it had the OLD mouse bug in it. Fixed so the mouse
+        doesn't show up unless you move the mouse the first time.
+
+        Changed the file COLOR.SEQ, to allow the user to more easily modify
+        the colros F-PC uses.  F-PC now uses an array called COLORS, which
+        contains eight sets of background and forground colors for
+        ">ATTRIB1" through ">ATTRIB8". The new words BG@, BG!, FG@ and FG!
+        allow setting the colors in the array to control the colors F-PC
+        will use.  See the file COLOR.SEQ for more details.
+
+135.    04/30/91
+        Fixed a bug in the word TBUF.INIT in EDITSTUF.SEQ. It was
+        de-allocating the file selection tools buffer, and shouldn't have
+        been.
+
+        Also fixed the tool FUNKEY.SEQ so it will now load.  It contained
+        an old example that didn't work, which has been replaced with a new
+        example.
+
+136.    05/06/91
+        Added a VALUE "?PTRANS". ?PTRANS enables or disables embeded
+        printer code translation.  Using TELETYPE will disable recognition
+        of embeded %B, %U, %1.. %3 control codes. PROPRINT, or LASERJET
+        both enable print control code recognition.
+
+        Also added a marker at the upper left of the editor screen, that
+        displays 'c' for a change has been made to the current file being
+        edited, and 'u' for changed have been updated to the disk temp
+        .$$$ file with Ctrl-U.  Final changes as always don't get written
+        to disk unless you do an F10 edit, or an Alt-F1 rotate to another
+        file.
+
+        Added MAKEDEFER, a word to convert : (colon) definitions into
+        defered words.  Used as follows:
+
+                MAKEDEFER <colon_def_name> <new_def_name>
+
+        The existing function of <colon_def_name> is transfered to the
+        newly created <new_def_name>, and <colon_def_name> is converted
+        into a DEFERed word which has the function <new_def_name>.
+
+        As part of the above changes, I also added SWITCH.  SWITCH
+        exchanges the bodies of the two words following. Used as follows:
+
+                SWITCH NAME1 NAME2
+
+137.    05/08/91        ***** Version 3.5506 *****
+        Added some additional error checking code to local labels. It was
+        possible before for an infinite loop condition to exist, if >RESL
+        was trying to resolve a label, that never got layed down in memory
+        properly.  Also added "ERR which outputs the error message. It is
+        now possible to change the function of "ERR and have the message
+        displayed without causing the compiler to abort.
+
+        Made minor modifications to MACROS.SEQ.  You can now cancel a
+        macro or (Alt-R) repeated key function by pressing ESC while the
+        macro is being performed, or while a key is being repeated.  If
+        you type in a large number for the number of times to repeat a
+        key, and you didn't intend to, then you can press Alt-R again at
+        the end instead of pressing the key to repeat, and the repeat will
+        be canceled.
+
+138.    05/11/91
+        I have received a couple of comlaints about Alt-F7 (the paragraph
+        line sort in the editor) being too easy to hit by accident. Added
+        a prompt window that requires you to press 'Y' if you really want
+        to sort the paragraph, any other key cancels.
+
+139.    05/13/91
+        Changed memory display command from "Ctrl-\" to "Ctrl-]". Also
+        modified message 122 above to reflect "Ctrl-]".  Defined "Ctrl-\"
+        to search for the nearest '\' character. useful for going to the
+        comments of a line.  "Shift-Ctrl-\" moved to column 48 so you can
+        start a new command.
+
+        Added a new file UNLINK.SEQ to ZIMMER.ZIP.  The word UNLINK,
+        searches for and removes a word from an defered word chain.
+
+140.    05/14/91        ***** F-PC Version 1.5600 *****
+        Added a new BEHEAD mechanism, in the form of UNHEAD.SEQ. Removed
+        BEHEAD.SEQ the old mechanism.  UNHEAD is used like BEHEAD except
+        it is not sensitive to vocabulary changes between the  HEADERS
+        and HEADERLESS operations.  The words you use are in fact the
+        same, BUT now there is only one "BEHEAD" at the end of the
+        compile, just before the SAVE-EXE is performed.  F-PC still ships
+        in the default mode which is HWORDS-, which causes all headerless
+        words to keep their headers.  Also added a new word "I:" that is
+        used in place of ":" to define a word that is "internal" and
+        headerless.  System words UNTHREAD, UNVOC, and UNHEAD have also
+        been added to support the new BEHEAD mechanism.
+
+        FSAVE & SAVE-EXE have been modified so they will perform a BEHEAD
+        before saving the memory image to disk.
+
+141.    05/16/91
+        While working with Jerry Boutelle on the new SAM8 TCOM compiler,
+        we found the local label mechaism to be too limited in design to
+        handle all of the types resolve functions needed for the SAM8.
+        Sooo, Jerry and I have completely redesigned the local label
+        mechanism in F-PC to be like the local labels Jerry used in his
+        Nautilus cross compiler. The file NEWLAB.SEQ loaded after PASM.SEQ
+        now contains the generalized tools needed to resolve forward
+        references of any type. A defered word RESOLVE_REF allows a
+        linkage into the assembler to resolve forward references of
+        varying types. As a new assembler is added to TCOM for example,
+        the new assembler will link into this word, and provide the
+        forward reference resolution functions needed. This will happen if
+        a new type is required, like a 12bit address, or a 5bit data field
+        or other type.
+
+142.    05/20/91
+        Removed one of the HIDE.MS functions from INITMOUSE, it seems some
+        mouse drivers nest hide mouse functions, and thus it was not
+        possible to ever make the mouse visible on those computers.  The
+        mouse is supposed to be hidden on startup, and become visible when
+        the mouse is first moved.
+
+        Adjusted LISTSET so it doesn't actually perform the save if F-PC
+        if the #LISTSEGS size requested is EQUAL to the size already
+        selected.
+
+143.    05/28/91
+        Added an option to the printing menu to disable header and footer
+        printing. The default is YES.  If you select NO, then no header or
+        footer or page number is printed.
+
+144.    05/31/91
+        Added the words "IC, CC, O, OC," to PASM.SEQ, and installed their
+        usage into PASM. These words allow TCOM to know when the assembler
+        is assembling the first byte of an instruction (IC,), the first
+        byte of a CALL (CC,), and any other byte or word (O, OC,) in an
+        instruction.  This functionality is useful for TCOM when it makes
+        an index of the code being compiled which will later be used to do
+        a disassembly to source. Normally they are just defered to the
+        assemblers "C," and "," words.
+
+145.    06/12/91
+        Received a call from Mike Christopher, with this series of bug
+        fixes.
+
+        1. Added MARK-CLEAR after the BEGIN in "<RED>". This clears
+           marking mode when switching between files.
+        2. Added "WINOFF +" to MOVE>MOUSE, this corrects the mouse cursor
+           positioning when the window is scrolled right some distance.
+        3. NASTY BUG in HCRITICA.SEQ In the word CRITINT, the INC
+           instruction to HADCRITICAL needs to be forced to use CS: rather
+           than the default DS:. This would cause a FOR SURE crash if F-PC
+           was running when a critical error occured.
+
+                LABEL CRITINT
+                        STI
+                        INC CS: HADCRITICAL WORD
+                        MOV AL, # 0
+                        IRET
+                        END-CODE
+
+146.    07/02/91                3.5600
+        Modification to PASM.SEQ. Added the word ISETUP! and the VALUE
+        ASM->IN. ASM->IN is set by ISETUP! to contain the line offset of
+        the instruction being assembled. This is useful when building
+        index records for TCOM. The new word ISETUP! replaces the previous
+        sequence "A;! A;" in each instruction defining word, and adds the
+        code to set ASM->IN so the assembler may have actually gotten
+        smaller.
+
+147.    07/11/91
+        Corrected a minor bug in SEDSHELL.SEQ. An error message whas
+        supposed to display 9 spaces, but was entered \s9 instead of
+        \s09, causing a LARGE number of spaces to be displayed improperly.
+
+148.    07/18/91
+        Modified OVERLAY.SEQ to make it compatible with the new BEHEAD
+        mechanism Implemented a while back.
+
+149.    07/23/91        ***** F-PC Version 3.5601 *****
+        Modified the mouse driver, to force the mouse to the upper left
+        corner of the screen at F-PC's startup.  Some people (including
+        myself) found it irritating to have the mouse popup in the middle
+        of the screen.
+
+        Made some enhancements to the SELECT.SEQ menu program for mouse
+        operation. Added a Close button at a menus upper left, and added
+        support for the scroll arrows and the Home/End buttons.
+
+150.    08/06/91        ***** F-PC Version 3.5602 *****
+        Minor bug fix to "FPC>OUT", to allow it to automatically try to
+        use DISK save of F-PC when EMM is enabled, but not available.  Now
+        applicatons can do a EMMON and a DISKON, and F-PC will use EMM if
+        available, and DISK if it isn't.
+
+151.    08/07/91
+        Fixed a bug in VFIND. Robert Smith, reported it didn't work, and
+        in fact it was missing a "HERE". Fixed.
+
+152.    08/08/91        ***** F-PC version 1.5603 *****
+        Added PLACEL and +PLACEL to KERNEL3.SEQ. These are quite useful
+        when working with data in "OUTER SPACE!".
+
+153.    09/13/91        ***** F-PC version 3.5604 *****
+        Added EMM-POINTER to allow creating far POINTER type arrays in
+        expanded memory.  These buffers are automatically allocated as
+        they are used, and deallocated on exit from F-PC. Since expanded
+        memory is only released explicetly by the users program, or by a
+        reboot of the computer, it is important that BYEFUNC be performed
+        before leaving F-PC to make sure the expanded memory is released.
+        EMM-POINTER is used as follows:
+
+                48152. EMM-POINTER <seg-name>
+
+        When <seg-name> is later used, the requested space is allocated
+        the first time. After that the space is simply mapped into the
+        Expanded memory page frame buffer if required. The number of bytes
+        that can be allocated by EMM-POINTER is always adjusted to a whole
+        expanded memory page (16k), and is limited to four (4) pages (64k)
+        by the size of the pageframe. There is little pointe in using
+        EMM-POINTER to create a buffer smaller than 16k since that is the
+        minimum allocatable size.
+
+154.    10/02/91
+        Corrected a bug in the decompiler for Bob Smith! The word .PFA was
+        supposed to scroll the screen in a "many lined" definition, so the
+        current word being debugged in the current definition was always
+        visible.  To make along story short, it didn't work properly, and
+        it does now.
+
+155.    10/03/91        ***** F-PC version 3.5605 *****
+        Corrected the definitions of +TAB & -TAB to use TABSIZE as they
+        should. Removed the forced set of TABSIZE to 8 in .PFA.  You can
+        now set TABSIZE outside of the debugger, and it will use whatever
+        TABSIZE you set. Added 0TAB as a compliment to +TAB and -TAB, it
+        resets LMARGIN to zero.
+
+156.    11/04/91
+        Corrected a long standing bug in the word "SEARCH", that was doing
+        an improper case conversion for "performance reasons". It is now
+        doing a conversion using ATBL the F-PC case conversion table.
+
+        Changed F6 search in the editor so it performs a case sensitive
+        search if CAPSLOCK is on, otherwise it performs a case INSENSITIVE
+        search.
+
+157.    11/06/91
+        Fixed a bug in the editor search routine, it was searching lines
+        from the line count byte, and simetimes matching a single
+        character search to the line length byte. Changed to search from
+        the first character of a line after the count byte.
+
+        Also changed the statusline update during search to properly
+        display the current search line and lastline.
+
+158.    11/15/91
+        Minor change to "<#IF>", allows it to ignore everything on a line
+        after a "\". This will be faster, and also allows words like #ELSE
+        and #THEN to occur between #IF and #THEN as long as they are in
+        the comment area of a line (after the "\").
+
+159.    12/18/91
+        Fixed a long standing though minor bug in $FLOAD. If an open
+        error were to occur in an FLOAD while already loading, then the
+        open error would often show the line following the line where the
+        error occured, rather than the correct source line. This was
+        caused by $FLOAD not saving and restoring FILEPOINTER in the case
+        where there was an open error. In fact it needed to save
+        FILEPOINTER and restore it always. FIXED
+
+        Fixed -TAB, to limit the value of TABSIZE to a positive number.
+
+        Added PICTURE.SEQ to the ZIMMER.ZIP archive. It allows simple
+        pictured numeric output.
+
+160.    12/31/91        ***** F-PC version 3.5606 *****
+        Received a request from Andreas Goyke for the ability to enter
+        the european eumlated characters. He specifically requested the
+        characters Ñ, Å, î, é, ö, ô, · and . These I have provided in
+        F-PC and NEWZ, as an extention to the Alt-O-A (any character)
+        graphics character box. You simply press A, U, O, or B, shifted
+        or unshifted to enter the respective character.  Unfortunately I
+        don't know if this is a complete set, but it is a start. I can
+        always extend the set later.
+
+161.    01/07/92
+        Found a bug, recent changes to FPATH, removed a section of code
+        that restores the current directories path to the file being
+        opened, if the file can't be opened in any of the directories we
+        search in FPATH.  This code was needed, in the case where the file
+        was immediately created, so we would create the file in the
+        current directory rather than in the last directory in the FPATH
+        list. FIXED.
+
+162.    01/08/92
+        Added a pagination switch to the editor, to allow printing a
+        document without paging. This was needed in the Z editor, which
+        used the same PRINTING.SEQ file as F-PC.
+
+163.    01/14/92
+        Modified the graphic insert window to allow manually entering any
+        control character just by pressing the CTRL key and a letter key
+        while the graphic character box is on the screen.
+
+164.    01/17/92        ***** F-PC version 3.5607 *****
+        Minor mod to SOUND.SEQ.  Added NOTE, to generate sounds like TONE,
+        but with a milli-second units, rather than 100-milli-second units
+        like TONE. This change was actually suggested by "jb" on 4/9/89 as
+        extracted from MISC_IBM.BLK in the F83 collection. I extracted
+        this from a file called SOUND01.SEQ, and include it with the
+        small change that the parameters are in the same order as TONE
+        ( frequency length -- ), rather than as found in SOUND01.SEQ.
+
+165.    01/25/92        Free distribution to SV-FIG
+
+166.    01/26/92
+        Made a small change in SEDCASE.SEQ to "paste_datetime", to remove
+        the seconds and hundreds. Suggested by J. McKnight.
+
+        Also added some comments to MULTASK.SEQ and clarified the example
+        again per suggestions from J. McKnight.
+
+167.    01/27/92
+        Added UNREF.SEQ to ZIMMER.ZIP. provides an easy way to locate
+        words in a large application that are not referenced in the
+        application (dead code).
+
+168.    02/03/92 13:40 tjz
+        Modified WFL.SEQ so the file selection window will always display
+        the directories of the current directory even if the file
+        specification is changed from "*.*". Directories are extracted in
+        a separate directory read pass, and are shown first in the file
+        list. Directories are sorted, then filenames are sorted
+        seperately.
+
+169.    02/10/92 10:57 tjz   *** Version 3.5608 ***
+        Changed the default values of #OVSEGS and #OVBYTES to zero, to
+        signify no overlay support is currently loaded.
+
+170.    02/18/92 15:00 tjz
+        Changed FINDFIRST and FINDNEXT to be code words and renamed them
+        to FIND-FIRST and FIND-NEXT. FIND-FIRST also accepts a mask byte
+        for the types of files to include in the matching files. Used in
+        few places, but since the stack picture changed, I have changed
+        the word names.
+
+171.    02/26/92 12:53 tjz
+        Added Alt-9 to insert the standard Forth parameter stack picture
+        "( -- ) \ ". This was requested by Jack Irwin.
+
+        Also modified the TOOLS directory file OVERLAY.SEQ to add the
+        function ENTRYNAME, that allows words in the overlay to be
+        available externally with a different name than in the overlay.
+        This is useful incase you want to use the same name in several
+        different (but similar) overlays and have them available
+        externally with different names.
+
+172.    03/23/92 16:37 tjz
+        Corrected the bug in "?DEF.EXT" that was causing it to think there
+        was already a file extension in a file and path that contained a
+        decimal point as part of the path but not the filename itself.
+        Thank you Arndt.
+
+173.    04/01/92 10:25 tjz
+        Corrected some bugs in the editor, that would allow a search
+        string longer than the search buffer to overwrite code beyond the
+        end of the buffer, causing a crash.  *** FIXED ***
+
+174.    04/09/92 14:45 tjz   *** Version 3.5609 ***
+        Apparently some recent changes introduced a condition where PAD
+        was being overused.  That is two functions were overwriting each
+        others data in PAD. I have modified the window file selection
+        mechanism to not use PAD, instead to use its own buffer. This
+        costs some space, but fixes the problem. PAD is one of the most
+        easily misused buffers in Forth, being always there, and
+        unfortunately also being used my many people.
+
+175.    04/21/92 12:15 tjz
+        Modified NEWLAB.SEQ to report an error is a local label that is
+        already being used, is defined again.
+
+176.    04/22/92 13:23 tjz
+        Modified PASM.SEQ to use the "ERR function rather than using
+        ABORT", so TCOM can redirect error messages to the listing file,
+        and avoid an immediate abort.
+
+177.    05/15/92 08:24 tjz
+        At the request of Jerry Boutelle, I have modified the POINTER
+        functions to improve its performance by adding a code word to
+        minimize the execution time of pointer defined words that have
+        already allocated their space.  They are now about three times
+        faster than they were before although this improvement will be
+        swamped by other factors in most cases.
+
+178.    07/17/92 15:30 tjz  *** Version 3.5610 ***
+        Moved DEBUG.SEQ, DECOM.SEQ, COLOR.SEQ and WATCHER.SEQ from the
+        F-PC experimental version into this mainstream version of F-PC.
+
+        This provides some enhanced features to the debugger such as an
+        adjustable split line on the screen, and an expandable watch
+        area.
+
+179.    07/21/92 10:15 tjz
+        BUG fix, HELP was broken because I changes to using PLACE a while
+        back and forgot that a blank needed to be appended to the string
+        placed in HELPBUF for the help function to work.
+
+180.    08/05/92 11:03 tjz
+        Modified "SQUT", to not perform the PUT to the .$$$ file when you
+        lt-press Alt-F10, unless there have been some changes to save.
+        This saves some time, in the case where fyou have just been
+        browsing a file, and didn't make or want to make any changes to
+        the file.
+
+181.    08/20/92 12:40 tjz      *** Version 3.5611 **
+        Andreas Zilker informed me of a bug in the assembler.  It seems
+        that if you use a MUL instruction without following it with an
+        addressing mode, then a stack underflow will occur This happens
+        because the assembler defaults to direct addressing unless
+        otherwise specified.  While a stack underflow in itself is not
+        really an assembler bug, the Forth system would then try to
+        abort and display the word at here, which was garbage since the
+        instruction had already assembled on top of it.  I have solved
+        this problem, by adding code to detect when a stack underflow
+        occurs during assembly.   An error message is issued, after
+        clearing HERE to a null string.
+
+182.    08/28/92 14:54 tjz
+        I was reading an article in the latest "EMBEDED SYSTEM
+        PROGRAMMING", and ran across an article by Steve Jones on 80x86
+        assembly language.  He described a methode of improving the
+        performance of string move operators by using MOVSW, without using
+        conditional branch instructions to test for the ODD transfer case.
+        I have implemented his technique in F-PC after performing some
+        tests that indicate a doubling of CMOVE performance in a 386 class
+        machine.  I suppose this was to be expected, but it was so easy,
+        that I am very pleased.
+
+        Here is the new instruction sequence:
+
+                SHR CX, # 1
+                REPNZ           MOVSW
+                RCL CX, # 1
+                REPNZ           MOVSB
+
+        Which replaces this old instruction sequence:
+
+                REPNZ           MOVSB
+
+        There are about ten places in F-PC where MOVSB was used, all have
+        been changed expect the reverse direction moves, which didn't work
+        for as yet unknown reasons.
+
+183.    09/02/92 12:52 tjz
+        It turns out that the above simple change doesn't actually work
+        in all cases. It in fact doesn't work in the case where you use
+        CMOVE to move a string overlapping itself one byte, or the case
+        where you are trying to use CMOVE to perform a FILL.
+
+        Robert Smith and myself haved worked out a partial solution, that
+        resolves the case where CMOVE needs to move an averlapping string
+        one byte.  This more complex implementation also improves the
+        performance of CMOVE in the case where you are moving bytes to an
+        odd address, which the original change didn't improve.
+
+        Here then is the code added to CMOVE.
+
+                        TEST DI, # 1
+                        JZ 0 $
+                        JCXZ 0 $
+                        MOVSB
+                        DEC CX
+                0 $:    SHR CX, # 1
+                        REPNZ MOVSW
+                        RCL CX, # 1
+                        REPNZ MOVSB     \ this line already in CMOVE
+
+        The only case that is still a problem, is the case where CMOVE is
+        being used to perform a FILL.  This shouldn't be too much of a
+        problem though, since FILL is defined in F-PC, and is faster than
+        the old CMOVE fill anyway.
+
+        By the way, all the above applies to CMOVEL as well as CMOVE.
+
+184.    09/22/92 13:54 tjz
+        Added release date verification to F-PC.
+
+185.    10/21/92 11:04 tjz
+        Fixed some bugs in the "Alt-O X" Tab Expansion functions.
+
+186.    10/27/92 18:13 tjz
+        Robert Patton notified me of a bug in the Z editor. When an Alt-W
+        is done to a floppy drive that doesn't have a floppy in it, then
+        an error condition occurs which is handled properly, but since the
+        editor normally has autosave of changes turned on, then it later
+        tries to save the changes back to the nonexistent drive, and
+        crashes back to DOS.  This was actually a bug in F-PC that was
+        effecting the Z editor.  FIXED
+
+187.    10/29/92 11:38 tjz
+        Added a new utility file MORE.SEQ to the ZIMMER.ZIP file in the
+        \FPC\TOOLS  directory.  This file implements two methods of F-PC
+        screen display rate control.  See MORE.SEQ for additional
+        information on usage.
+
+188.    10/31/92 10:41 tjz
+        Bob and Steve reported a bug in my validate codeing, it was not
+        calculating the year passage properly. Corrected! I hope.
+
+189.    10/31/92 12:39 tjz & rls
+        Robert Smith updated FDIS to use prefix notation for its output,
+        rather than postfix as it used to use. The old FDIS.SEQ has been
+        renamed to FDISASEM.SEQ and a new file FDIS86.SEQ has been added
+        to CURLEY.ZIP.  Robert also updated CODEBUG.SEQ to support
+        floading point debugging with FFLOAT.  Robert wrote FLTBUG.SEQ to
+        provide some enhancements to the current F-PC debugger. Robert
+        has also updated FFLOAT to fix some bugs, and to enhance its
+        features and compatibility with SFLOAT.
+
+190.    11/04/92 11:52 tjz & rls    ****** Version 3.5613 *******
+        Made a few modifications to the debugger and decompiler. The
+        decompiler now has a VALUE called SHOWBASE.  When SHOWBASE has a
+        value other than zero (in the range 2 to 26), it causes the
+        decompiler to display numbers during decompiling in the base
+        specified by the number in SHOWBASE.   Also added two commands to
+        the debugger.  'H' switches the debugger between displaying
+        numbers in HEX and displaying in the current value of BASE.  A
+        second command 'R' displays the contents of the return stack.
+
+        A primitive word 'H.4' has been added to UTILS.SEQ, to support the
+        above changes.  H.4 displays a number as exactly four hex digits.
+
+191.    11/09/92 09:15 tjz & rls
+        Bob found a bug in the return stack display word in the debugger.
+        FIXED
+
+192.    11/18/92 16:42 tjz
+        Modified MACROS.SEQ, to add a toggleable delay function 'D', that
+        inserts a 100 millisecond delay in between each macro key.  Also
+        fixed the long standing bug in macros that complained if only a
+        single key was put in a macro.  FIXED
+
+193.    11/23/92 09:14 tjz ************ VALIDATE BUG **************
+        Found a bug in the VALIDATE routine, it was not copying enough
+        lines from the original validate file through to the user version
+        of the file.  Corrected, and updated the copy method to be less
+        sensitive to revisions.
+
+194.    12/01/92 14:43 tjz rep          F-PC Verion 3.5614
+        Robert Patton found a bug in the word <FLOAD>, associated with
+        setting the variable that is created at file load time to allow
+        viewing to work properly.  It seems that if you use the word
+        EMPTY in a file that is being loaded, it forgets the file
+        variable, leaving <FLOAD> no valid place to store its view
+        results into.  This has been fixed by having <FLOAD> test to see
+        that a variable does in fact exist in the right location, after
+        the load is performed, before trying to store view results into
+        the variable.  FIXED
+
+195.    12/11/92 13:48 tjz
+        A user reported that some of the example programs in SAMPLES.ZIP
+        provided with F-PC don't work with the current release of F-PC.
+        I have checked this out, and did find some problems.  FIXED
+
+196     12/11/92 18:13 tjz
+        Modified NEWLAB.SEQ in F-PC to allow nesting local label sets
+        upto eight levels deep.  New words LLSET+ and LLSET- move up and
+        down the local label set words.  This is primarily useful in the
+        condition where you want to use a macro inside a code word, or
+        another macro, and you use local labels in the macro.  The
+        nesting prevents local label conflicts from occuring between
+        unrelated code or macro words.
+
+197     12/17/92 15:54 tjz
+        Actually found a bug in PASM.  It seems it was issuing an error
+        when you try to add a word value to memory without explicitly
+        specifying WORD, as in the following:
+
+                ADC     BINGO # $1234           \ wouldn't work
+                ADC     BINGO # $1234 WORD      \ worked
+
+        PASM has been corrected to allow the first form without having
+        to specify WORD.
+
+198     01/07/93 13:34 tjz
+        Updated BOXTEXT.SEQ, to use a single string that holds the
+        graphic characters that are used to surround the box that it
+        draws.  This is more flexible, smaller, cleaner and faster.
+
+199     01/08/93 07:36 tjz
+        Repaired a bug in MACROS.SEQ.  It was terminating macro execution
+        after the first key in a two key macro.  Also added a value
+        MDELAY_VAL, which defaults to 1, for the delayed macro function
+        "Alt-M D".  One being 1 tenth of a second.
+
+200     01/20/93 12:47 tjz
+        Found and fixed a bug in SEARCH that was preventing it from
+        working on searches longer than 32k.
+
+201     01/21/93 13:34 tjz
+        Found that the above fix had a side effect, in that a long search
+        was being performed if the string being searched is shorter than
+        the string being searched for.  Corrected by adding an test at
+        the beginning of search for this condition.
+
+202     01/26/93 09:59 tjz
+        Found a code imcompatibility between the current version of CMOVEL
+        and the older version of CMOVEL that wasn't optimized to move
+        words instead of bytes.  I have commented out the lines in CMOVEL
+        that perform the optimization.
+
+203     02/02/93 16:00 tjz
+        Found yet another bug in the SEARCH routine, if the string being
+        searched was exactly 1 character long, then a wrap around
+        condition would occur, making SEARCH look beyond its allowed
+        search area.  FIXED
+
+204     03/15/93 15:03 tjz
+        Added ?UPPERCASE to the file WATCHER.SEQ.  It needed to convert a
+        user entered string to uppercase before doing number conversion on
+        it.
+
+205     03/26/93 15:27 rls
+        Fixed bugs in FASINH and FACOSH.
+
+206     04/01/93 14:19 tjz
+        Modified "HEADER in KERNEL2.SEQ to be a defered word.  "HEADER is
+        used by several words to create their headers instead of HEADER.
+        This was causing problems for TCOM, becuase it needed to change
+        globally how headers were being defined in UNHEAD.SEQ.  UNHEAD.SEQ
+        has been gerneralized to change "HEADER instead of HEADER, and a
+        new word "|" (vertical bar) has been added to allow specifying
+        any immediately following defining word is to create a headerless
+        word instead of a normal dictionary word.
+
+207     04/30/93 11:58 ak & tjz
+        Arndt Klingelnburg found that F-PC will crash when running CODEBUG
+        to debug words that XCHG the data and return stack if you use ESC
+        to drop out of the debugger when the stacks are exchanged.  He
+        fixed this in his version, and I have addopted his change to
+        CODEBUG.SEQ.
+
+208     05/14/93 14:14 tjz
+        Factored <FPATH+> in the file FPATH.SEQ into a new word called
+        "FPATH+ that makes it easy to append a path to the current F-PC
+        file search path while in a program.
+
+209     05/17/93 14:54 tjz
+        Added simple split windowing.  When more than one file is open,
+        you can split the screen into two parts with "Alt-S S". Also
+        appears under the Advanced menu.  The split point defaults to
+        half a screen, but can be adjusted using "Alt-S W" (window
+        adjust).  Automatically switches back to full window when only
+        one file is open.
+
+210     05/20/93 10:59 tjz & mm
+        Mike Mayo wrote a very nice modified version of XEXPECT, that
+        pops up a window and displays the command line stack.  I have
+        made a few modifications to make it more compatible with the old
+        XEXPECT, and included it into F-PC.  The old file XEXPECT.SEQ is
+        still included in the zip FPCSRC.ZIP, but is not currently being
+        loaded.  You can modify F-PC.SEQ to fload XEXPECT.SEQ instead of
+        NEXPECT.SEQ and re-EXTEND F-PC is you want to restore the old
+        version of EXPECT.
+
+211     05/21/93 20:51 tjz      ***** Version 3.5615 *****
+
+212     04/05/94 15:42 tjz
+        Received some very useful utilities from Jorg Staben.
+        Specifically he sent a tiny utility written by Michael Schroeder
+        of Oschersleben Germany, that saves specifiable areas of data in
+        F-PC or an application to something called a session file.  A
+        session file gets automatically reloaded when you nest startup, so
+        for example the colors which are part of the session file will be
+        saved and restored if changed during an F-PC working session.
+        Also included in the set of saved items is the recallable
+        commandline arguments.  It is also very easy to add others.  See
+        the file SVSESDAT.SEQ in the \FPC\SRC directory for further
+        infoabout this.  I have also included a pair of files XMS.SEQ and
+        XMS.HLP that provide (you guessed if) XMS memory support.
+
+213     07/16/94 09:40 tjz
+        Fixed a bug in the editor that was causing the last line of a file
+        to be lost when shelling from the editor to DOS unless the last
+        line was already empty.
+
+214     12/18/94 21:58 tjz      ***** Version 3.6000 *****
+        ********** FINAL RELEASE OF F-PC BY TOM ZIMMER ************
+        This is the last release of F-PC by Tom Zimmer.  You might want to
+        know either why I am doing this one more release, or why I am
+        stopping with this release.  The reason for the first question is
+        simple. Robert Smith gave me one more update on a floating point
+        file, and so I am releasing it in this update.  The answer to the
+        second question is also simple.  I am now working on a new Forth
+        that runs on Window 3.1 with the Win32S extentions, Windows 95,
+        and Windows NT.  This new Forth runs in a linear 32-bit address
+        space, and  is basically, just more interesting than F-PC.  If you
+        want to get a copy of this new Forth, it is available on internet.
+        I have decided not to provide updates directly. You can find
+        information on internet in the computer languages forth section.
+        The Forth file is entitled WIN32FOR.ZIP.
+
+        I hope the people that are using F-PC will continue to use it in
+        the areas where it is appropriate, and will try the new windows
+        Forth if they need it.  It has been enjoyable to have been part of
+        the F-PC project, and I certainly thank all of you who contributed
+        time, energy, code and money to myself and the community at large.
+
+                                        Tom Zimmer
+
+

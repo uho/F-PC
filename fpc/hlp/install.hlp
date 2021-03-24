@@ -1,0 +1,17 @@
+\ INSTALL.SEQ   Installation file for FF                by Tom Zimmer
+
+setview         ( | name --- )
+        Set the view path for all VIEW or LL or HELP type operations.
+
+install         ( --- )
+        Install FF for the current environment. Prompts you to enter
+        some parameters, like whether to use DOS output, path, where
+        the system source is on disk, and installed name to use for
+        save.
+
+uninstall       ( --- )
+        Mark the FF currently in memory as un-installed. A subequent
+        FSAVE will result in a system that comes up with the UN-installed
+        message in HELLO.
+
+

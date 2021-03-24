@@ -1,0 +1,17 @@
+\ VIDEO2.HLP        Actual video output routine         by Tom Zimmer
+
+
+VIDEO-TYPEL     ( seg addr len -- )
+        Type a text string from the physical location "seg, addr, len" to
+        the physical display specified as the paragraph address contained
+        in the variable VIDEO-SEG. The text is displayed at the current
+        cursor positon, and the cursor is positioned at the end of the text
+        string after the TYPE occurs. This routine is written in assembly
+        language for performance, and is capable of filling the screen with
+        new text at more than ten screens per second on a 4.7 MHZ 8088.
+
+VIDEO-TYPE      ( string length -- )
+        Like VIDEO-TYPEL, but always types from the CODE segment. See also
+        VIDEO-TYPEL.
+
+

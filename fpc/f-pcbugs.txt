@@ -1,0 +1,83 @@
+F-PCBUGS.TXT    Known Bugs in F-PC version 3.5          by Tom Zimmer
+
+  This file contains a list of the bugs that are known to exist in F-PC. In
+some cases they are not really bugs, but peculiarities that may seem like
+bugs (did I say feature?).  The bugs are not numbered in order because they
+came from a larger list of bugs that have been fixed, and the fixed bugs
+have been removed from the list.
+
+7.      Status line peculiarity  01/03/89 15:25:22.20
+        It has been reported that if you try to move a filename into
+        SEQHANDLE, it gets erased after you move it in. What is
+        happening here is that the routine that displays the status
+        line looks at the current contents of SEQHANDLE and the >HNDLE
+        value is -1 indicating a file has been closed, it reads the
+        system directory path into SEQHANDLE and changes the >HNDLE
+        value to -2 prior to displaying the status line.
+
+        The status line is trying to display either the currently open
+        filename and path, or just the path on the current drive. If in
+        the proccess of moving a filename into SEQHANDLE, you also call
+        HCLOSE to close any file already in SEQHANDLE, then the status
+        routine thinks it needs to re-read the drive path from DOS
+        into SEQHANDLE.
+
+        Normally you would not encounter this since normally you would
+        then proceed to open or create the file placed in SEQHANDLE
+        prior to returning to the keyboard (which is where STATUS was
+        performed); it is normally only a problem while debugging.  To
+        prevent this interference by STATUS, you can type STATOFF just
+        prior to debugging your program.  STATON can then be used to
+        re-enable the status line.
+
+10.     Assembler buglets. If you are typing in CODE definitions from
+        the keyboard, and you get an assembly error on an instruction,
+        additional instructions typed in will have the same error
+        reported even if they are entered correctly. The error
+        condition will only be reset by a new CODE word being started.
+
+        If you try to use an IN or OUT instruction in the assembler
+        with an immediate port number greater than $FF hex, the
+        assembler will discard the high byte of the port number and
+        compile the instruction as if nothing was wrong.
+
+              IN AL, # $115    will assemble as    IN AL, # $015
+              OUT # $110 AL    will assemble as    OUT # $010 AL
+
+        The 80x6 family does not support immediate port number IN or
+        OUT instructions greater than $FF, but the assembler SHOULD
+        report the error and does not.
+
+12.     Jack Brown rightly points out that the F-PC documentation
+        doesn't specify the machine register usage clearly. Here is an
+        excerpt from the ECFB where George Hawkins explained how F-PC
+        uses the 80x86 registers.
+
+        F-PC MACHINE RESOURCE USAGE:
+
+            CS   =  code seg: used for any code definitions (Must be
+                    preserved by code word.);
+            DS   =  data seg: used for data other than ." strings
+                     (NOTE: CS=DS and underlying kernel primitives
+                    rely on this correspondence!, also must be
+                    preserved by code word.);
+            ES   =  extra seg: used as the segment location for the
+                    current instruction pointer (IP).  (Must be
+                    preserved by code word.);
+            SS   =  stack seg: used as the segment location for the
+                    current stack pointer (SP).  (Must be preserved
+                    by code word.);
+            BP   =  Return Pointer (RP).  (Must be preserved by
+                    code word.);
+            SP   =  Stack Pointer (SP).  (Must be preserved by code
+                     word.);
+            SI   =  Instruction Pointer (IP).  (Must be preserved by
+                    code word.);
+            DF   =  Direction Flag.  Assumed to be 0/increment. Some
+                    older FF (or before?) words do an initial CLD
+                    (e.g., CMOVE), but this shouldn't be necessary.
+                    If you specifically need DF=1, then do: STD
+                    ...code... CLD;
+
+            AX, BX, CX, DX, & DI  :  Have a ball!!
+

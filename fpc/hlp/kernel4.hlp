@@ -1,0 +1,223 @@
+KERNEL4.HLP         Edited by J. McKnight  H 408-252-7396  1988-01-30
+
+       Extensible Layer: Defining Words        
+
+#USER           ( -- a1 )
+        A variable that holds the count of how many user variables
+        are allocated.
+
+USER            ( -- )
+        Vocabulary that holds the multi-tasking versions of defining words.
+
+ALLOT          ( n )
+       Allocate space in the user area for a multi-tasking word.
+
+CREATE         <name> ( -- )
+       Define a word that returns the address of the next available user
+       memory location.
+
+VARIABLE       <name> ( -- )
+       Define a task type variable. Similar to the old FIG version word USER.
+
+DEFER          <name> ( -- )
+       Defines an execution vector that is local to a task.
+
+
+       Extensible Layer: ReDefining Words
+
+>IS            ( cfa -- data-address )
+       Maps a code field into a data field. If the word is in the USER class
+       of words, then the data address must be calculated relative to the
+       current user pointer. Otherwise it is just the parameter field.
+
+(IS)           ( cfa -- )
+       This word is compiled by IS. Sets the following DEFERred word to the
+       address on the parameter stack.
+
+IS             ( cfa -- )
+       Depending on STATE, either sets the following DEFERred word immediatly
+       or compiles the setting for later.
+
+SELECT          ( n1 --- )
+        Select drive n1 as the current disk drive to use as the DEFAULT
+        drive when no drive is specified. N1 ranges from 0 which is drive
+        A:, to a legal value up to 255 in DOS.
+
+A:
+B:
+C:
+D:
+E:
+F:              ( --- )
+        Select drive A:, B:, C:, D:, E: or F: as the default drive.
+
+QUIT           ( -- )
+        The main loop in Forth. Gets input from the terminal and Interprets
+        it. Responds with OK if healthy and repeats the process.
+
+BOOT            ( --- )
+        A defered word that performs initialization before executing QUIT.
+        You can change this defered word to perform your own initialization.
+
+INITSTUFF       ( --- )
+        A DEFERed word chain, used by many system utilities that need to
+        specify a function to be performed at cold start time.  See also
+        DEFERS for more information on how defered word chains work.
+
+SEGSET          ( --- )
+        A DEFERed word that contain the current function used to set up
+        the segment registers at cold start time. Typically contains
+        SETYSEG.
+
+WARMSTRT       ( -- )
+        The default function to be performed on a WARM start.  This word
+        is plugged into the DEFERed word WARMFUNC, to specify what is
+        done when the CONTROL BREAK key is pressed.  See also WARMFUNC and
+        WARM.
+
+WARMFUNC        ( --- )
+        A DEFERed word that is invoked when a warm start occurs. This
+        function is called whenever the CONTROL BREAK key is pressed.
+
+1STCOLD         ( --- f1 )
+        A flag to tell if COLD has been called yet.
+
+WARM           ( -- )
+        The WARM entry point for Forth, just calles the DEFERed word
+        WARMFUNC. A WARM start is invoked whenever the CONTROL BREAK key
+        is pressed.
+
+COLD           ( -- )
+       The high level cold start code. For ordinary forth, BOOT should
+       initialize and pass control to QUIT. Typically Boot contains HELLO.
+
+START           ( -- )
+        Minimal default initialization. This word is stuffed into BOOT
+        when compiling the KERNEL.COM file.
+
+BIOSBKSAVE      ( -- a1 )
+        A double variable that holds the BIOS Control Break vector so it
+        can be restored on exit from Forth.
+
+DIV0SAVE        ( -- a1 )
+        A double variable that holds the divide by zero interupt vector
+        so it can be restored on exit from Forth.
+
+CTRLBKSAVE      ( -- a1 )
+        A variable that holds the state of the low memory Control Break
+        flag so it can be restored on exit from Forth.
+
+
+RESTORE_VECTORS ( -- )
+        Restores the CONTROL BREAK DOS vectors to their original value
+        as when Forth was entered.  The CONTROL BREAK and DIVIDE by 0
+        vectors are saved by the assembly language cold start routines
+        before Forth is entered.
+
+DIV0STRT        ( -- )
+        The default function to perform when a DIVIDE by 0 trap occurs.
+        This routine aborts. A divide by 0 trap calls DIV0FUNC, which
+        defers to this routine.
+
+DIV0FUNC        ( -- )
+        F-PC traps divide by 0 errors, and calls this defered word when
+        such an error is detected.  You can change the contents of this
+        defered words to handle divide by 0 errors in your own program.
+
+BYEFUNC         ( --- )
+        A defered word which normally contains NOOP, provided so you
+        can specify a function to be performed before leaving back to
+        DOS.
+
+BYE            ( -- )
+        Returns control to DOS. Performs the defered word BYEFUNC before
+        actually leaving.
+
+DIVIDE0        ( status_reg CS IP AX BX CX DX SI BP -- )
+        The actual entry point from the divide by 0 trap, this word just
+        calls the deferd word DIV0FUNC.  Normally the registers on the
+        stack are just discarded, but you can install your own routine
+        into DIV0FUNC to handle the divide by 0 error.
+
+DIV0BK          ( -- status_reg CS IP AX BX CX DX SI BP )
+        Handle the Divide by 0 interupt processing. You cannot reliably
+        return from a divide by zero interrupt.
+
+RESTNEXT        ( -- f1 )
+        A flag to determine if we want the next code restored.
+
+SETBRK          ( --- )
+        A subroutine not accessible directly from Forth that sets the
+        various interrupt vectors used by Forth.
+
+SAVEVECTORS     ( --- )
+        A subroutine not accessible directly from Forth that saves
+        the Divide by 0 & Cntrl Brk interrupt vectors.
+
+SET_VECTORS    ( -- )
+        Set the CONTROL BREAK and DIVIDE by 0 traps to point to the
+        Forth provided functions, so we can handle them smoothly.
+
+@REL>ABS        ( a1 --- a2 )
+        Convert JMP address in a1+1 to an absolute memory address a2.
+
+DEPTH          ( -- n )
+       Returns the number of items on the parameter stack.
+
+MAX.S           ( -- a1 )
+        A variable that holds the maximum depth to be displayed of the
+        data stack with .S following.
+
+.S             ( -- )
+       Displays the contents of the parameter stack non destructively. Very
+       useful when debugging.
+
+%.ID           ( nfa -- )
+        Display the variable length name whose name field address is on the
+        stack. If it is shorter than its count, it is padded with underscores.
+        Only valid Ascii is typed.
+
+.ID            ( nfa -- )
+        A defered word. Display the variable length name whose name field
+        address is on the stack. If it is shorter than its count, it is
+        padded with underscores. Only valid Ascii is typed.
+
+DUMP           ( addr len -- )
+        A primitive little dump routine to help you debug after you have
+        changed the system source and nothing works any more.
+
+RECURSE        ( -- )
+        Makes the definition this word is used in call itself at the
+        point where it is used. ie. "RECUSION"
+
+H.             ( u -- )
+        Display the unsigned number in hex, with trailing blank. Does not
+        change the number base.
+
+LMARGIN         ( -- a1 )
+        The left margin setting used by ?LINE, ?CR. When a line
+        wrap occurs, then LMARGIN specifies how many spaces are printed
+        on the following line. Default value is 0.
+
+RMARGIN         ( -- a1 )
+        Controls the right margin, used by ?LINE, ?CR. Specifys
+        where to wrap the line.  Default value is 70.
+
+TABSIZE         ( --- a1 )
+        Controls the TAB increment for TAB. Default is 8.
+
+?LINE          ( n -- )
+        Break the line at the cursor if there are less than n1 characters
+        till RMARGIN is encountered.
+
+?CR            ( -- )
+        Break the line at the cursor, if we have reached the right margin
+        as specified by RMARGIN.
+
+TAB            ( -- )
+        Print spaces to get to the next TAB increment as specified by
+        TABSIZE.
+
+\              ( -- )
+       Comment till the end of this line.
+

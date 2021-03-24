@@ -1,0 +1,29 @@
+\ MONOCROM.HLP  Monochrome support words                by Tom Zimmer
+
+
+>NONE           ( --- )
+        Set display attributes to none, or normal.
+
+>UL             ( --- )
+        Set the display attribute  to underline.
+
+>REV            ( --- )
+        Set the display attribute to reverse video.
+
+>BOLD           ( --- )
+        Set the display attribute to bold.
+
+>BOLDUL         ( --- )
+        Set the display attribute to bold underline.
+
+>BOLDBLNK       ( --- )
+        Set the display attribute to bold blink.
+
+>REVBLNK        ( --- )
+        Set the display attribute to reverse blink.
+
+>MONO           ( --- )
+        Set the ATTRIB words to select various monochrome attributes.
+
+
+

@@ -1,0 +1,9 @@
+\ FILSTAT.HLP   Display file status, and loaded files.  by Tom Zimmer
+
+.LOADED         ( --- )
+        Print a list of all files that have been loaded.
+
+.FILES          ( --- )
+        Print the contents of the system handle stack.
+
+

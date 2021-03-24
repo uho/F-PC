@@ -1,0 +1,301 @@
+
+                        Implementation Notes for SFLOAT,
+                        a software Floating Point package
+                              for 80X8X processors
+
+                                By Robert L. Smith
+
+INTRODUCTION:
+
+        This document contains various notes, thoughts, methods, etc. which
+relate to the software floating-point package which I have called SFLOAT.
+My main motivation for writing such a package is to help eliminate a common
+complaint about FORTH, that it isn't useful because it doesn't have floating
+point.  There are various possible answers to that complaint.  One answer is
+that floating point is available in most commercial FORTH systems.  On the
+other hand, most people initially try FORTH in a public domain package, such
+as F-83.  In that case, they will probably not find a floating point package.
+(One exception is a hardware floating point package for the PC clones.
+Another exception is a low precision "Zen" floating point published by Martin
+Tracy.)  Another answer to the complaint is that floating point is not needed.
+In a pure sense, that is certainly true.  However, there are many times when
+the human effort required to do a problem in fixed point arithmetic becomes
+unreasonable for the problem at hand.  In my particular case, I once wasted a
+great deal of time trying to approximate, in fixed point, a function involving
+the probability integral.  The problem was trivial in floating point.
+
+        The floating point routines in this package are written for the most
+part in assembly language (CODE) routines for a specific processor type, the
+infamous Intel 8088 family.  Why did I write routines in code rather than in
+high level FORTH?  For the usual reason of speed.  In addition, detailed
+arithmetic functions are somewhat easier to write in code rather than high
+level because of the absence of the carry bit in FORTH.  I chose the Intel
+series because of its popularity.  An equivalent package for the Motorola
+68XXX series should be much easier to write because of the 32 bit architect-
+ure.  I will leave that to others.
+
+        It was my intent to produce a set of floating point routines which
+are both fast and accurate.  If you find errors or places where I can improve
+things, please let me know.
+
+
+REPRESENTATION:
+
+        I was a member of the IEEE P754 committee on Floating Point.  At one
+point I was strongly inclined to use the IEEE floating point representation.
+There were two reasons why I rejected it.  The first reason was that I tried,
+and found it very difficult to work with.  The second reason is that someone
+else had built a floating point package around the IEEE format (Philip Koopman,
+Jr., MVP FORTH).  According to reports from Glenn Haydon, the routines were
+painfully slow.
+
+        Every representation method has its advantages and disadvantages.
+I chose a 48 bit representation.  The most significant bit is the sign bit.
+The next 15 bits are used to indicate the power of 2, and the remaining 32
+bits are used for the significand (or mantissa, as we used to say), without
+suppressing the leading bit.  The binary point is at the left of the leading
+significant bit.  This representation gives about 9 1/2 decimal digits of
+accuracy (somewhat greater than the IEEE single precision representation)
+and a range of 10^-4000 to 10^4000, roughly.  That is far more than anyone
+needs, but greatly reduces the need to test for overflow and underflow.
+I chose to consider any unnormalized number (with the most significant bit
+cleared) as zero.  Finally, I set the bias on the exponent or power of 2 to
+3FFF (Hex representation, obviously).  I am not completely satisfied with the
+last two decisions (representation of zero, and exponent bias), but I don't
+have the energy to re-do all of the work just to see if the decision should
+be altered.
+
+        The current version uses a separate floating point stack.  In my
+initial version, I used the standard parameter stack to hold working floating
+point numbers.  This is allowed in the Forth Vendors Group Standard Floating
+Point Extension.  As of this writing, it appears that the ANSI Standard Forth
+will specify a separate Floating Point stack, so I re-wrote the routines.
+
+
+ACCURACY:
+
+        In the IEEE Floating Point Standard, the basic four functions (add,
+subtract, multiply, and divide) and square root are required to be exact
+within one-half of the least significant bit.  It is my intention to meet
+that requirement.  To understand how that is done, the reader should consult
+some of the original papers.  See, for example, "The INTEL Standard for
+Floating Point," by John F. Palmer, Proceedings Compsac77, IEEE Catalog No.
+77CH1291-4C.  The basic idea is that all bits below the least significant
+bits are to be considered.  If these bits represent a number greater than
+one-half of the least significant bit, then the result is incremented by 1.
+If the bits represent a number less than one-half, the result is unchanged.
+If the bits represent exactly one-half, then the least significant bit is
+examined.  If the least significant bit is 0, the result is unchanged.
+Otherwise the result is incremented by 1.  This process is called "rounding
+to even."  The trickiest part of this process occurs when subtracting two
+numbers which have the same sign (or adding two numbers of opposite sign).
+I know the casual reader of these notes is going to think that going to all
+of this effort is gross overkill, but the mathematical literature has
+numerous cases where this is important.  In any case, if you are going off on
+your own to do floating point arithmetic, please do not simply truncate the
+results unless you have very good reasons for doing so.  Some of the very
+worst examples come from computers designed by Seymore Cray, whose philosophy
+seems to be that the results don't have to be computed accurately as long as
+they can be computed rapidly.
+
+
+DIVISION
+
+        If you are interested in details, the floating point division routine
+in this package is fairly interesting.  It is my second version.  The initial
+version used a more or less standard technique for dividing by successive
+subtraction and shifting.  I stumbled on an interesting variation for Knuth's
+method for divsion in the documentation of the Forth-based language called
+"Abundance" by Roedy Green.  In that package, he performs a double precision
+divide by first shifting the divisor left until the most significant bit is
+set, obtaining an unsigned quotient and remainder, then adjusting the result
+based on the initial amount of shifting.  In a floating point routine, the
+operands are almost always normalized, so that the shifting is unnecessary,
+except possibly for an initial right shift of the numerator by one place.
+
+        The method is somewhat similiar to the technique that you learned in
+grammar school, except that instead of working in base ten we use base "s",
+where  s = 2^16 .  In other words, each 16 bit word is considered as a digit
+in this new base.  We desire a 2 digit quotient and a two digit remainder.
+We will first guess the leading digit of the quotient, then determine its
+exact value, along with an appropriate remainder.  Then we will determine the
+second digit and final remainder the same way.  It turns out that our initial
+quess for each quotient digit must be no more than 2 greater than the correct
+digit.  At each stage the numerator consists of 3 digits, and the denominator
+consists of 2 digits.  We may define the first quotient digit and remainder
+as follows:
+
+                (s^2)*A + s*B + C            r1
+                -----------------  =  q1 + ------
+                     sD + E                sD + E
+
+The 3 terms in the numerator account for a possible right shift in the case
+that the initial numerator was greater than or equal to the denominator.  We
+thus can guarantee that  A <= D, and  q1 < s.  We also require that the
+remainder  r1 < (sD + E).  With a small amount of algebraic manipulation we
+can see that
+
+                r1 = (s^2)*A + s*B + C - s*q1*D - q1*E
+
+That doesn't appear to be of much help, but just hold on.  We will make our
+initial guess for q1 based on a single precision division as follows:
+
+                s*A + B          r0
+                -------  =  g0 + ---
+                   D              D
+
+The key to simplifying this calculation is that we do not ignore the remainder
+in our trial division.  Note that the remainder in this division is
+
+                r0 = s*A + B - g0*D
+
+Assume for the time being that  q1 = g0.  It may not be, but our equations
+will still be exact!  We can calculate a remainder  r1'  which is
+
+                r1' = s*r0 + C - g0*E
+
+by making a simple single precision multiply and a double precision
+subtraction.  Our initial guess  g0  may have been too large.  We can tell
+that because then  r1' would be negative.  If r1' is >= 0, our initial guess
+is the correct guess.
+
+        If r1' is negative, we may correct for that by simultaneously adding
+the denominator (sD + E) to r1' and decrementing g0 by 1.  We check again to
+see if the new remainder r1'' is negative.  If r1'' is also negative, make a
+final correction by adding the denominator to r1'' and decrementing g0 again.
+This final quotient is correct, and the remainder is also correct.
+
+        The process is then repeated for the second quotient digit, by using
+the first remainder as the new numerator and then estimating the quotient and
+remainder as above.  The result is that we can calculate the double precision
+quotient by using 2 single precision divides and two single precision
+multiplies, and some trivial additions and subtractions.
+
+         The final part of this process is to round the quotient precisely.
+This is done by comparing twice the remainder with the divisor.  If 2*rem is
+less than the divisor, the quotient is correct.  If 2*rem is greater than the
+divisor, the quotient must be incremented by 1.  It 2*rem is exactly equal to
+the divisor, we round to even.  That is, if the least significant bit in the
+quotient is 1, then add 1 to the quotient.  Otherwise, do not add anything to
+the quotient.
+
+        There is an additional detail in the above: it is possible that
+A = D , even though (sA + B ) < (sD + E) .  If we were to just divide, we
+would encounter an overflow situation.  Therefore, consider that the trial
+quotient  g0 = s - 1 .  The zero-th remainder is  r0 = sA + B - (sD + D) ,
+and the first remainder is
+
+        r1 = (s^2)*A + s*B + C - (s^2)*D + s*(D - E) + E
+           = s*(B + D - E) + (C + E)
+
+Again, the initial guess may be too large, which may be discovered by checking
+if r1 is negative.  If it is, then one or two corrections may need to be made,
+as in the previous discussion.
+
+
+LOGARITHM
+
+        These notes are for those few souls who are interested in the details
+of implementation of the FLN function for software floating point.  As noted
+elsewhere, the basic format for floating point is a 16 bit sign and biased
+exponent, followed by a 32 bit normalized fraction.  The biased exponent
+occupies bits 0 through 14 with a bias of 3FFF (hexadecimal), and the sign
+bit is bit 15 of the first 16 bits.  The binary point of the fraction is just
+to the left of the 32 bit fractional part (sometimes called the mantissa).
+If the most significant bit of the mantissa is zero, the whole number is
+considered zero.
+
+        If the argument to the FLN function is negative or zero, it is an
+error condition.  After testing for those conditions, we then break down the
+problem into two parts, depending on the magnitude of the fraction.  If the
+fraction is greater than or equal to 0.78125 (and, by definition, it must be
+less than 1.0), then we note that
+
+                ln(X) = ln((2^I) * 0.f) = I*ln(2) + ln(0.f)
+
+where I is the unbiased exponent and 0.f is the fractional part.  Calculation
+of  ln(0.f) is based on the approximation:
+
+        ln(1-x) = -(x + (x^2)/2 + (x^3)/3 + (x^4)/4 + . . . )
+
+It may be noted in passing that there are better approximations than the
+above, but this one is selected to allow a crucial division to be made using
+single precision divisors.  It is necessary to reduce the range of  x  in the
+above equation.  (If we did not, it would be necessary to use about 24 terms
+in the series when x = 0.25).  This is accomplished by dividing 0.f into
+intervals of 2^-5 or 1/32 .  The procedure is as follows:
+
+        0.f = 1 - f1 , where  f1 = 1 - 0.f
+
+        f1 * 2^5 = J + f2 * 2^5
+
+        0.f = 1 - f1 = 1 - (2^-5) * J - f2
+
+            = (1 - J*(2^-5)) * [1 - f2/(1 - J*(2^-5))]
+
+where  J  is an integer.  The calculation can proceed by using a table of
+values for the logarithm of  (1 - J*(2^-5)), and an approximation for
+ln(1-x), where
+
+        x = f2/(1 - J*(2^-5))
+
+In this case, the maximum value for x is 0.0435 .  The series approximation
+for 33 bits of accuracy can terminate at the term (x^7)/7 .  In order to
+maximize the accuracy of the calculation, we proceed using  y = x*2^4 .
+The maximum value of y is 0.696 .  We then proceed to calculate:
+
+
+        (2^4)*(-ln(1-x)) = y + (y^2)*(2^-5) + (2/3)*(y^3)*(2^-9) +
+                + (y^4)*(2^-14) + (4/5)*(y^5)*(2^-18) +
+                + (4/6)*(y^6)*(2^-22) + (8/7)*(y^7)*(2^-27)
+
+The last term is kept only for rounding purposes.  The factor (8/7) may be
+approximated by 1.  It is necessary to use double precision in only the
+first 4 terms (well, maybe only the first 3, with extreme care).  The above
+equation should be factored, and the calculations made from right to left so
+that the smallest terms are calculated first.  (Writing equations in ASCII
+is tedious, and reading them is probably hellish, at best).  The calculation
+is roughly as follows:
+
+        -(2^4)*ln(1-x) = (((((y*(2^-5) + (2/3))y*(2^-4) +
+                +(4/5))*(y^2)*(2^-4) + Y)*(2^-5) + (2/3))*(Y^3)*(2^-4) +
+                +(Y^2))*(2^-5) + Y
+
+where  Y  indicates the double precision value and  y  the single precision
+value.
+
+        The case of the initial fraction 0.f being less than 0.78125 proceeds
+along somewhat similiar lines to the above.  We first note that the desired
+result may be expressed as
+
+        ln(X) = ln(2^(I-1)*(2*0.f)) = (I-1)*ln(2) + ln(2*0.f)
+
+where 1.0 <= (2.0*f) < 1.5625 .  In a manner similiar to the first case we
+divide the interval up into 19 subintervals of 2^-5 or 1/32 each.  The
+proceedure is as follows:
+
+        2*0.f = 1 + f1 , where f1 = (2*0.f) - 1
+
+        f1 * (2^5) = J + f2 * (2^5)
+
+        2*0.f = (1 + J*(2^-5)) * [1 + f2/(1 + J*(2^-5))]
+
+where J is an integer.  The calculation can proceed by using a table of
+values for the logarithm of (1 + J*(2^-5)) , and an approximation for
+ln(1+x), where
+
+        x = f2/(1 + J*(2^-5))
+
+In this case, the maximum value for x is 0.03125 .  The approximation
+proceeds much as in the first case.  The approximation used is:
+
+       ln(1+x) = x - (x^2)/2 + (x^3)/3 - (x^4)/4 + (x^5)/5 - (x^6)/6 + (x^7)/8
+
+Let x = (2^-5)Y .  The calculation proceeds along the lines indicated by:
+
+        (2^5)*ln(1+x) = Y - (2^-6)(Y + (2^-5)(Y^3)(2/3 - (2^-6)(y - (2^-5)*
+                        (y^2)(4/5 - (2^-5)y(2/3 - y*(2^-6))))
+
+
+
+

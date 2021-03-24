@@ -1,0 +1,43 @@
+\ SAVEEXE.HLP   A SAVE EXE routine. Extracted from F83Y by Tom Zimmer
+
+
+XCKSUM          ( add cnt startv seg - cksum )
+        Calculate the checksum of the data in "add", for length "cnt".
+        Use the starting value "startv", with the data located in segment
+        "seg". Return "cksum" as the result.
+
+SUVEC           ( --- a1 )
+        A 32 bit variable that holds the starting segment and offset
+        for the forth system in memory. Used by SAVE-EXE to decide
+        where to jump to when starting Forth.
+
+DPSTART         ( --- a1 )
+        The starting Dictionary Pointer for Forth when starting up.
+
+EHMT            ( --- a1 )
+        Returns the address a1 the address of a dummy empty .EXE
+        header.
+
+EHADR   header address
+EHZ     header size
+EHLMRV  load module remainder
+EH512Z  # 512 blocks in entire file
+EHCKSM  entire file checksum so file words total to FFFFh
+EHSP    startup SP
+
+WEXE            ( handle --- )
+        Write the Forth image in memory to the open file specified
+        by handle.
+
+exehcb          ( --- a1 )
+        A handle for use while saving an .EXE file.
+
+FSAVE           ( | name --- )
+        a pseudonym for SAVE-EXE
+
+save-exe        ( | name --- )
+        Save the current Forth memory image to the file "name" if
+        present, or if not present, then prompt for a name to save to.
+
+
+

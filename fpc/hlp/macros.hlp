@@ -1,0 +1,51 @@
+\ MACROS.HLP    Keyboard macros for F-PC                by Tom Zimmer
+
+macros
+mackey          ( --- c1 )      Get a key from keyboard or macro.
+
+          FF has keyboard macros, that is key sequences can be saved and
+        assigned to a key Alt-1 to Alt-9, and later these sequences can
+        be replayed.  Macros are implimented at the level of KEY, so they
+        are compatable with almost anything that prompts the user for
+        typed input.  A macro can be defined or performed at any time,
+        although they are VERY CONTEXT SENSITIVE. If you define a macro
+        in the editor, and execute it while at the Forth command level,
+        unpredictable results are likely.  Further information on the
+        definition and use of macros is shown later in this file.
+
+          Another recent addition to macros is the ability to repeat
+        any key including a macro up to 999 times in succession.
+        This is done with Alt-R (repeat).
+
+                        Type N <Enter> for more info
+
+          Defining a macro, or repeating a key both pop up a window
+        displaying the options for making a macro or repeating a key
+        stroke.
+
+                        Keyboard macros for F-PC.
+To DEFINE a macro;
+        Press Alt-M             \ starts defining, waits for next key
+        Press Alt-1             \ tells it which macro to make, can be
+                                \ Alt-1 through Alt-9, waits for first
+                                \ key of macro
+        Start entering keys.    \ keys are passed on to program and saved too
+        Press Alt-M             \ Ends definition of the new macro
+        Thats all there is to MAKING macros.
+
+To PERFORM a macro;
+        Press Alt-1             \ Macro processor passes back all keys
+                                \ one for each call to key until empty
+        Thats all there is to DOING macros.
+
+To REPEAT a macro;
+        Press Alt-R             \ We will be repeating a macro key
+        Enter a # between 0-999 \ The number of times to repeat the macro
+        Press Alt-1             \ the macro to repeat. Alt-1
+
+NOTE:
+          A bug in the system requires that a macro contain at least two
+        keys, if only one key is placed in a macro, a null will be
+        after the first key is passed.
+
+

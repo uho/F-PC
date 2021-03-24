@@ -1,0 +1,493 @@
+CHAPTER 7.   DOS INTERFACE
+
+
+
+
+Forth is a language with an operating system packed in.  It provides a
+complete programming environment so that a user can write, test and debug
+substantial programs completely inside of this environment.  When Chuck
+Moore started developing Forth, the operating systems were primitive, and
+often got in the way, preventing the user from exploiting the full
+capability of the hardware underneath the operating system.  His
+solution, adopted by most earlier Forth implementations, was to eliminate
+the operating system completely and incorporate all essential functions
+of the operating system into Forth.  BLOCK was invented to access mass
+storage directly, and it allows Forth to use different magnetic storage
+media very efficiently and quite transparently to the user.
+
+However, using blocks imposes many restrictions on the style of
+programming in Forth.  The most apparent restriction is on the editor,
+which handles text in fixed 1024 byte chunks.  It also makes Forth
+incompatible with other programming environments.
+
+In the good old days of minicomputers and mainframes, compatibility was
+among the least of concerns because there were so many of them.  None of
+them were compatible in hardware or in software.  In the confusion, Forth
+was able to offer an universal solution, and was ported easily to every
+machine in sight.  It is very sad that these bygone days are no more.  In
+the field of microcomputers and personal computers, Big Blue and
+Not-So-Big Red have established certain common practices, if not
+standards. Whether we like them or not, DOS and MAC prevail as the
+environments we are condemned to live in for the next few years.  After
+that, we will all be sentenced for life under UNIX if we can ever escape
+from C.
+
+It is thus very important that Forth should take advantage of these
+less-than-optimized operating systems in areas where convenience and
+compatibility are useful and cost effective.  Forth can be then further
+refined to arrive at the optimized solutions which demand the best of
+performance and code compacting.  F-PC tries to exploit the DOS
+environment to its practical limit in adopting the sequential file
+structure for mass storage and providing a smooth and convenient path to
+all the utility in DOS and OS2.  All DOS and BIOS calls are readily
+accessible from F-PC.  You can even spawn a DOS shell within F-PC to use
+DOS utilities.
+
+
+7.1.   SYSTEM INTERRUPTS AND BIOS CALLS 
+
+
+BIOS (Basic Input Output System) is a set of subroutines stored in the
+Read-Only Memory (ROM) in the PC.  These subroutines provide the most
+elementary services for the operating system to access the resources in
+PC, such as the keyboard, the display, the disk drives, and the printer.
+
+To invoke any of these service subroutines, a software interrupt
+instruction INT must be executed at the machine level.  This interrupt
+instruction transfers the control to the proper service routine via an
+interrupt vector table in the memory area 0:0 to 0:3FFH.  Parameters are
+sent to the service routine in one or more registers in the CPU.
+Results, if any, are returned in the registers or as flags.  For
+available BIOS services and their functional specifications, one must
+consult the IBM Hardware Reference Manual for the specific model or any
+reasonably good book on MS-DOS. See some references in the Preface to
+this Manual.
+
+F-PC itself does not provide high level tools to do software interrupts.
+However, it does use BIOS service to handle keyboard input, screen and
+printer output.  Since most of these words were coded in assembly, they
+invoke INT instructions directly.  For example, to receive a character
+from the keyboard through BIOS:
+
+        CODE BIOSKEY    ( -- char )
+                BEGIN
+                        MOV AH, # 0
+                        INT 16
+                        CMP AX, # 0
+                0<> UNTIL
+                MOV BIOSKEYVAL AX
+                1PUSH
+                END-CODE
+
+Other important software interrupts are: 
+
+        INT 5           printer
+        INT 6           video display
+        INT 19          diskette drive
+        INT 33          DOS services
+
+If you intend to use any of the software interrupts, you can find lots of
+good examples in the source files of F-PC.  Use them as models and modify
+them to suit your own need.
+
+
+7.2.    DOS SERVICE CALLS
+
+
+INT 33 invokes the DOS services which cover a wide range of very
+interesting functions which are not in the BIOS ROM, but loaded into the
+RAM memory when DOS is booted.  F-PC uses the DOS services extensively
+and a set of words is defined to facilitate their uses.
+
+BDOS                    ( data function -- n )
+
+This service emulates the CP/M BDOS call protocol, which requires a
+function number and some data.  The number returned on the stack is zero
+always, so that it is compatible with the BDOS function implemented in
+F83.
+
+When a service call requires more input and/or output parameters, F-PC
+gives you the following choices:
+
+BDOS2                   ( CX DX AX -- CX DX AX )
+
+Pop the top three items on the data stack and then do an INT 33.  The
+contents of CX, DX, and AX, at the completion of the DOS service is
+returned on the stack.  Most status information is returned in these
+registers by DOS.  You have to consult a DOS manual for detailed
+specifications on registers.
+
+OS2                     ( CX DX AX -- CX DX AX )
+
+OS2 is identical to BDOS2.  Its sole purpose is to please people in the
+three piece suits.  The last item from AX register is masked to an 8 bit
+number.
+
+XFDOS                   ( DX CX BX AX ES DS -- CX BX AX Carry )
+
+XFDOS is needed to allow DOS services to access memory above the 64K byte
+Code/Data Segment.
+
+DOS 33 Interrupt Services provides more than 30 different types of
+services.  It is not possible to cover them here even to a very small
+extent.  If you are interested, please consult the MS-DOS systems manual
+or books.  In F-PC, the file handles, time/date, directory path, some
+keyboard and screen functions are all done through this interrupt
+service.
+
+  7.3. THE DOS SHELL
+
+
+The interface from F-PC to DOS occurs at several levels.  In this section
+we will discuss the interface to the DOS commands as opposed to the DOS
+system calls.  DOS is a language, with its own syntax rules and
+functions.  By providing a bridge to DOS, F-PC encompasses two powerful
+languages at a very small cost.
+
+It is convenient to be able to issue DOS commands from within F-PC.  This
+avoids having to leave F-PC to do the normal housekeeping works that are
+regular occurrences in a DOS based computer. In line with this, F-PC
+implements several commands:
+
+$SYS                            ( counted-string -- f1 )
+
+Pass the counted string to COMMAND.COM as a command line.  A shell is
+spawned in the process with the "/c" parameter included so that
+COMMAND.COM terminates on completion of the command line.  If a NULL
+string is passed then the DOS shell will be spawned for you to enter one
+or several command lines.  You can then return to Forth by typing EXIT
+<return>.
+
+SYS  <commands> (  -- )
+
+Accept a command line following SYS and executes the commands as a DOS
+command line.
+
+`  <commands>   ( --  )
+
+Pronounced 'back tick'.  A pseudonym for SYS. 
+
+These words allow performing almost any DOS command line operation you
+would want to do. To make things even more convenient, several FORTH
+words have been defined which use the $SYS for specific DOS functions.
+They are as follows:
+
+                DIR  DEL  CHDIR  CD  COPY  REN  RENAME
+
+                A:   B:   C:   D:
+
+These commands may be used exactly as they are used in DOS. If you press
+Control-C, or Control-Break during the execution of any of the above
+words, the operation will abort and control will be returned back to
+Forth.
+
+SYS or ` can be given without a DOS command.  In this case you return the
+COMMAND.COM shell and you will see the familiar C> or equivalent DOS
+prompt.  You can execute any DOS commands or other COM and EXE files.
+After you are through with DOS, EXIT will return you back to F-PC.  You
+can switch very conveniently back and forth among Forth, DOS and any
+other application.
+
+
+7.4.    BATCH COMMANDS
+
+
+F-PC allows commands to be passed to Forth on the DOS command line in the
+following manner:
+
+        C> F-PC  <filename>  <forth words>  <return>
+
+This illustrates how you can start F-PC with a specified file name, and
+perform commands on the file.  An example of how this might be used is as
+follows:
+
+        C>  F-PC  BANNER  LOAD  <return>
+
+Here we are starting F-PC with the file BANNER.SEQ, and then performing
+LOAD to compile the file.  Another way to use command line parameters is:
+
+        C>  F-PC  -  <forth words>  <return>
+
+Here we are starting F-PC, followed by a dash "-" to tell F-PC we are not
+opening a file, then telling F-PC to perform the Forth words following
+the "-".  Here is an example:
+
+        C>  F-PC  -  REPAIR  DIR  <return>
+
+This example starts up F-PC without a file and tells F-PC we want to
+repair the word DIR.  It will locate the word DIR and start up the editor
+with the cursor located on the first line of the DIR definition.
+
+We can build batch files this way.  As you can see, many types of
+commands could be given to F- PC on the command line.  Here are the
+contents of the FMETA.BAT:
+
+        F-PC  -  FLOAD  META86
+
+This single line batch file meta-compiles the F-PC kernel file and
+creates the KERNEL.COM file. A similar batch file EXTEND.BAT is provided
+to extend the the kernel into a full featured F-PC system.  There are a
+number of batch files in the F-PC system and they are good examples of
+how to call F-PC to perform various tasks in the DOS environment and then
+return automatically to DOS.  It is a valuable tool for building
+customized applications.
+
+The only caution on batch files is that you must not place commands on
+the command line which cause the command line to be interpreted again.
+The words HELLO and COLD are such words. They should not be used since
+infinite recursion will crash the system.
+
+
+7.5.   DOS MEMORY MAP OF F-PC
+
+  F-PC was built to handle a class of programming problems that requires
+very large memory and cannot be handled well on any normal 64K
+implementation of Forth because of space constraints. Careful analysis
+showed that in a large Forth system most memory space is consumed by
+colon definitions.  This is quite natural because Forth is a virtual
+machine.  The virtual machine is built upon a small kernel which has to
+be implemented in code definitions.  However, once the basic mechanism is
+in place, utilities and applications are constructed in high level using
+colon definitions.  Therefore, F-PC struggled to give the user as much
+space as he will need to store colon definitions, while reserving only
+64K bytes for code, constants, variables, and arrays, and 64K bytes for
+heads which may or may not be needed in an application.  F-PC also
+includes words with which you can ask the operating system for more
+memory when needed and release it back to DOS when you have finished
+using it.
+
+F-PC allows the List (colon space) Segment to be much larger than 64K
+bytes.  In fact the only real limitation in system size comes from the
+fact that there are only 64k available for heads. Calculations indicate
+there is room for about 2300 definitions on top of the current system of
+about 3000 words.  This calculation is based on an average name length of
+5 characters, with an average head length of 12 bytes.  With 5300 total
+definitions, less than 30k of code segment would be used for code fields
+of colon definitions, leaving the remaining 30+K of Code Segment for
+variables and arrays.  Not enough for an infinitely large application
+obviously, but probably large enough for most  applications.
+
+F-PC places a segment (ES) and and offset (IP) on the return stack for
+each nest operation.  Only the relative segment offset is compiled into
+the code field, and the conversion to absolute segment is performed by
+NEST.  This makes the code fully relocatable as is required by the DOS
+environment.  Some performance could be gained by using absolute segment
+addressing, and performing a conversion at save and load time to and from
+relative and absolute.  The performance gain would come from having a
+simpler NEST, which would not have to perform the relative to absolute
+conversion at run-time.
+
+CS, SS, and DS always point to the Code Segment, so that all assembly
+language operations work with data in the Code Segment unless a special
+operator like @L or !L is used to reach an external memory area.  This
+means there is no penalty to be paid for most Forth operations and very
+high compatibility to F83 is maintained.
+
+The header of every word contains a view field for locating the source
+code, a link field to maintain the vocabulary thread, a name field, and a
+code pointer field.  The code pointer field contains a code field address
+which points to the executable code of this word in the Code Segment.
+The machine code in the Code Segment is executed when this word is
+invoked.  For a colon definition, the code starts with a JMP NEST, which
+saves the current ES and IP registers, adds the next two bytes to XSEG
+and moves them into ES and clears IP to zero.  When the NEST routine is
+executed to completion, NEXT obtains the next instruction in the List
+Segment pointed to by ES register and starts processing the address list
+in this colon definition.
+
+In a code definition, the code pointer field in the header points to its
+machine code in the Code Segment.  For other types of words, like
+CONSTANTs, VARIABLEs, and other executable structures, the first
+instruction in the code field is always a CALL to the appropriate inner
+interpreter which carries out the task assigned to the specific type of
+word.
+
+This manual is not the proper place to discuss the inner mechanism of
+F-PC.  If the above discussion seems to be too abstract, please don't
+worry.  F-PC behaves just like any other Forth system.  You can be very
+productive without any knowledge about how or why the Forth virtual
+machine works.  However, it is very comforting to know where things are
+stored, just in case you need to find them.
+
+
+
+The memory segments in F-PC
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                           
+
+Data structures in a colon definition
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                               
+
+
+7.6.    LONG MEMORY WORD SET
+
+
+A complete set of words is defined in F-PC to let the user accessing the
+DOS memory very conveniently.  The standard Forth memory accessing words
+are retained for addressing the Code/Data Segment in the memory.  Generic
+extended memory words are appended (or prepended) with the letter L, and
+they require address specifications in segment:offset pairs. Words
+addressing the List Segment have X prefix and words addressing the Head
+Segment have Y prefix.
+
+Generic Long Memory Words are those which require an explicit segment
+address with a 16 bit address offset.  They are the basic word set from
+which other segment specific memory words are derived.  This word set
+includes the following words:
+
+ @L      ( seg addr -- n )       Fetch 16 bit integer.
+ !L      ( n seg addr -- )       Store 16 bit integer.
+ C@L     ( seg addr -- b )       Fetch a byte.
+ C!L     ( b seg addr -- )       Store a byte.
+ CMOVEL  ( seg addr seg' addr' n -- ) Move n bytes from seg:addr to seg':addr'.
+ CMOVEL> ( seg addr seg' addr' n -- ) Move n bytes in reversed order.
+ LFILL   ( seg addr n b -- )     Fill n bytes from seg:addr with b.
+ LDUMP   ( seg addr n -- )       Dump n bytes from seg:addr.
+ Seg is stored into DUMPSEG.
+
+Following are words addressing the List Segment: 
+
+ X,      ( n -- )         Compile integer to top of the list dictionary.
+ XC,     ( b -- )         Compile byte to the list dictionary.
+ XDUMP   ( rel-seg n -- ) Dump n bytes in the list segment starting at XSEG.
+ XDP     ( -- addr )      Offset to top of list dictionary.
+ XDPSEG  ( -- seg )       Segment to top of list dictionary.
+ XHERE   ( -- seg addr )  Seg:addr to top of list dictionary.
+ XSEG    ( -- seg )       Segment base of List Space.
+
+The corresponding words addressing into the Head Segment are: 
+
+ Y@      ( addr -- n )    Fetch integer from head segment.
+ Y!      ( n addr -- )    Store integer to head segment.
+ YC@     ( addr -- b )    Fetch byte.
+ YC!     ( b addr -- )    Store byte.
+ Y,      ( n -- )         Compile integer to head dictionary.
+ YCSET   ( b addr -- )    Set bits in a byte.
+ YDUMP   ( addr n -- )    Dump n bytes from addr in the head segment.
+ YDP     ( -- addr )      Pointer to top of head dictionary.
+ YHERE   ( -- addr )      Address of top of head dictionary.
+ YSEG    ( -- seg )       Segment base of Head Space.
+
+
+7.7.    DOS MEMORY ALLOCATION
+
+
+The following words allow you to request, adjust and discard memory
+blocks from DOS for your program to use.
+
+ALLOC   ( size -- seg2 seg flag )
+
+Request size segments of free memory from DOS.  Flag=0 if ok, 8 if not
+enough memory.  Seg is the segment base of the allocated memory.  seg2 is
+maximum number of segments available that will not cause an error 8,
+insufficient memory.
+
+DEALLOC ( seg -- flag )
+
+Release a block of memory to DOS.  Seg must be the same as the segment
+base returned by ALLOC as the base of the allocated memory.  Flag=0 if
+ok, 9 if seg is not valid.
+
+SETBLOCK        ( seg size --- flag )
+
+Re-adjust the memory block specified by seg to a new size in segments.
+SEG is the absolute segment address that was returned by ALLOC. 'Size' is
+the size of the array in 16 byte units. Typically you would take the BYTE
+size needed and use the word SEGMENTS to convert that to the number of
+segments needed.
+
+These words are useful if you need an extra large space to store large
+arrays of data.  F-PC in its default configuration uses about 400K bytes
+of memory.  The DOS still has about 200K bytes held in reserve, if you
+have not loaded any TSR software programs.  This free memory can be
+allocated for your use.  With the extended memory words, you can address
+any memory whether DOS allows it or not.  However, if you are building a
+system which will coexist with other software, it is prudent to be polite
+to Ms. DOS and observe her protocol when it is also convenient to do so.
+You make her happy.  She will make you happy.
+

@@ -1,0 +1,25 @@
+\ TIMESTUF.HLP          More timing stuff
+
+SEC-ELAPSED     ( --- N1 )
+        Return n1 the seconds that have elapsed since TIME-RESET.
+
+10TH-ELAPSED    ( --- N1 )
+        Return n1 the tenths of a second that have elapsed since
+        the last TIME-RESET was performed.
+
+PAUSE-FUNC      ( --- )
+        A defered word to be set to a function that is to be
+        performed while waiting for timing to complete.
+
+SECONDS         ( N1 --- )
+        Wait n1 seconds.
+
+TENTHS          ( N1 --- )
+        wait n1 tenths of a second.
+
+MINUTES         ( N1 --- )
+        wait n1 minutes.
+
+HOURS           ( N1 --- )
+        wait n1 hours.
+

@@ -1,0 +1,120 @@
+\ WFL.HLP       Window file selection.                  by Tom Zimmer
+
+rootdir         ( --- a1 )
+        An array that holds a null terminated string that represents
+        the root directory.
+
+b/fnam          ( --- n1 )
+        Bytes per filename entry. returns the value 14.
+
+maxdir          ( --- n1 )
+        Return n1 the maximum number of directory entries we can
+        hold in memory. Dependant on current dictionary free space.
+
+forg            top of file window display
+dlen            directory window length
+dirattrib       directory file attribute
+
+#fls            number of files present
+curfl           current file number
+foff            Current offset into file list buffer.
+
+>fadr           ( n1 --- a1 )
+        Index into the filename list, and return address of name n1.
+
+.nam            ( n1 --- )
+        Display the name of name n1.
+
+excludes        ( --- a1 )
+        Returns a1 the address of a counted string that holds sets
+        of three letter extensions that should be excluded from the
+        directory list.
+
+exlist          ( --- a1 )
+        A variable that holds the address of a string of three
+        character extensions that are to be excluded from the
+        directory display.
+
+exsrc           ( --- a1 )
+        A variable that points to the extension in the source string.
+
+?exclude        ( --- f1 )
+        Test name at pad to see if it is in the exclude list. Return
+        boolean true if it is in the list.
+
+name>buf        ( --- )
+        Move name from the data transfer buffer to the directory
+        buffer.
+
+$getdir         ( a1 --- )
+        Get a list of names from the current directory that match
+        the counted string a1, but exclude the names in the exclude
+        list.
+
+getdir          ( --- )
+        Get all names in the current directory except the excluded
+        ones.
+
+-ss             ( n1 --- )
+        Print a row of dashes of length n1.
+
+-ll             ( l r len line --- )
+        A primitive for displaying a horizontal line with two
+        special characters on the ends.
+
+showdrives      ( --- )
+        Display the drive select window.
+
+showret         ( --- )
+        Display the commands available window.
+
+showkeys        ( --- )
+        Display the keypad command keys available window.
+
+pathbox         ( --- )
+        Display the path display box.
+
+showpath        ( --- )
+        Display the PATH in the pathbox.
+
+showdir         ( --- )
+        Display the current directory in a window.
+
+nfl             ( --- )
+        Hilight the next file in the directory window list.
+
+pfl             ( --- )
+        Hilight the previous file in the directory window list.
+
+0fl             ( --- )
+        hilight the first file in the directory window list.
+
+efl             ( --- )
+        Hilight the last file int he directoryf window list.
+
+delfl           ( --- )
+        Delete the currently hilighted file in the directory
+        window list. Prompts to be sure the user really want
+        to delete this file.
+
+ndir            ( --- )
+        Prompt for user entry of a new path to show the directory of.
+
+ndriv           ( n1 --- n1 )
+        Select n1 clipped to legal, as the current disk drive.
+        Re-display results of path, ans directory window.
+
+keytests        ( n1 --- )
+        Test the key n1 for the various functions available.
+        Performs any function that matches the n1 value.
+
+?setdir         ( c1 --- c2 f1 )
+        Set the current directory as listed in the directory list
+        window as the current directory. Allows moving around in
+        the directory tree.
+
+<getfile>       ( --- <a1> f1 )
+        Promps user to select a file from a window of files
+        as displayed.
+
+

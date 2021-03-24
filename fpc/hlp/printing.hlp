@@ -1,0 +1,227 @@
+\ PRINTING.HLP  Export & Import for SED.           by 1987 Tom Zimmer
+
+dolst           ( --- a1 )
+        A variable that tells if listing to the screen is turned on or off.
+
+p$type          ( a1 --- )
+        Send the counted string to the printer.
+
+pcr             ( --- )
+        Send a CR LF to the printer.
+
+ptype           ( a1 n1 --- )
+        Send the a1,n1 string to the printer.
+
+.p##            ( N1 --- )
+        Print the number n1 as two digits to the printer.
+
+<.pTIME>       ( d1 --- )
+        Print the current file to the printer.
+
+<.pDATE>        ( d1 --- )
+        Print the current date to the printer.
+
+pdate/time      ( --- )
+        Print the current date and time to the printer.
+
+controlines     ( --- a1 )
+        A variable that accumulates the nubmer of control lines
+        entered in a file. This is a carryover from ZED.
+
+skipto          ( a1 --- a2 )
+        given address a1, skip to thelast blank just before text
+        is encountered.
+
+?escprint       ( --- f1 )
+        Test the current print line. If it contains a leading ".#"
+        then it is an escape line, and should be processed as such.
+
+        The escape lines are followed by decimal values to be sent
+        to the printer.
+
+.noprinter      ( --- )
+        Display a message that no printer is available, or is off line.
+
+printline       ( --- )
+        Print the current line to the printer, preceeded by left margin,
+        and followed by a CR LF.
+
+pagenumber      ( --- a1 )
+        Starting page number, defaults to 1.
+
+firstpage       ( --- a1 )
+        First page to print, defaults to 1.
+
+lastpage        ( --- a1 )
+        Last page to print, defaults to the last page of the document.
+
+.underline      ( --- )
+        Underline the current line and print it.
+
+.pg#            ( --- )
+        Print the page number, date, time, and filename.
+
+newpage         ( --- )
+        Print a formfeed for a new page.
+
+setpage         ( --- )
+        Set the first page to print to the current page.
+
+linesleft       ( --- n1 )
+        Returns n1 the lines left to print on this page.
+
+.header         ( --- )
+        Print the header, which is the first line of the file.
+        The header is printed underlined.
+
+?newpage        ( --- )
+        Print the footer and a page break if a new page is needed.
+
+copies          ( --- a1 )
+        A variable that holds the number of copies to print.
+        Defaults to one copy.
+
+pgtoprint       ( --- a1 )
+        This variable gets set to the first page to print.
+
+todocpage       ( --- )
+        Move to the first page to print in the edit buffer.
+
+lsttoprint      ( --- a1 )
+        This variable gets set to the last page to print.
+
+?lastppg        ( --- f1 )
+        Return boolean f1, true if we are on the last page to print.
+
+setlastpg       ( --- )
+        Adjust the last page to print to the real last page of the
+        document.
+
+doprint         ( --- )
+        Do the actual printing of a document that is already in memory.
+
+insertsector    ( --- f1 )
+        Insert the 128 byte sector just read from disk, return f1 true
+        if this is the last sector to insert.
+
+imp/exp.init    ( --- )
+        Initialize the import export handle to contain the default
+        filename of TEMP.SEQ.
+
+getinpfile      ( --- f1 )
+        Get a filename from the user to use for importing text. Defaults
+        to TEMP.SEQ, but can be specified by holding down SHIFT when
+        insert is selected.
+
+
+?getexpfile     ( --- f1 )
+        Get a filename from the user to use for exporting text. Defaults
+        to TEMP.SEQ, but can be specified by holding down SHIFT when
+        Cut or Copy is selected.
+
+export          ( --- )
+        Copy the currently marked text to the default file TEMP.SEQ.
+
+excut           ( --- )
+        Cut the currently marked text to the default file TEMP.SEQ.
+
+import          ( --- )
+        Paste in the text from the default file TEMP.SEQ.
+
+        The above words EXPORT, EXCUT, and IMPORT allow you to
+        specify a filename to be used, by holding down SHIFT while
+        the function is selected.
+
+escattrib       ( --- )
+        A defered word that specifies what the display attribute will
+        be for the escape messages at the bottom of the print menu.
+        Normal is reverse, but is an error is detected in command
+        entry, then blink will be used to alert the user of the keys
+        to use.
+
+torev           ( --- )
+        Select reverse video for the escape display attributes.
+
+toblnk          ( --- )
+        Select blinking video for th eescape display attributes.
+
+pitems          ( --- n1 )
+        A constants that returns the nubmer of items in the print menu.
+
+prtmenu         ( --- a1 )
+        A table which returns a1, the address of the print menu table,
+        with its functions.
+
+showpdata       ( --- )
+        A routine to display the print menu.
+
+showcmds        ( --- )
+        A routine to display the escape command menu.
+
+showpform       ( --- )
+        Display the entire print menu.
+
+sc              ( --- )
+        Display the escape command menu in reverse video, the normal
+        mode.
+
+pitem           ( --- a1 )
+        A variable that holds the current print menu item number.
+
+pnumval         ( --- a1 )
+        A variable that holds the value to be applied to an entry
+        while a number is being entered, like 10 if we want to print
+        10 copies, or 3 if we want to print starting on page 3.
+
+>pitem          ( --- a1 )
+        Return the address of the item number in PITEM.
+
+showpcur        ( --- )
+        Show the cursor on the current item number.
+
+ptohome         ( --- )
+        Move the cursor to the home position, that is top left.
+
+penter          ( c1 --- c1 )
+        Perform a function when <enter> is pressed, that is typically
+        to go down or to wrap from the bottom of one column to the
+        top of the next column.
+
+
+pincr           ( c1 --- c1 )
+        Increment the current item number, that is go down one item.
+        Mya wrap to the top of the next column.
+
+pdecr           ( c1 --- c1 )
+        Decrement the current item nubmer, that is go up in the
+        current column. May wrap to the bottom of the previous column.
+
+prright         ( c1 --- c1 )
+        Move right from the current column to the next column ot the
+        right. May wrap to the first column on the left if pressed
+        at the right edge.
+
+prup            ( c1 --- c1 )
+        Move up one item. May wrap to the bottom of the previous column.
+
+pbkspace        ( c1 --- c1 )
+        Backspace, clears the number in the current column entry.
+        If an invalid entry is made, Backspace will clear it to zero
+        so it can be entered again.
+                then    ;
+
+pnum            ( c1 --- c1 )
+        Accept the number c1 just entered, and accumulate it in the
+        current column. The current value is scaled by multiplying
+        by 10, then the current key value is added int.
+
+pmenu           ( --- )
+        The printing top level word, displays a menu of options.
+        Pressing P will cause printing to start, pressing ESC or Alt-P
+        will abort printing.
+
+elisting        ( --- )
+        Print a hard copy listing of the current file that is open.
+        This word is the functon called by LISTING.
+
+

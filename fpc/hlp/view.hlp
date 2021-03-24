@@ -1,0 +1,25 @@
+\ VIEW.HLP      Viewing code for F-PC.                  by Tom Zimmer
+
+
+NAME>PAD        ( A1 --- PAD )
+                Move the name field to PAD and filter out the hi bit
+                of the last character in name. Also clears all but
+                lower 5 bits of name count.
+
+viewfile        ( cfa | cfa+1 = a1 maxCFA )   maxcfa is zero if not found
+                Locate words source file and retuen file name at pad and
+                it's cfa. If cfa is a veriable in the files vocabulary
+                then viewfile will return it's load file if avalible.
+
+>viewfile       ( cfa --- line# a1 )
+                From word's cfa return source file a1 and line number.
+                If control key is pressed return location in load file
+                of word's creator.  See F9 and CTRL-F9 funtion keys.
+
+LOAD            ( n1 --- )
+                Start Inturpreting current file at line n1.
+
+include         ( --- )
+                an alias that does the same thing as FLOAD.
+
+

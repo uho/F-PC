@@ -1,0 +1,222 @@
+
+øMore-Details            Introduction to F-PC
+                         ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  This file contains some additional hints on how to get started in F-PC.
+
+  Use Down Arrow or the PgDn key on the keypad to advance through this
+file, and the Up Arrow or PgUp key to backup toward the beginning of a
+file. Press F10 when you want to unlink to the previous Browser.
+
+Now let's look at the various parts of the screen before going on to the
+hints.
+
+  The top and bottom lines of the screen are used for status.  The bottom
+line displays the name of the file being viewed, and a couple of helpful
+hints. HELP=F1, and MENU=ESC. F1 will link you into another copy of the
+Help system where you can get help on the various editor functions.
+
+  You can press F1 now if you want to; just press F10 to get back here.
+
+  Pressing the ESC key will cause the MENU line to be displayed. Having
+pressed ESC, you can press the first letter of a menu name, or use the
+keypad arrow keys to move around on the menubar. Pressing Enter while a
+menu item is selected will cause the specified operation to be performed.
+Pressing ESC again while the menubar is visible, will make it go away.
+
+  When the menubar is NOT visible, you see a status line at the top of the
+display.  This line contains various pieces of information about the file
+being browsed or edited, including the word BROWSE at the left hand side.
+When you are in the editor, the word BROWSE will change to INSERT, or
+OVERWRITE indicating the appropriate edit mode.
+
+  Now lets move on to the hints I promised. Move the cursor down until
+this line is NEAR THE TOP OF THE SCREEN.
+
+  The UPPERCASE  words to the right are F-PC Forth commands, the "<words>"
+to the right are parameters to be passed to the command. The Enter key must
+be pressed after entering a command.
+---------------------------------------------------------------------------
+To open an existing file:                      ùOPEN <filename>
+To edit a file already open:                   ùED
+To leave the browser:                           F10      or ESC F E
+To leave the editor and save changes:           F10      or ESC F E
+To leave the editor and discard changes:        Alt-F10  or ESC F Q
+To create and edit a new filename:             ùNEWFILE <newfilename>
+To load a file:                                ùFLOAD <filename>
+To load a file already open:                   ùOK  or  1 LOAD
+To view/browse a word's source:                ùVIEW <word>
+   some short cuts to view and browse:         ùV  <word>  or  ùB <word>
+To edit a word's source:                       ùED <word>  or  ùE <word>
+To see all words containing a string:          ùWORDS <substring>
+   WORDS can be followed by two substrings:    ùWORDS <substring> <substring>
+To de-compile a dictionary word to the screen: ùSEE <wordname>
+To find all occurances of a string in a file:  ùFLOOK <string> <filspec>
+---------------------------------------------------------------------------
+  Some specific examples are given in the remainder of this file; browse
+it at your leasure.  Press F10 to leave at any time.
+
+
+Example:       ùWORDS H <Enter>
+
+  Will display all words in dictionary containing "H".
+
+--[ FORTH ]--
+       ù$HOPEN         ùHOPEN
+
+Example:       ùVIEW ùHOPEN <Enter>
+
+  Will enter the browser displaying the source code for HOPEN.  Press F10
+to leave the browser.
+
+Example:       ùED <Enter>
+
+  After performing the above command sequence, ED will enter the editor
+on the source for HOPEN. This is like the browser but you have to be
+careful not to make any changes.  Press Alt-F10 to leave the EDITOR and
+NOT SAVE changes.
+
+
+Example:       ùFLOAD SWINDOW <Enter>
+
+  If the file SWINDOW is present on your disk, it will be compiled.  You
+can now type "POPUP" to see a sample popup window. You may get an error
+message if the file SWINDOW.SEQ is not present on your disk.
+
+
+Example:       ùOPEN SWINDOW.SEQ ùED <Enter>
+
+  This command will open the file SWINDOW, and enter the editor. The
+extension .SEQ is used AUTOMATICALLY if no extension is specified.
+
+
+Example:       ùOK <Enter>
+
+  Will compile the currently open file. This is the same as FLOAD but
+works on the most recently edited or viewed file.
+
+
+Example:       ùSEE ùHEX <Enter>
+
+Displays:       : HEX
+                        16 BASE ! ;
+
+  Allows you to see the source for a ":" definition without having the
+source file available on disk.
+
+
+  Here are some additional words you can use to manipulate files.
+
+              <n1> ùLOAD                \ Start loading file at <n1>.
+                                        \ (Defaults to 1 if stack empty)
+              ùLISTING                  \ Print out the current file
+              ùNEWFILE <newfile>        \ Create the file <newfile> if it
+                                        \ does not already exist, and edit it.
+              ùINDEX                    \ Display first line of all .SEQ
+                                        \ files in current directory.
+
+  The above examples should be enough to get you at least started in
+exploring F-PC.  If you are the type of person who likes to read everything
+before experimenting, then continue on and you will find out how to print
+the documentation included with F-PC.
+
+  There is a considerable amount of documentation provided on disk to
+assist you in discovering F-PC.  Actually it is provided on disk because
+many of you won't have the User's Manual available to help you get started.
+I of course recommend you get the User's Manual: it was generated on a
+Macintosh, and laser printed. It is a good reference, with a good glossary,
+and is available from me for $20.00 dollars plus postage. You can see my
+address at the end of this document.
+
+If you insist on making printouts of all of documentation files, here
+is a command to print a text file in the current directory:
+
+               ùFPRINT <filename.TXT> <Enter>
+
+  Be sure your printer is ready for printing. If you are going to print all
+of the documentation, have at least several hundred sheets of paper
+available to complete the job.  The F-PCGLOS.TXT file may be too large to
+print from F-PC, depending on your memory size; in that case, use the NEWZ
+editor provided.
+
+
+  This next section of INTRO will tell you about some of the features of
+F-PC.
+
+
+  F-PC is a Forth derived from F83 and many other sources. Henry Laxen and
+Micheal Perry are the original developers of F83. My name is Tom Zimmer;
+I along with Robert L. Smith, Charles Curley, and Jerry Modrow put together
+this Forth.
+
+  F-PC is a Direct Threaded Code (DTC) Forth. That is, it contains CODE in
+the CODE field rather than pointing to CODE. DTC gives a noticable boost
+in performance, which was needed to counteract the next enhancement.
+
+  F-PC keeps the BODYs or LIST portion of ":" (colon) definitions in a
+seperate segment. This substantially increases the space available for
+your program. There is a penalty to pay in performance, with an extra
+level of indirection required in NEST.
+
+  F-PC has a PREFIX assembler. CODE definitions are coded with a syntax
+similar to MASM, in the form " MOV AX, BX ".  We have found this syntax
+to be much more readable to "traditional" programmers than the standard
+F83 assembler.  To reduce the pain to current F83 users, the assembler
+supports the old F83 assembler syntax as well. Just use the word
+POSTFIX to select Postfix assembler syntax, and then use PREFIX to
+switch back to the Prefix syntax.
+
+  F-PC supports full pathnames and file handles. Filenames may be up to
+63 characters in length including the path.
+
+  All source is in sequential files. No blocks in this system. The
+original F83 BLOCK system is available as a load-on if needed.
+
+  An 8086 family disassembler is provided. The disassembler was
+written by Charles Curley, and includes 8087 support added by Robert
+L. Smith.
+
+  The compiler itself has been substantially optimized, with almost
+all of WORD being in CODE. The system currently uses 64 threads, which
+is just at the point of diminishing return for a 1000 word vocabulary.
+With the 8 vocabularies this system has, only about 1k bytes of CODE
+space is used for the Vocabulary HEAD pointers.
+
+  A help file is provided with each source file. These can be used
+like F83 shadow screens were used, that is to hold comments about the
+words in the source file. The word VIEW accesses the .SEQ file, and
+the word HELP accesses the .HLP file. As much or as little text as you want
+can be placed in the help file for each word compiled.
+
+  Many utilities are included. An enhanced DEBUGger allows nesting
+and unnesting of ":" definitions.
+
+  Several powerful file words have been included. FLOOK allows searching
+through one or many files for a particular character sequence. FPRINT
+allows you to make formatted listings of one, all, or a set of Forth
+source files. INDEX displays the first line of a set of files.
+
+                ********* NEW with release 3.5 *********
+
+  This release includes my new TCOM Target COMpiler for generating
+small standalone .COM applications. See the TCOM.ZIP archive for full
+documentation and information.
+
+  Upgrade Information:
+
+        Send $50 in the continental US, or $60 overseas to:
+
+                              Tom Zimmer
+                              292 Falcato Drive
+                              Milpitas CA        Home (408) 263-8859
+                                      95035      Work (408) 432-4643
+
+        You will receive the latest version of the F-PC Forth, and
+        TCOM target compiler. Please be sure to include your return
+        address, and telephone number. You may want to call me for
+        information on the current version before ordering.
+
+        NOTE: Funds must be in US currency.
+
+PRESS F10 to leave this BROWSER.
+

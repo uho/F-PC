@@ -1,0 +1,26 @@
+\ QVIDEO.HLP    Fast video routine LINKAGE.             by Tom Zimmer
+
+QSPS            ( --- a1 )
+        An array of spaces, used to display spaces with TYPE rather
+        than EMIT.
+
+QTYPE           ( A1 N1 --- )
+        Quick type, uses a direct screen assembly word called VTYPE
+        to blast text directly tot he screen. Handles attributes as
+        well, see MONOCROM.SEQ.
+
+QEMIT           ( C1 --- )
+        Quick emit, uses QTYPE to display a character. This is used
+        when display attributes are needed with emit.
+
+QSPACES         ( N1 --- )
+        Quick spaces, uses the array defined earlier QSPS to type
+        a bunch of space to the screen very quickly.
+
+FAST            ( --- )
+        Select the fast screen output routines.
+
+SLOW            ( --- )
+        Select the slow BDOS screen output routines.
+
+

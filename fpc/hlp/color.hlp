@@ -1,0 +1,42 @@
+\ COLOR.HLP     Color board support for ZF              by Tom Zimmer
+
+\ For Color boards, the following values may be used for background
+\ or forground.
+
+BLACK       \ black
+BLUE        \ blue
+GREEN       \ green
+CYAN        \ cyan
+RED         \ red
+MAGENTA     \ magenta
+BROWN       \ brown
+LTGRAY      \ light gray
+DKGRAY      \ dark gray         Blinks in Background.
+LTBLUE      \ light blue        Blinks in Background.
+LTGREEN     \ light green       Blinks in Background.
+LTCYAN      \ light cyan        Blinks in Background.
+LTRED       \ light red         Blinks in Background.
+LTMAGENTA   \ light magenta     Blinks in Background.
+YELLOW      \ yellow            Blinks in Background.
+WHITE       \ white             Blinks in Background.
+
+>FG           ( N1 --- )
+        Set the Forground color to value n1.
+
+>BG           ( N1 --- )
+        Set the Background color to value n1.
+
+>BUGN         ( --- )
+        Set the Backgound to BLUE, and Forground to Green.
+
+>RDWT         ( --- )
+        Set the Background to RED, and Forground to WHITE.
+
+>BUWT         ( --- )
+        Set the Background to Green, and Forground to WHITE.
+
+>COLOR        ( --- )
+        Select hilighting for color monitor.
+
+
+

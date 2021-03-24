@@ -1,0 +1,646 @@
+EPILOGUE
+
+
+
+
+
+HOW TO HANG F-PC WITHOUT A LONG ROPE
+
+
+Instead of the usual ending of a book, telling you how wonderful F-PC is
+(it is) and that with it you will live happily ever after (you will), let
+us do something unusual.  Let us talk  about things that you can do to
+crash this system.  This has the advantage that we can use a positive
+tone, saying what you can do instead of warning you about things you
+should not do.  It will give you much more insight into F-PC and let you
+taste the power you gain over the computer and the operating system.
+
+The question is: "How to hang your F-PC without a long rope?"  Here is a
+short list to begin with. You will certainly find other ways to do it.
+We welcome your input and suggestions to make this list complete.
+
+1.      Use a short rope.
+
+2.      Type " -1 @ ".  It will crash the AT system.  However, AT can
+still be rebooted by Ctrl- Alt-Del.  It does not affect PC or XT.
+
+3.      Type " -1 ! ".  It will crash the AT system for good.  You will
+have to recycle power, if you don't have that hardware reset button on
+your computer.
+
+4.      Type " >R ".  It works every time.
+
+5.      Store anything into your dictionary in the Code Segment.  You can
+use !, but that's not bold enough.  Use ERASE, FILL, BLANK, or CMOVE.
+
+6.      Store anything into the DOS area below the Code Segment.  It will
+probably not affect F- PC.  However, wait until you say 'BYE'.  Ms. DOS
+will lay the computer down flat.
+
+7.      Store anything into the dictionary in the  Head Segment.  F-PC
+will still say 'ok', but it will not recognized words you type in.  You
+will get the 'What?' message.
+
+8.      Store anything into the dictionary in the List Segment.
+
+9.      Do a " 0 0 DO ... LOOP ".  If you have anything useful in this
+loop, F-PC will spend a long, long time doing it for you.  You might just
+as well assume the system crashed and do a reset. (You can do a warm
+restart by pressing the Control-Break key.)
+
+10.     In a code definition, use any of the SI, DS, ES, SS and CS
+registers and not restore it before NEXT.
+
+11.     Do a " JMP " in assembler.
+
+12.     Implement your own hardware interrupt.
+
+13.     Do multi-tasking.
+
+14.     Build a large loop without balancing the stacks inside the loop.
+
+15.     Print a binary file on your printer.  You may not totally crash
+the computer, but a bucketful of paper shooting through the printer at 10
+miles per hour is an impressive sight.
+
+16.     Do a " TYPE " without parameters.  See 15.
+
+17.     FORGET a part of the dictionary that contains a definition that
+has been DEFERred to. When you next execute the deferred word, the system
+will hang.
+
+18.     FORGET a task in the round robin task chain.  The system will
+work for a while until new definitions creep into the place where the
+forgotten task was defined.
+
+Now that you know how to crash F-PC, you may want to use it to do
+something useful.
+
+
+THE KITCHEN SINK
+
+
+The last time we counted, F-PC contains 1800 regular words and 700
+headless words.  It contains everything except the kitchen sink.  Well,
+such omission is certainly not to be tolerated.  So, let us throw in the
+kitchen sink as well to make it complete:
+
+        : SINK ." A conduit to BBB, the great Big Bit Bucket." ;
+        : KITCHEN ." See SINK" ;
+        ' KITCHEN ALIAS KITCHEN-SINK
+
+These words only cost us 100 bytes in memory with absolutely no run-time
+penalty.  That is a very small price to pay for the potential claim of
+system closure.  A petition will be sent forward to the ANS Forth
+Standards Committee to include them in the coming Forth standard.
+
+This joke was attributed to Allen Furman, the resident philosopher at the
+Silicon Valley FIG Chapter.
+
+AN INVITATION
+
+Before parting, let us remind you that F-PC is an open system and
+contributions from users like you are always welcome.  We think F-PC will
+be a very useful vehicle for the MS-DOS segment of the Forth community to
+exchange ideas and code, for as long as there are still PC/XT/AT
+computers and their clones.  Join the Forth Interest Group local chapter
+nearest you because there you will most likely find some people
+knowledgeable about F-PC.  You can ask for the address and phone number
+of the local chapters from the FIG central office, (408) 277-0668.  FIG
+also sponsors a Forth Roundtable on the GEnie Network.  There are very
+active discussions on F-PC on-line.  Dr. Jack Brown is running an on-line
+F-PC tutorial.  Sysops of the Forth Roundtable are very helpful on
+technical problems.  Here we include a list of local FIG chapters and a
+list of the on-line resources, in case you want to find help in a chapter
+near you or through on-line services.
+
+
+
+FORTH INTEREST GROUP
+LOCAL CHAPTERS
+
+U.S.A.
+
+ALABAMA
+Huntsville Chapter
+Tom Konantz
+(205) 881-6483
+
+ALASKA
+Kodiak Area Chapter
+Ric Shepard
+Box 1344
+Kodiak, Alaska 99615
+
+ARIZONA
+Phoenix Chapter
+4th Thurs., 7:30 p.m.
+AZ State University
+Memorial Union, 2nd floor
+Dennis L. Wilson
+(602) 956-7578
+
+ARKANSAS
+Central Arkansas Chapter
+Little Rock
+2nd Sat., 2 p.m. &
+4th Wed., 7 p.m.
+Jungkind Photo, 12th & Main
+Gary Smith (501) 227-7817
+
+CALIFORNIA
+Los Angeles Chapter
+4th Sat., 10 a.m.
+Hawthome Public Library
+12700 S. Grevillea Ave.
+Phillip Wasson
+(213) 649-1428
+
+North Bay Chapter
+2nd Sat., 10 a.m. Forth, AI
+12 Noon Tutorial, 1 p.m. Forth
+South Berkeley Public Library
+George Shaw (415) 276-5953
+
+Orange County Chapter
+4th Wed., 7 p.m.
+Fullerton Savings
+Huntington Beach
+Noshir Jesung (714) 842-3032
+
+Sacramento Chapter
+4th Wed., 7 p.m.
+1708-59th St., Room A
+Tom Ghormley
+(916) 444-7775
+
+San Diego Chapter
+Thursdays, 12 Noon
+Guy Kelly (619) 454-1307
+
+Silicon Valley Chapter
+4th Sat., 10 a.m.
+H-P Cupertino
+Bob Barr (408) 435-1616
+
+Stockton Chapter
+Doug Dillon (209) 931-2448
+
+COLORADO
+Denver Chapter
+1st Mon., 7 p.m.
+Clifford King (303) 693-3413
+
+CONNECTICUT
+Central Connecticut Chapter
+Charles Krajewski
+(203) 344-9996
+
+FLORIDA
+Orlando Chapter
+Every other Wed., 8 p.m.
+Herman B. Gibson
+(305) 855-4790
+
+Southeast Florida Chapter
+Coconut Grove Area
+John Forsberg (305) 252-0108
+
+Tampa Bay Chapter
+1st Wed., 7:30 p.m.
+Terry McNay (813) 725-1245
+
+GEORGIA
+Atlanta Chapter
+3rd Tues., 6:30 p.m.
+Western Sizzlen, Doraville
+Nick Hennenfent
+(4o4) 393-3010
+
+ILLINOIS
+Cache Forth Chapter
+Oak Park
+Clyde W. Phillips, Jr.
+(312) 386-3147
+
+Central Illinois Chapter
+Champaign
+Robert Illyes (217) 359-6039
+
+INDIANA
+Fort Wayne Chapter
+2nd Tues., 7 p.m.
+I/P Univ. Campus, B71 Neff
+Hall
+Blair MacDermid
+(219) 749-2042
+
+IOWA
+Central lowa FIG Chapter
+1st Tues., 7:30 p.m.
+Iowa State Univ., 214 Comp.
+Sci.
+Rodrick Eldridge
+(S15) 294-5659
+
+Fairfleld FIG Chapter
+4th Day, 8:15 p.m.
+Gurdy Leete (515) 472-7077 
+
+MARYLAND
+MDFIG
+Michael Nemeth
+(301) 262-8140
+
+MASSACHUSETTS
+Boston Chapter
+3rd Wed., 7 p.m.
+Honeywell
+300 Concord, Billerica
+Gary Chanson (617) 527-7206
+
+MICHIGAN
+Detroit/Ann Arbor Area
+4th Thurs.
+Tom Chrapkiewicz
+(3]3) 322-7862
+Fred Olsen (612) 588-9532
+
+MINNESOTA
+MNFIG Chapter
+Minneapolis
+
+MISSOURI
+Kansas City Chapter
+4th Tues., 7 p.m.
+Midwest Research Institute
+MAG Conference Center
+Linus Orth (913) 236-9189
+
+St. Louis Chapter
+1st Tues., 7 p.m.
+Thornhill Branch Library
+Robert Washam
+91 Weis Drive
+Ellisville, MO 63011
+
+NEW JERSEY
+New Jersey Chapter
+Rutgcrs Univ., Piscataway
+Nicholas Lordi
+(201) 338-9363
+
+NEW MEXICO
+Albuquerque Chapter
+1st Thurs., 7:30 p.m.
+Physics & Astronomy Bldg.
+Univ. Of New Mexico
+Jon Bryan (505) 298-3292
+
+NEW YORK
+FlG, New York 
+2nd Wed., 7:45 p.m.
+Manhattan
+Ron Martinez. (212) 866-1157
+
+Rochester Chapter
+Odd month, 4th Sat., 1 p.m.
+Monroe Comm. College
+Bldg. 7, Rm.102 
+Frank Lanzafame
+(716) 482-3398
+
+OHIO 
+Cleveland Chapter
+4th Tues., 7 p.m.
+Chagrin Falls Library
+Gary Bergstrom
+(216) 247-2492
+
+Columbus F1G Chapter
+4th Tues.
+Kal-Kan Foods, Inc.
+5115 Fisher Road
+Terry Webb
+(614) 878-7241
+
+Dayton Chapter 
+2nd Tues. & 4th Wed., 6:30 p.m. 
+CFC. 11 W. Monument Ave.
+#612
+Gary Ganger (513) 849-1483
+
+OREGON
+Wiliamette Valley Chapter
+4th Tues., 7 p.m.
+Linn Benton Comm. College 
+Pann McCuaig (503) 752-5113
+
+PENNSYLVANIA
+Villanova Univ. FIG. Chapter
+Bryan Slueben
+321-C Willowbrook Drive
+Jerfersonville, PA 19403
+(215) 265-3832
+
+TENNESSEE
+East Tennessee Chapter
+Oak Ridge
+2nd Tues., 7:30 p.m.
+Sci. Appl. Int'l. Corp., 8th Fl
+800 Oak Ridge Turnpike
+Richard Secrist
+(615) 483-7242
+
+TEXAS
+Austin Chapter
+Matt Lawrence
+PO Box 180409
+Austin, TX 78718
+
+Dallas Chapter
+4th Thurs., 7:30 p.m.
+Texas Instruments
+13500 N. Central Expwy.
+Semiconductor Cafeteria
+Conference Room A
+Clif Penn (214) 995-2361
+
+Houston Chapter
+3rd Mon., 7:45 p.m.
+Intro Class 6:30 p.m.
+Univ. at St. Thomas
+Russell Harris (713) 461-1618
+
+VERMONT
+Vermont Chapter
+Vergennes 
+3rd Mon., 7:30 p.m. 
+Vergennes Union High School 
+RM 210, Monkton Rd.
+Hal Clark (802) 453-4442
+
+VIRGINIA
+First Forth of Hampton
+Roads
+William Edmonds
+(804) 898-4099
+
+Potomac FlG 
+D.C. & Northem Virginia 
+1st Tues.
+Lee Recreation Center
+5722 Lee Hwy., Arlington
+Joseph Brown
+(703) 471-4409
+E. Coast Forth Board
+(703) 442-8695
+
+Richmond Forth Group
+2nd Wed., 7 p.m.
+154 Business School
+Univ. Of Richmond
+Donald A. Full
+(804) 739-3623
+
+WISCONSIN
+Lake Superior Chapter
+2nd Fri., 7:30 p.m.
+1219 N. 21st St., Superior
+Allen Anway (715) 394-4061
+
+INTERNATIONAL
+
+AUSTRALIA
+Melbourne Chapter
+1st Fri., 8 p.m.
+Lance Collins
+65 Martin Road
+Glen Iris, Victoria 3146
+03/29-2600
+BBS: 61 3 299 1787
+
+Sydney Chapter
+2nd Fri., 7 p.m.
+John Goodsell Bldg., RM
+LG19
+Univ. Of New South Wales
+Peter Tregeagle
+10 Binda Rd., Yowie Bay
+2228
+02/524-7490
+
+BELGIUM
+Belgium Chapter
+4th Wed., 8 p.m.
+Luk Van Loock
+Lariksdreff 20
+2120 Schoten
+03/658-6343
+
+Southern Belgium Chapter
+Jean-Marc Bertinchamps
+Rue N. Monnom, 2
+B-6290 Nalinnes
+071/213858
+
+CANADA
+BC FIG
+Ist Thurs., 7:30 p.m.
+BCIT, 3700 Willingdon Ave.
+BBY, Rm. IA-324
+Jack W. Brown (604) 596-9764
+BBS (604) 434-5886
+
+Northern Alberta Chapter 
+4th Sat., lOa.m.-noon 
+N. Alta. Inst. ol Tech. 
+Tony Van Muyden 
+(403) 486-6666 (days) 
+(403) 962-2203 (eves.)
+
+Southern Ontario Chapter
+Quarterly, I st Sat., Mar., Jun.,
+Sep., Dec., 2 p.m.
+Genl. Sci. Bldg., RM 212
+McMaster University
+Dr. N. SoIntseff
+(416) 525-9140 x3443
+
+Toronto Chapter 
+John Clark Smith 
+PO Box 230, Station H 
+Toronto, ON M4C 5J2
+
+ENGLAND
+Forth Interest Group-UK
+London
+1st Thurs., 7 p.m.
+Polytechnic Of South Bank
+RM 408
+Borough Rd.
+D.J. Neale
+58 Woodland Way
+Morden, Surry SM4 4DS
+
+FINLAND
+FinFlG
+Janne Kotiranta
+Arkkitehdinkatu 38 c 39
+33720 Tampere
++358-31-184246
+
+HOLLAND
+Holland Chapter
+Vic Van de Zande
+Finmark 7
+3831 JE Leusden
+
+ITALY
+FIG Italia
+Marco Tausel
+Via Gerolamo Forni 48
+20161 Milano
+02/435249
+
+JAPAN
+Japan Chapter
+Toshi Inoue
+Dept. Or Mineral Dev. Eng.
+University of Tokyo
+7-3-1 Hongo, Bunkyo 113
+812-2111 x7073
+
+NORWAY
+Bergen Chapter
+Kjell Birger Faeraas,
+47-518-7784
+
+REPUBLIC OF CHlNA
+R.O.C. Chapter
+Chin-Fu Liu
+5F, #10, Alley 5, Lane 107
+Fu-Hsin S. Rd., Sec. 1
+Taipei, Taiwan, 10639
+
+SWEDEN
+SweFIG
+Per Alm
+46/8-929631
+
+SWITZERLAND
+Swiss Chapter
+Max Hugelshofer
+Industrieberatung
+Ziberstrasse 6
+8152 Opfikon
+01 810 9289
+
+SPECIAL GROUPS
+Forth Engine Users Group
+John Carpenter
+1698 Villa St.
+Mountain View, CA 94041
+(415) 960-1256 (eves.)
+
+
+
+FORTH ON-LINE RESOURCES
+
+
+
+
+To communicate with these systems, set your modem and communication
+software to 300/1200/2400 baud with eight bits, no parity, and one stop
+bit, unless noted otherwise. GEnie requires local echo.
+
+GEnie (For information, call 800-638-9636)
+
+Forth RoundTable (ForthNet link*) 
+Call GEnie local node, then type M710 or FORTH 
+SysOps: Dennis Ruffer (D.RUFFER), Scott Squires (S.W.SQUIRES),
+Leonard Morgenstern (NMORGENSTERN), Gary Smith (GARY-S)
+
+MACH2 RoundTable
+Type M450 or MACH2
+Palo Alto Shipping Company
+SysOp: Waymen Askey (D.MILEY)
+
+BIX (ByteNet)
+
+For information, call 800-227-2983
+
+Forth Conference Access BIX via TymeNet, then type j forth Type FORTH at
+the: prompt SysOp: Phil Wasson (PWASSON)
+
+LMI Conference
+Type LMI at the: prompt
+Laboratory Microsystems products
+Host: Ray Duncan (RDUNCAN)
+
+CompuServe
+
+For information, call 800-848-8990
+
+Creative Solutions Conference 
+Type !Go FORTH SysOps: Don Colburn, Zach Zachariah, Ward McFarland, Jon
+Bryan, Greg Guerin, John Baxter, John Jeppson
+
+Computer Language Magazine Conference 
+Type !Go CLM SysOps: Jim Kyle, Jeff Brenton, Chip Rabinowitz, Regina
+Starr Ridley
+
+Unix BBS's with Forth conferences (ForthNet links*)
+
+WELL Forth conference
+Access WELL via CompuserveNet or 415-332-6106
+Fairwitness: Jack Woehr (jax)
+
+Wetware Forth conference 
+415-753-5265
+Fairwitness: Gary Smith (gars)
+
+PC Board BBS's devoted to Forth  (ForthNet links*)
+
+East Coast Forth Board 
+703-442-8695
+SysOp: Jerry Schifrin
+
+British Columbia Forth Board  
+604-434-5886
+SysOp: Jack Brown
+
+Real-Time Control Forth Board  
+303-278-0364
+SysOp: Jack Woehr
+
+Other Forth-specific BBS's
+
+Laboratory Microsystems, Inc.
+213-306-3530
+SysOp: Ron Braithwaite
+
+This list was accurate as of March 1989. If you know another on-line
+Forth resource, please let me know so it can be included in this list. I
+can be reached in the following ways:
+
+Gary Smith
+P. 0. Drawer 7680
+Little Rock, Arkansas 72217
+Telcphonc: 501-227-7817
+Fax: 501-228-0271
+Telcx: 6501165247 (storc and forward) 
+GEnie (co-SysOp, Forth RoundTable): GARY-S
+BIX (Bytenct): GARYS
+Delphi: GARY S
+MCIMAIL: 116-5247
+CompuServe: 71066,707
+Wetware Diver, (Fairwitness, Forth Conference): gars
+Usenet domain.: gars@well.WCP or gars@ wct.WCP
+Internet: welkgars@lll-winken.arpa
+WELL: gars
+
+*ForthNet is a virtual Forth network that links designated rnessage bases
+in an attempt to provide greater inforrnation distribution to the users
+served. It is provided courtesy of the SysOps of its various Iinks.
+

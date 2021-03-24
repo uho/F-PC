@@ -1,0 +1,31 @@
+\ MULTASK.HLP   Multi tasking help file
+
+RESUME  turns on RES, which enables tracing to continue.
+
+See BACKGROUND: and its shadow for spooler and counter tasks.
+
+To enable spooler, once defined, type MULTI. MULTI starts the
+multi-tasker loop running. SINGLE stops it.
+Then type SPOOLER WAKE to start the spooler task.
+To put the spooler on hold, use  SPOOLER SLEEP
+To restart it, use SPOOLER WAKE
+
+In general, executing the name of a task leaves the address of
+its user area on the stack. Words like sleep and wake use that
+address.
+
+TASK:  Name, initialize, and allocate a new task.
+ Copy the USER Area.  I point to where he pointed.
+ He points to me.
+ Set initial stack pointers.
+ Set dictionary pointer.
+ Make task ready to execute. Allocate task in host dictionary.
+SET-TASK  assigns an existing task to the code at ip.
+ Get top of stack of the task to be used.
+ Put IP and RP values on its stack.
+ Set its saved stack pointer.
+
+ACTIVATE  assigns an existing task to the following code,
+ and makes it ready to execute.
+
+

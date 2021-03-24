@@ -1,0 +1,55 @@
+\ VIDEO.HLP     Direct VIDEO Screen output              by Tom Zimmer
+
+VTSEG           ( --- a1 )
+        A variable that holds the segment value of the source where
+        text is typed from.  Normally set to the value of ?CS:, but
+        is changed by the editor to display text from an external
+        edit buffer segment.
+
+VIDEO-SEG       ( --- a1 )
+        A variable that holds the segment value of the display screen.
+
+ATTRIB          ( --- a1 )
+        A variable that holds the value of the current display
+        attributes. The value 7 is the default for normal video.
+
+?VMODE          ( --- N1 )
+        Read the current video mode from the BIOS. A value of 7 is
+        normal for monochrome, and a value of 2 is a CGA board.
+
+INITMONO        ( --- )
+        A defered word that gets set later, and is used to do the
+        monochrome display attribute control initialization
+        ( it sets the >ATTRIBx words. ). See the file MONOCROM.SEQ.
+
+INITCOLOR       ( --- )
+        A defered word that gets set later, and is used to do the
+        color display attribute control initialization ( it sets the
+        >ATTRIBx words. ). See the file MONOCROM.SEQ, and COLOR.SEQ.
+
+VMODE.SET       ( --- )
+        Set the VIDEO-SEG variable after testing the current video
+        mode, and perform any needed initialization required by
+        executing the INITMONO, or INITCOLOR as needed.
+
+VTYPE           ( string length x y -- )
+        A direct screen type. The text "string" is blasted to the
+        current display for "length", starting at screen column x
+        and row y. The cursor is left positioned at the end of the
+        text string.
+
+        Additional notes on VTYPE:
+
+        The variable VTSEG holds the segment value of the source of
+        the video type, normally Forths Code segment.  VIDEO-SEG
+        holds the segment of the destination of the video type, that
+        is where your video board is addressed.  This makes it
+        possible to type to the display from a segment other than
+        Forths Code segment.  This is done by the editor, which
+        displays lines of source directly from the external memory
+        buffer to avoid having to move the data into Forth code
+        segment.
+
+
+
+

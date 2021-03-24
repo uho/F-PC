@@ -1,0 +1,20 @@
+\ STATUS.HLP    Display a status line at screen top.    by Tom Zimmer
+
+
+STATV           ( --- a1 )
+        A variable that tells us if we are displaying status or not.
+
+<.STAT>         ( --- )
+        Display the status line at the top of the screen.
+
+.STATUS         ( -- )
+        Test STATV, if it is on, then display the status line at the
+        top of the screen.
+
+STATON          ( --- )
+        Turn status displaying on.
+
+STATOFF         ( --- )
+        Turn status displaying off.
+
+

@@ -1,0 +1,55 @@
+\ COMMENT.HLP   Allow multiple line comments in files.  by Tom Zimmer
+
+<comment:>      ( --- )
+        Primitive used by "comment:".
+
+comment:        ( --- )
+        Start a multi-line comment. Patches <comment:> into RUN,
+        it then reads and throws away lines until "comment;"
+        is encountered.
+
+        Here is an example of usage:
+
+            comment: <- this marks the start line of a multi line comment.
+
+                this is a comment line somewhere in the middle.
+
+            comment; <- this marks the end line of a multi line comment.
+
+
+
+<.comment:>     ( --- )
+        A primitive used by ".comment:".
+
+.comment:       ( --- )
+        Starts a multi-line print statment. All lines following the
+        ".comment:" line will be printed to the display until a
+        "comment;" is encountered.
+
+<#if>           ( --- )
+        A primitive used by #IF.
+
+#if             ( bool --- )
+        Starts a multi-line compiler directive. If the BOOL passed
+        to #IF is true, then the lines following #IF will be executed.
+        If the BOOL is false, then the lines following #IF up to the
+        #ENDIF, will be ignored.
+
+        Here is an example of how #IF works:
+
+        true    ( --- f1 )
+        #if     True flag passed, this comment needs no preceeding \
+            cr .( This statment printed due to TRUE flag in #IF statment.)
+        #endif
+
+        false   ( --- f1 )
+        #if
+            .( This statment NOT printed due to FALSE flag in #IF statment.)
+        #endif
+
+
+#endif ;      \ just a noop for the #if TRUE case.
+        Ends a multi-line Compiler directive. See #IF.
+
+
+

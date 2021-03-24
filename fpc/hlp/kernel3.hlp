@@ -1,0 +1,566 @@
+KERNEL3.HLP            Edited by J. McKnight    1988-01-30 23:32
+
+>TYPE           ( adr len -- )
+        TYPE for multitasking systems.
+
+.(              ( -- )
+        Type the following string on the terminal.
+
+(               ( -- )
+        The Forth Comment Character. The input stream is skipped
+        until a ) is encountered.
+
+TRAVERSE        ( adr direction -- adr' )
+        Run through a name field in the specified direction.
+        Terminate when a byte whose high order bit is on is detected.
+
+DONE?           ( n -- f1 )
+        True if the input stream is exhaused or state doesn't match.
+
+CNHASH          ( cfa -- yadr )
+        Given cfa, get pointer into >NAME hash table in YSEG.
+
+CNSRCH          ( cfa ya maxyadr -- nfa failf )
+        Search for cfa between yadr and maxyadr in YSEG. Return nfa and
+        failure flag.
+
+N>LINK          ( nfa -- lfa)
+        Go from name field address nfa to link field address lfa.
+
+L>NAME          ( lfa -- nfa )
+        Go from link field address lfa to name field address lfa.
+
+BODY>           ( body -- cfa )
+        Go from body address to code field address cfa.
+
+NAME>           ( nfa -- cfa )
+        Go from name field address nfa to code field address cfa.
+
+LINK>           ( lfa -- cfa )
+        Go from link field address lfa to code field address cfa.
+
+>BODY           ( cfa -- body )
+        Go from code field address cfa to body address.
+
+NO-NAME         ( -- )
+        A dummy name, whose name field address is returned by >NAME
+        when the real name field can not be found.
+
+>NAME           ( cfa -- nfa )
+        Go from code field address cfa to name field address nfa.
+
+>LINK           ( cfa -- lfa )
+        Go from code field address cfa to link field address lfa.
+
+>VIEW           ( cfa -- vfa )
+        Go from code field address cfa to view field address vfa.
+
+VIEW>           ( vfa -- cfa )
+        Go from view field address vfa to code field address cfa.
+
+HASH            ( str-adr voc-ptr -- thread )
+        Given a string address and a pointer to a set of vocabulary chains,
+        returns the actual thread. The hash algorithm used is as follows:
+
+                (((firstchar*2)+secondchar)*2)+count)and(#threads-1)
+
+        This seems to provide a good distribution across the 64 threads in
+        1000 word FORTH vocabulary.
+
+
+(FIND)          ( here lfa -- cfa flag | here false )
+        Does a search of the dictionary based on a pointer to a vocabulary
+        thread and a string.  If it finds the string in the chain, it
+        returns a pointer to the cfa field inside the header. This field
+        contains the code field address of the body. If it was an immediate
+        word the flag returned is a 1. If it is non-immediate the flag
+        returned is a -1. If the name was not found, the string address is
+        returned along with a flag of zero. Note that links point to links,
+        and are absolute addresses.
+
+DROP.CONTEXT.I2*+@DUP   ( a1 -- n1 )
+        An auxiliary speed-up word whose function is denoted by its name.
+
+PRIOR.CHECK     ( n1 -- n1 f1 )
+        Equivalent to the sequence
+                    DUP PRIOR @ OVER PRIOR ! =
+        converted to code for speeding up FIND .
+
+OVER.SWAP.HASH.@   ( n1 n2 -- n1 n1 n2 n3 )
+        Another speed-up for FIND .
+
+%%FIND          ( addr false #vocs 0 -- cfa flag | addr false )
+        Actual high level search loop primitive, calls (FIND) for each
+        word through the vocabulary chain until found or until the end of
+        the chain is reached.
+
+%FIND           ( adr -- cfa flag | adr false )
+        The default version of FIND ( see below ).  This CODE primitive
+        does the setup for %%FIND then calls it if the name is not of zero
+        length.
+
+FIND            ( adr -- cfa flag | adr false )
+        Run through the vocabulary list searching for the name whose
+        address is supplied on the stack. If the name is found, return the
+        code field address of the name and a non-zero flag. The flag is -1
+        if the word is non-immediate and 1 if it is immediate. If the name
+        is not found, the string address is returned along with a false
+        flag.
+
+DEFINED         ( -- here 0 | adr false )
+        Look up the next word in the input stream. Return true if it
+        exists, otherwise false. Maybe ignore case.
+
+STACKUNDER      ( -- )
+        Abort with an error message "Stack underflow".
+
+STACKOVER       ( -- )
+        Abort with an error message "Stack overflow".
+
+WARNOVER        ( -- )
+        Print a warning message "Running out of CODE memory!" .
+
+(?STACK)        ( -- )
+        Default version of ?STACK to check stack depth for overfkow,
+        underflow, or if we ar close to running out of memory.
+
+?STACK          ( -- )
+        Check for parameter stack underflow or overflow and issue
+        appropriate error message if detected.
+
+STATUS          ( -- )
+        Indicate the current status of the system.
+
+INTERP          ( -- )
+        The default Forth Interpret Loop .
+
+INTERPRET       ( -- )
+        The Forth Interpret Loop. If the next word is defined, execute it,
+        otherwise convert it to a number and push it onto the stack.
+
+PRINT           ( | <words-to-be-interpreted> -- )
+        Interpret the following words, and output to printer.
+
+ALLOT           ( n -- )
+        Allocate more space in the dictionary.
+
+,               ( n -- )
+        Set the contents of the dictionary to the arbitrary 16-bit value on
+        the stack. 
+
+C,              ( char -- )
+        Same as , except uses an 8-bit value.
+
+PARAGRAPH     ( offset -- paragraph-inc )
+        Align the offset to a paragraph boundary.
+
+ALIGN           ( -- )
+        Used to force even addresses. A noop on the 8086.
+
+EVEN            ( n1 -- n2 )
+        Makes the top of the stack an EVEN number. A noop on the 8086.
+
+COMPILE         ( | <name> -- )
+        Compile the (typically not-immediate) following word <name> when
+        this definition executes. Name is later compiled into the LIST
+        dictionary space.
+
+IMMEDIATE       ( -- )
+        Mark the last Header as an Immediate word.
+
+LITERAL         ( n -- )
+        Compile the single integer from the stack as a literal.
+
+DLITERAL        ( d# -- )
+        Compile the double integer from the stack as a literal. 
+
+ASCII           ( | <char> -- n )
+        Compile the next character in the input stream as a literal ASCII
+        integer.
+
+CONTROL         ( | <char> -- n )
+        Compile the next character in the input stream as a literal ASCII
+        Control Character.
+
+CRASH           ( -- )
+        Default routine called by execution vectors.
+
+?MISSING        ( f1 -- )
+        Tell user the word does not exist.
+
+'               ( | <name> -- cfa )
+        Return the code field address of the next word <name>.
+
+[']             ( | <name> -- )
+        Like ' only used while compiling
+
+[COMPILE]       ( | <name> -- )
+        Force compilation of an immediate word
+
+"BUF            ( -- adr )
+        Address of a string buffer in normal memory.
+
+XEVEN           ( xdp -- xdp_even ) 
+        Convert an offset in list space to next even value, if not
+        already even.
+
+XALIGN          ( -- ) 
+        Align the pointer XDP to the next even address, if not already
+        even.
+
+X>"BUF          ( -- "buf )
+        Move an in-line string in list space to code space.        
+
+(")             ( | <string> -- adr len )
+        Return the address and length of the inline string, and continue
+        execution after the string.
+
+(X")            ( -- adr len )
+        Move a compiled string from list space to "BUF in code space,
+        and return the address and count of the string.
+
+%(.")           ( -- )
+        Type the inline string, and continue execution after the string.
+
+(.")            ( -- )
+        Type the inline compiled string, and continue execution after the
+        string. This is a defered word.
+
+,"              ( | <string> -- )
+        Add the following text string till a " to the dictionary in CODE
+        space.
+
+X,"             ( | <string> -- )
+        Add the following text string till a " to LIST space.
+
+."              ( | <string> -- )
+        Compile the string till a " to be typed out later. The string is
+        placed into LIST space. It is also displayed from LIST space.
+
+"               ( | <string> -- )
+        Compile the string into CODE space. Return address and length at
+        runtime.
+
+""              ( | <string> -- )
+        Compile the string into LIST space. String is moved to CODE space
+        at runtime returning address and length.
+
+">$             ( a1 len -- a2 )
+        Convert address a1 and length len of a string created with "
+        into a counted string address a2.  This word relys on the fact
+        that " really creates counted strings, but converts them to
+        address and length on execution.
+
+FENCE   is the limit address for forgetting.
+
+TRIM            ( fadr voc-adr -- )
+        Change the hash pointers in a vocabulary so that they are all
+        less than a specified value, fadr.
+
+(FRGET)         ( code-adr relative-link-adr -- )
+        Forgets part of the dictionary. Both the code address and the
+        header address are specified, and may be independent. (FRGET)
+        resets all of the links and releases the space.
+
+FORGET          ( | <name> -- )
+        Forget all of the code and headers before <name>. FORGET must be
+        used with caution, if you are using DEFERS or UDEFERS, FORGET will
+        not know about these chains, so they must be unlinked before using
+        FORGET or disaster WILL strike.
+
+?ERROR          ( a1 n1 f1 -- )
+        If f1 true, display message a1,n1 and QUIT. Change this to alter
+        the way ABORT" works.
+
+(?ERROR)        ( a1 n1 f1 -- )
+        Default for ?ERROR. If f1 true, display message a1,n1 reset stacks,
+        turn off printing and QUIT.
+
+(ABORT")        ( f1 -- )
+        The Runtime code compiled by ABORT". Uses ?ERROR, and resets
+        return stack.
+
+ABORT"          ( f1 | <message" -- )
+        If the flag is true, issue <message> and ABORT.
+
+ABORT           ( -- )
+        Clear the data stack and QUIT; no message is displayed.
+
+?CONDITION      ( f1 -- )
+        Simple compile time error checking. Usually adequate.
+
+>MARK           ( -- adr )
+        Set up for a Forward Branch.
+
+>RESOLVE        ( adr -- )
+        Resolve a Forward Branch.
+
+<MARK           ( -- adr )
+        Set up for a Backwards Branch.
+
+<RESOLVE        ( adr -- )
+        Resolve a Backwards Branch.
+
+?>MARK          ( -- f1 adr )
+        Set up a forward Branch with Error Checking.
+
+?>RESOLVE       ( f1 adr -- )
+        Resolve a forward Branch with Error Checking.
+
+?<MARK          ( -- f1 adr )
+        Set up for a Backwards Branch with Error Checking. 
+
+?<RESOLVE       ( f1 adr -- )
+        Resolve a backwards Branch with Error Checking.
+
+LEAVE           ( -- )
+        Immediately exit a DO-LOOP.
+
+?LEAVE          ( f1 -- )
+        Immediately exit a DO-LOOP if the flag is true; else continue
+        looping.
+
+BEGIN           ( -- )
+        Used in the form:           BEGIN ... AGAIN, 
+                                or  BEGIN ... flag UNTIL, 
+                                or  BEGIN ... flag WHILE ... REPEAT
+
+AGAIN           ( -- )
+        Unconditional jump to just after BEGIN in a BEGIN ... AGAIN loop.
+
+UNTIL           ( f1 -- )
+        Marks end of a BEGIN ... UNTIL loop; terminate if flag f1 is true.
+
+WHILE           ( f1 -- )
+        Used in the form  BEGIN <loop> flag WHILE <true> REPEAT.
+        Repeat <loop> and <true> clauses while the flag f1 is true (really,
+        non-zero).
+        
+REPEAT          ( -- )
+        Unconditional backward branch to just after BEGIN in a  
+        BEGIN  <loop>  flag WHILE  <true>  REPEAT   loop. 
+
+DO              ( limit start -- )
+        Initialize a loop structure with index running from start to limit-1. 
+        Used in the form   DO ... LOOP   or  DO ... +LOOP
+
+?DO             ( limit start -- )
+        Same as DO except that the loop will not be executed if start = lim.
+
+LOOP            ( -- )
+        Terminate a loop structure. Increment loop index by one and repeat
+        <loop-body> until loop index crosses the boundary between limit and
+        limit - 1.
+        Used in the form   DO <loop-body> LOOP.
+
++LOOP           ( n -- )
+        Terminate a loop structure. Increment loop index by n and repeat
+        <loop-body> until loop index crosses the boundary between limit and
+        limit - 1.
+        Used in the form   DO <loop-body> LOOP.
+
+IF              ( f1 -- )
+        Used in the form: f1 IF <true> ELSE <false> THEN  (ELSE is
+        optional). If f1 is false, branches forward to <false> or after
+        THEN.
+
+ELSE            ( -- )
+        Used in the form: flag IF <true> ELSE <false> THEN. If flag is
+        false, branches forward to <false>.
+
+THEN            ( -- )
+        Terminate a branch structure.
+        Used in the form   flag IF ... ELSE ... THEN
+
+FORWARD         ( -- )
+        Do not use this word.  It may well be deleted in the future!
+ 
+CONTINUE        ( -- )
+        Do not use this word.  It may well be deleted in the future!
+
+BREAK           ( -- ) 
+        Do not use this word.  It may well be deleted in the future!
+
+AFT             ( -- )
+        Do not use this word.  It may well be deleted in the future!
+
+FOR             ( n1 -- )
+        Begin a count-down loop.  The index  I  inside the loop is
+        set initially to n1 .
+
+NEXT            ( -- )
+        If the loop counter I is non-zero, decrement it and loop back
+        the the code following the matching  FOR .  If the loop counter
+        is zero, discard it and continue execution.
+
+,VIEW           ( -- )
+        Calculate and compile the VIEW field of the header. 
+
+NOHEADROOM      ( -- )
+        Print an error message indicating that Head space is exhausted.
+
+NOLISTROOM      ( -- )
+        Print an error message indicating that List space is exhausted.
+
+SPCHECK         ( -- f1 f2 )
+        Check stack and list space.
+
+%ALREADY_DEF    ( a1 -- a1 ) 
+        If the word at address a1 is already defined, print a warning
+        message.
+
+?ALREADY_DEF    ( a1 -- a1 ) 
+        If the word at address a1 is already defined, print a warning
+        message.
+
+"HEADER         ( str-addr -- )
+        The string <name> to make a header, and initialize  the code field.
+        First we check for duplicates. Then we make  entry in >NAME hash
+        table if appropriate. Next lay down the  view field. Then we hook
+        in to the correct thread an make the  link field. We set up LAST so
+        that it points to our name  field. Then we copy the name to YSEG and
+        delimit the name  field bits. Then we make the pointer in the YSEG to
+        the CFA.  Then we add a stopper entry to >NAME hash table in case of
+        a large ALLOT or end of dictionary. Does all of its work in HEAD
+        space, has no effect on CODE space whatsoever.
+
+,CALL           ( -- )
+        Compiles a CALL to address ZERO, the actual branch address is set
+        later by ;USES or ;CODE.  See CREATE, VARIABLE, CONSTANT & :
+
+,JUMP           ( -- )
+        Compiles a JMP to address ZERO, the actual jump address is set
+        later by ;USES or ;CODE.  See CREATE, VARIABLE, CONSTANT & :
+
+<HEADER>        ( | name -- )
+        Creates a NAME header in HEAD space, but compiles absolutely
+        nothing in CODE space.  The head created, does point at HERE
+        though.
+        
+HEADER          ( | <name> -- )
+        Creates a NAME header in HEAD space, but compiles absolutely
+        nothing in CODE space.  The head created, does point at HERE
+        though.  A defered word.
+
+"CREATE         ( str-adr -- )
+        Make a header for the word pointed to at the string address.
+
+CREATE          ( | <name> -- )
+        Make a header for the next word in the input stream.
+
+!CSP            ( -- )
+        Save the current stack level for error checking. 
+
+?CSP            ( -- )
+        Issue error message if stack has changed.
+
+HIDE            ( -- )
+        Removes the Last definition from the Header Dictionary.
+
+REVEAL          ( -- )
+        Activates the Last definition in the Header Dictionary.
+
+(;USES)         ( -- )
+        Set the code field to the contents of following cell 
+
+;USES           ( -- )
+        Similar to the traditional ;CODE except used when  run time code has
+        been previously defined.
+
+(;CODE)         ( -- )
+        Set the code field to the address of the following. 
+
+;CODE           ( -- )
+        Used for defining the run time portion of a defining  word in low
+        level code.
+
+DOES>           ( -- )
+        Specifies the run time of a defining word in high  level Forth.
+
+ASSEMBLER       ( -- )
+        The VOCABULARY that contains all of the assembler definitions.
+
+[               ( -- )
+        Stop compiling and start interpreting.
+
+]               ( -- )
+        The Compiling Loop. First sets Compile State. Looks up the next word
+        in the input stream and either executes it or compiles it depending
+        upon whether or not it is immediate. If the word is not in the
+        dictionary, it converts it to a number, either single or double
+        precision depending on whether or not any punctuation was present.
+        Continues until input stream is empty or state changes.
+
+MAKEDUMMY       ( | <name> -- )
+        Make a dummy : definitions out of <name>.  Effectively a NOOP,
+        used by ANEW.
+
+ANEW            ( | <name> -- )
+        Define A NEW definition <name>.  If <name> already exists, then
+        we FORGET it before making the new one.  A nice utility to allow
+        re-loading a file again and again for debugging purposes.  I don't
+        know where this furst originated, but I learned of it from
+        RAY ISAAC at CALOS, a real neat trick.
+
+(:)             ( -- )
+        Begin a colon definition.
+
+:               ( -- )
+        Defines a colon definition. The definition is hidden until it is
+        completed, or the user desires recursion. The runtime for : adds a
+        nesting level.
+
+;               ( -- )
+        Terminates a colon definition. Compiles the runtime code to remove a
+        nesting level, and changes STATE so that compilation will terminate.
+
+RECURSIVE       ( -- )
+        Allow the current definition to be self referencing.
+
+CONSTANT        ( n | <name> -- )
+        A defining word that creates constants. At runtime the value of the
+        constant is placed on the stack.
+
+VALUE           ( n | <name> -- )
+        A defining word that creates values.  At runtime the contents of the
+        value is placed on the stack.  The contents of the value may be 
+        changed by using =: .
+
+VARIABLE        ( | <name> -- )
+        A defining word to create variables. At runtime the address of the
+        variable is placed on the stack.
+
+DEFER           ( | <name> -- )
+        Define a vectored execution word. These are initially set to display
+        an error message. They are initialized with IS. 
+
+VOCABULARY      ( -- )
+        Defines a new Forth vocabulary. 
+
+DEFINITIONS     ( -- )
+        Subsequent definitions will be placed into CURRENT. 
+
+2CONSTANT       ( d# | <name> -- )
+        Create a double number constant.
+
+2VARIABLE       ( | <name> -- )
+        Create a double length variable.
+
+<RUN>           ( -- )
+        Interpret or compile whatever is in the TERMINAL INPUT BUFFER.
+        Tests STATE, and does the appropriate thing.
+
+RUN             ( -- )
+        Interpret or compile whatever is in the TERMINAL INPUT BUFFER.
+        Tests STATE, and does the appropriate thing.  A defered word.
+
+ERRFIX          ( -- )
+        A defered word to handle certain error conditions.
+
+(?ERROR)        ( adr len f1 -- )
+        If the flag f1 is false, drop the other two parameters.  If the
+        flag is true, restore  RUN  to its default value, execute ERRFIX , 
+        initialize the stack pointer, set PRINTING off, display the
+        message at adr, then execute  QUIT .
+
+

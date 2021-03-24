@@ -1,0 +1,50 @@
+\ BOOKMARK.HLP  Mark your place in a file, to come back to.
+
+BOOKMARK.SEQ
+
+          Jerry Modrow had a bright idea that it would be nice to be
+        able to mark your place in a file, such that you could go
+        back to that place at a later time after having done a VIEW.
+        This is an implimentation of that concept.
+
+
+#marks          ( --- N1 )
+        A constant that specifies the number of Book Marks being
+        defined.
+
+markhandles     ( --- a1 )
+        An array that holds the Book Mark file handles.
+
+marklines       ( --- a1 )
+        an array that holds the Book Mark file offsets.
+
+clr_marks       ( --- )
+        A word that clears the Book Mark arrays, so there will be no
+        current Book Marks set.
+
+mark_init       ( --- )
+        A word that gets executed at COLD START time, to
+        automatically clear the Book Mark arrays.
+
+
+makemarkset     ( n1 --- )
+        A defining word that builds the Set Book Mark words.
+
+m1
+m2
+m3              ( --- )
+        These are the Set Book Mark words, performing one of these,
+        sets its mark to remember the file and file offset currently
+        set for later restoral.
+
+returntomark    ( n1 --- )
+        A defining word that builds the Return to Book Mark words.
+
+bm1
+bm2
+bm3             ( --- )
+        These are the Return to Book Mark words, performing one of
+        these returns you to the file and file offset that was set
+        when the equivelant M1, M2, or M3 word was executed.
+
+

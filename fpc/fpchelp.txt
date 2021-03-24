@@ -1,0 +1,527 @@
+
+øEDMAIN          Help with F-PC Forth & the SED Editor
+                   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ   Press ùF10 to leave Help
+
+            ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+            ³ Welcome to the Hypertext HELP system for F-PC ³
+            ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ùHypertext     Ä What is Hypertext anyway.   Making my own ùHyper-System .
+ùGet-Started   Ä Help me get started with F-PC.
+ùSED-Help      Ä Help with editor commands and functions.
+ùForth-Help    Ä Help with the F-PC Forth commands.
+ùF-PC-Utils    Ä Information on the Utilities built into F-PC.
+ùPreferences   Ä Information on the configuring F-PC.
+
+ùWhats-New     - What are the latest changes to F-PC
+
+            ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+            ³ Move the cursor with TAB onto a word shown in ³
+            ³ùreverse_video and press F9 or the Enter key.  ³
+            ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+øHypertext                 Hypertext Introduction
+                           ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  Hypertext is a technique for interconnecting information for the purpose
+of making it easier to locate desired sections of that information.  You
+can think of Hypertext as a sort of bookmark and index system. You can, with
+a single key, go off to look at some information related to what you are
+currently looking at. When you are done looking at that other information,
+you can return to where you were with another single key.
+
+  Lets try it to see how it works.                   ùOther-Information
+
+  Notice the word pair shown above shown in reverse video; press the TAB
+key to move to that word.  Now you are ready to "link" to
+Other-Information.  You can perform the link in one of three ways:
+
+        Press Enter             Press F9                Press Alt-B
+(links ONLY while browsing)  (the link key)           (B meaning BROWSE)
+
+  Press any of the above keys NOW!     When you come back unlink with ùF10 .
+
+øOther-Information     Other information on Hypertext
+                       ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+   You are now at least +2 levels down in the Hypertext links. The number
+ you see at the upper right hand corner of the screen tells you how many
+ links FORWARD have been performed. Each time you link forward (like an
+ index) to a new piece of information, your previous location is saved
+ (like a bookmark).  You can link forward exploring new information up to
+ twenty (20) times before the link save stack fills up.
+
+  When it comes time to "unlink", The ùF10 key will unlink to the exact
+previous place where you linked from.
+
+   This Hypertext system is really implemented as a special "mode" of the
+ SED editor. You are in fact in the SED editor now, in what I call BROWSE
+ mode.  You are allowed to look around, but you can't make any changes.
+
+
+
+        Press ùF10 to UNLINK,        or          Press PgDn for more.
+
+                        More Information on the Browser
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+   Certain keys perform special functions while in BROWSE mode. As
+ mentioned before, the TAB key moves to the next reverse video link, and
+ Enter performs a link to the current word under the cursor.
+
+   BROWSE mode is indicated visually by the word BROWSE in the upper left
+ corner, and the double line screen border.
+
+   In Browse mode, you can use the editor PgDn & PgUp as well as Arrow
+ keys to move through a file, or you can move the cursor to a word of
+ interest, and press F9 or Enter to link directly to that topic.
+
+   Actually, F-PC will allow you to try linking to ANY word in a file. You
+ can link to ANY Forth word for example.  If no link is available for a
+ word, you will receive a message to that effect. In a documentation file
+ like this, linked words are shown in reverse video to make them stand out.
+
+        Press ùF10 to UNLINK,        or          Press PgDn for more.
+
+                            Browser Introduction (cont.)
+                            ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+   You can browse a word with the mouse by positioning the mouse cursor
+ over a word, then clicking twice with the left mouse button. The word will
+ be looked up in the dictionary and a browser will be opened on its source.
+
+   You can get to the HELP for a word rather than its source, by pressing
+ Alt-H when the cursor is positioned on a word. You can also double-click
+ with the left mouse button while holding down the Alt key to get HELP on a
+ word.
+
+   If you are nested deeply into a complex browse, you can Unnest quickly to
+ the top level edit or browse, by using the File menu command "Unlink to
+ level one". The key sequence for this command is Shift-F10 or ESC-F-U.
+
+
+
+
+        Press ùF10 to UNLINK,        or          Press PgDn for more.
+
+                            Browser Introduction (cont.)
+                            ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+   You can link THROUGH a DEFERRED Forth word by pressing Alt-F9. This is
+ useful for deferred words like ùEMIT . F9 will link to the source for one
+ of these words, and Alt-F9 will link to its deferred function.
+
+        Position the cursor with TAB on ùEMIT here or above.
+        press F9 then ùF10 to return.
+
+  You will have seen the source for EMIT which is a deferred word and not
+very interesting.
+
+        Now press Alt-F9 then ùF10 to return.
+
+  You will see the source for (EMIT) which is the function in EMIT.
+
+  The next screen gives you information on how to create your own hypertext
+links.
+        Press ùF10 to UNLINK,        or          Press PgDn for more.
+
+øHyper-System           Making your own Hyper System
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  Creating a hypertext system with F-PC or the Z editor is very easy.
+There are only two special commands to learn, and all the rest is just
+text. The two commands are Alt-F3 which is used to specify words that are
+to be shown in reverse video, and Alt-F5 which specifies the destination of
+a link.
+
+  To create a linkage (you must be in edit mode, not browse mode), pick a
+word, like "MyWord". Type the word into the document where you want to
+link FROM. Position the cursor on the word and press Alt-F3; this marks the
+word to be displayed in reverse video. Now go to where you want MyWord to
+link to, either in the same or another file. Type "MyWord" in again at the
+left margin of the document. Position the cursor on the word and press
+Alt-F5; this will mark the word as the destination of a link.
+
+  The link will not take effect until you have re-compiled the HYPER.NDX
+file with with the Z editor's ESC-F-B (Build index) command, or INDEX.COM.
+You must include your filename in NEWZ.CFG or INDEX.CFG.
+                                                Press ùF10 to UNLINK
+
+øGet-Started            Help Me Get Started with F-PC
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  F-PC can be a lot to BYTE off at one time; start slowly and examine a few
+things at a time.
+
+  There are several words that are useful in learning about this Forth
+system. Here is a list to remember:
+
+ùHELP  <word>           Help on using <word>.
+ùSEE   <word>           Decompile <word> to the screen.
+ùVIEW  <word>           Browse the source for <word>.
+ùWORDS <sub-string>     Look for words in the dictionary containing
+                        <sub-string>.
+ùF1-key                 General Help/Browser Hypertext system.
+                        (you are in it NOW)
+
+       You might want to Press Shift-PrtSc to print a copy this screen
+
+ùMore-Details           More information on the F-PC environment.
+
+øSED-Help            Table of Contents for Help with SED
+                     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ù*Copy*              Cut, Copy, Paste & Append
+ù*Drawing*           Drawing lines & Sorting
+ù*FuncKeys*          Function key assignments
+ù*Keypad*            The Keypad is fully supported
+ù*Leaving*           Leaving & Printing
+ù*Line*              Line & Word commands
+ù*Margin*            Margin Control commands
+ù*Menus&Mouse*       Using pulldown menus and the MOUSE.
+ù*More*              Bold, Underline & DOS
+ù*Other*             Other functions
+ù*Search*            Search, Replace & Goto
+ù*Specs*             SED Specifications
+ù*WordStar*          SED uses WordStar movement key sequences.
+                                              ÚÄÄÄÄÄÄ¿     ÚÄÄÄÄÄÄ¿
+     You can move through this help file with ³ PgDn ³ and ³ PgUp ³ or,
+                                       ÚÄÄÄÄÄÄÁÄÂÄÄÄÄÙ     ÀÄÄÄÄÄÄÅÄÄÄÄÄÄÄ¿
+     use TAB to place the cursor on an ³ *Item* ³ above and press ³ Enter ³
+     to browse that item.              ÀÄÄÄÄÄÄÄÄÙ                 ÀÄÄÄÄÄÄÄÙ
+
+ø*Menus&Mouse*            Menu & Mouse Control   Press ùF10 to pop Help level
+                          ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  SED provides both pulldown menus, and fairly complete mouse support.
+Select ù*Menus* for a description of using pulldown menus with the
+keyboard.
+
+  To use a mouse in SED you must have a compatible mouse driver (like
+MOUSE.COM) already installed in your autoexec.bat. When F-PC starts up, it
+looks for the presence of a mouse driver, and activates the mouse if the
+driver is present.
+
+  As you are looking at this screen you will see arrows to the right and
+lower right of the screen. These arrows can be used to scroll the screen,
+showing more text from the direction the arrow is pointing by clicking the
+left mouse button. The ùF10 or +1 etc. in the upper right corner can be used
+like the ùF10 key by positioning the mouse and clicking the left button.
+You can also change the INSERT/OVERWRITE mode by clicking at the top left
+of the screen on INSERT. Help can be obtained by pressing HELP at the lower
+left. The cursor can be positioned by clicking within the edit window with
+the left mouse button.  The right mouse button is the same as the ESC key.
+
+ø*Menus*                Using Pull Down Menus    Press ùF10 to pop Help level
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+   SED uses Pull Down menus to make many functions available while editing.
+Press the ESC key NOW to see the menubar appear at the top of the screen.
+
+   If you have pressed the ESC key, then you are looking at a list of menu
+ titles starting with "File" which should be shown in reverse video, through
+ "Help" on the right.  Use the keypad right arrow key to walk along the
+ menubar. As you press right arrow, the hilighting moves along the menubar.
+ Continue to press right arrow until "File" is again the hilighted menu. Now
+ press down arrow to pull the menu down.  Notice the last two items of the
+ "File" menu, Exit and Quit.  To the right of these menu items are
+ displayed the shortcut keys F10 and Alt-F10. Any menu function can be
+ performed with the shortcut key rather than moving through the menu and
+ pressing Enter.  If you press the right arrow while the "File" menu is
+ pulled down, you will walk along the menu bar with each menu "open", so
+ you can see what menu items are available.  You can also press the first
+ CAPITALIZED letter of a menu item to perform the item.
+
+
+ø*WordStar*              WordStar Movement Keys  Press ùF10 to pop Help level
+                         ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+        ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄ¿
+        ³ ^W scroll  ³ ^E line   ³ ^R page   ³ ^T Word Del ³^Y Line Del ³
+  ÚÄÄÄÄÄÁÄÄÄÄÄÂÄÄÄÄÄÄÄÁÄÄÄÄÂÄÄÄÄÄÄÄÁÄÄÄÄÄÂÄÄÄÄÄÄÁÄÄÄÄÄÂÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÂÄÄÙ
+  ³ ^A -word ³  ^S -left ³  ^D right- ³  ^F word- ³  ^G char Delete ³
+  ÀÄÄÄÄÄÂÄÄÄÄÄÁÄÄÄÄÄÄÄÂÄÄÄÄÁÄÄÄÄÄÄÄÂÄÄÄÄÄÁÄÄÄÄÄÄÂÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÙ
+        ³ ^Z scroll  ³ ^X line   ³ ^C page   ³ ^V INS toggle ³ ^=Control
+        ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+  SED supports a subset of the WordStar control keys used to move around a
+document.  The keypad is also supported, as can be seen in the next screen.
+
+
+
+  Function key assignments are shown under the ù*Keypad* entry.
+
+
+ø*Keypad*                       Keypad keys      Press ùF10 to pop Help level
+                                ÄÄÄÄÄÄÄÄÄÄÄ
+                     ÚÄÄÄÄÄÄ¿
+                     ³ Esc  ÃÄ = Pops up the MENU display
+                     ÀÄÄÄÄÄÄÙ
+  Ctrl-Home = Beginning of file      Up-arrow = Up a line in document
+                           ÚÄÄÁÄÄÄÂÄÄÁÄÄÄÂÄÄÄÄÄÄ¿
+   Goto beginning of line Ä´ Home ³     ³ PgUp ÃÄ Previous page in document
+                           ÃÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄ´
+ Left a character on line Ä´  -  ³      ³  -  ÃÄ Right a character on line
+ ( with Ctrl, left word)   ÃÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄ´  (with Ctrl, right word)
+         Goto end of line Ä´ End  ³     ³ PgDn ÃÄ Next page in document
+                           ÀÄÄÂÄÄÄÁÄÄÂÄÄÄÁÄÄÄÄÄÄÙ
+  Ctrl-End  = End of file ÄÄÄÄÙ      Down-arrow = Down a line in document
+
+                           ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄ¿
+  Insert/Overwrite toggle Ä´   Insert    ³ Del  ÃÄ Delete char under cursor
+                           ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÙ
+
+        Function key assignments are shown on the next screen.
+
+ø*FuncKeys*               Function Key Assignments
+                          ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+                             ÚÄÄÄÄÄÂÄÄÄÄÄ¿
+           Call up F-PC HELP ³ F1  ³ F2  ³ Move cursor to TOP of screen
+  Alt-F1 rotate through open ³     ³     ³
+  files. ùFiles-More         ÃÄÄÄÄÄÅÄÄÄÄÄ´
+    Set mark at current line ³ F3  ³ F4  ³ Move cursor to BOTTOM of screen
+                             ³     ³     ³
+                             ÃÄÄÄÄÄÅÄÄÄÄÄ´
+       Copy a line from mark ³ F5  ³ F6  ³ Search (asks for search string)
+                             ³     ³     ³ Use with Alt to repeat a search
+                             ÃÄÄÄÄÄÅÄÄÄÄÄ´
+          Line & box drawing ³ F7  ³ F8  ³ Replace (asks for replace string)
+                             ³     ³     ³ Use with Alt to replace & search
+                             ÃÄÄÄÄÄÅÄÄÄÄÄ´
+         Link browse to word ³ F9  ³ F10 ³ Exit & save, Unlink one level
+  Use Alt-F9 to link through ³     ³     ³ Use with Alt to leave and discard
+  a deferred word.           ÀÄÄÄÄÄÁÄÄÄÄÄÙ changes. Use Shift-F10 to
+                                           Unlink to the top level.
+
+ø*Leaving*                                       Press ùF10 to pop Help level
+
+               Leaving, Saving, and Printing under the FILE menu
+               ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+        Menu command                                        Shortcut key
+
+        ESC F Q    = Quit, save changes and unlink 1 level.     ùF10
+        ESC F A    = Abort 1 level & discard changes.        Alt-F10
+        ESC F U    = Unlink all nest levels to level 1.    Shift-F10
+
+        ESC F S    = Save changes and continue editing.       Ctrl-U
+        ESC F W    = Write current file to a new filename.     Alt-W
+
+        ESC F P    = Enter the Print menu display.             Alt-P
+
+
+
+
+
+
+ø*Search*                  Search, Replace & Goto  Press F10 to pop Help level
+                           ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+                          Search for text commands
+                          ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                     F6 = Search the first time (prompts for text)
+                 Alt-F6 = Search for same again
+               Shift-F6 = Search for same again BACKWARDS
+           Shift-Alt-F6 = Srch again cAsE Sensitive
+
+                           Replace text commands
+                           ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                     F8 = Replace the first time (prompts for text)
+                 Alt-F8 = Replace same again and search same again
+           Shift-Alt-F8 = Same as Alt-F8, but cAsE sensitive
+               Shift-F8 = Replace All occurances
+
+                                Goto Page
+                                ÄÄÄÄÄÄÄÄÄ
+                  Alt-G = Goto specified page/line or next/prev paragraph
+
+ø*Copy*                     Cut, Copy & Paste    Press ùF10 to pop Help level
+                            ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                         Mark and Copy in memory
+                         ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                    F3  = MARK first line of copy or cut
+                    F5  = Copy a line from MARK to cursor line
+
+           Use F3 to MARK the start of ALL Cut, Copy & Append operation.
+
+                     Cut, Copy, Paste & Append with DISK
+                     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+          * Alt-X  = Cut from MARK through cursor line to TEMP.SEQ
+          * Alt-C  = Copy from MARK through cursor line to TEMP.SEQ
+          * Alt-V  = Paste Cut/Copied text at cursor line from TEMP.SEQ
+          * Alt-A  = Append from MARK through cursor line to TEMP.SEQ
+
+                            Paste Date and Time
+                            ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+          Alt-O-P  = Paste the current date and time into text at cursor.
+     * Use SHIFT-Alt to specify the file to Cut, Copy, Paste or Append with.
+
+ø*Line*                    Line & Word Commands  Press ùF10 to pop Help level
+                           ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+          Split and Join lines                   Word Delete & Undelete
+          ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ                   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Ctrl-N  = Split this line at the cursor    Ctrl-T  = Word delete and save
+  Alt-J  = Join this line with next line     Alt-U  = Word Undelete *
+
+
+                        Line Delete and Undelete
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+         * Ctrl-Y  = Delete this line and save in delete buffer
+         *  Alt-Y  = Undelete a deleted line from the delete buffer
+
+         * The line delete buffer can hold 100 deleted lines.
+         * The word delete buffer can hold 128 characters total.
+
+
+ø*Margin*                    Margin control      Press ùF10 to pop Help level
+                             ÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+          Ctrl-L  = Set left margin to current column.
+
+           Alt-L  = Prompt for the number of spaces to insert before
+                    all lines of the current paragraph. Table move right.
+                                                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     Shift-Alt-L  = Remove all space from the current paragraph to the
+                    right of the current cursor column. Table move left.
+                                                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+         Alt-S-R  = Prompt for value to set Right Margin.
+
+            Home  = Set cursor to column 0 and reset Left Margin to 0.
+
+          Ctrl-B  = Reformat current paragraph.
+
+         The left margin is also set at the new cursor position after
+         pressing TAB when there are only spaces to the left of the
+         cursor.  This is useful for maintaining or setting an indent
+         while editing source.
+
+ø*Other*                       Other help        Press ùF10 to pop Help level
+                               ÄÄÄÄÄÄÄÄÄÄ
+
+                         Write to a new filename
+                         ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     Alt-W  = Write the file in memory to a NEW file (prompts for filename)
+                              TAB Control
+                              ÄÄÄÄÄÄÄÄÄÄÄ
+     Alt-T   = Set tab increment to current column value.
+     Alt-O-X = eXpand all TABs to spaces in the file in memory.
+                             Case Conversion
+                             ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     Alt-O-U = Convert the current cursor line to UPPERCASE.
+     Alt-O-L = Convert the current cursor line to lowercase.
+     Alt-O-W = Toggle case of WORD under cursor, starting at cursor.
+     Alt-O-C - Toggle case of the CHARACTER under the cursor.
+                             Help on a WORD
+                             ÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     Alt-H   = Shows help on the word under the cursor while editing.
+
+
+ø*Specs*                     SED Specifications  Press ùF10 to pop Help level
+                             ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+             ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+             ³ Maximum Characters in a File   limited by memory ³
+             ³                         640k can edit ÷120k file ³
+             ³                         512k can edit  ÷64k file ³
+             ³                                                  ³
+             ³ Maximum Lines in a File       Adjusted to memory ³
+             ³                              640k has 8000 lines ³
+             ³                              512k has 6000 lines ³
+             ³                                                  ³
+             ³ Maximum Characters in a Line                 132 ³
+             ³                                                  ³
+             ³ Maximum # of Deleted Lines Saved   Adj to memory ³
+             ³      available edit memory > 48k, save 100 lines ³
+             ³                            < 48k, save  20 lines ³
+             ³                                                  ³
+             ³ Printed # of Lines on a Page                  55 ³
+             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ø*Drawing*                 Line Drawing & Sorting  Press F10 to pop Help level
+                           ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+   ÚÂÂÂÂÂÂÂ¿               Line drawing commands
+   ÀÁÁÅÅÅÁÁÙ               ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+      ÃÅ´
+      ÃÅ´            F7          Start/Stop drawing lines
+      ÃÅ´            Ins         Pen up/down command
+      ÃÅ´            -           Select single width lines (minus)
+      ÃÅ´  Ú¿        =           Select double width lines (equal)
+      ÀÁÙ  ÀÙ        Del         Clear char under cursor
+                     Arrows      Move and draw a line
+   ÚÂÂÂÂÂÂÂ¿
+   ÀÁÁÁÁÁÅÅ´
+         ÃÅÙ         Sorting the lines of a Paragraph
+        ÚÅÙ          ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+       ÚÅÙ
+      ÚÅÙ            Alt-F7      Sort paragraph lines starting at current
+     ÚÅ´                         line and column. This sort is cAsE
+    ÚÅÅÅÂÂÂ¿  É»                 sensitive.
+    ÀÁÁÁÁÁÁÙ  È¼   Shift-Alt-F7  Sort NON-case sensitive.
+
+ø*More*                        More Neat Stuff   Press ùF10 to pop Help level
+                               ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+   SED can "Shell" to DOS with "ESC F C" under the FILE menu.  This is useful
+ for manipulating files on a disk that is TOO full to save to, or to go out
+ and format a new disk if needed.  You can even run other programs from within
+ the editor if you need to.  Type EXIT to get back to SED.
+
+                 BOLD UNDERLINE & USER DEFINED PRINT CONTROL
+                 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+                  %B This line will be printed BOLD %B
+                  %U This line will be printed UNDERLINED %U
+                %B%U This line will be both BOLD and UNDERLINED %U%B
+
+                %1, %2 & %3 are user defined printer attributes.
+                   See an example in the file PROPRINT.SEQ.
+
+
+
+
+øF10                     What is the F10 key for?
+                         ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+   The F10 key "unlinks" or leaves one edit/browse level. If you were
+ editing, your changes are saved, and you will return to the previous file
+ you were editing or browsing. If you were at the first level of editing,
+ F10 will leave the editor to a screen to choose new file.
+
+   The Shift-F10 key will take you to edit/browse level one.  This saves you
+ from having to unlink through many levels with F1, and takes you directly
+ to level one.  If you were already on level one, Shift-F10 will leave the
+ editor.
+
+   Clicking the left mouse button on the F10, +1 or +2 at the upper right
+ hand corner will do the same as pressing the F10 key.
+
+
+
+        Press F10 now to return to where you were before coming here.
+
+
+øFiles-More        More on using F-PC with multiple files       F10 pops up
+                   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+   Though the File Open command ESC-F-O or Ctrl-O you can open up to 20
+ files while in the F-PC editor.  When you open more than one file F-PC
+ keeps track of where you were in each file, but only really edits one file
+ at a time.  Files get swapped in and out of memory as required. This is
+ slower than keeping all of the file in memory, but on a hard disk system
+ the performance is still acceptable.
+
+   Alt-F1 can be used to rotate through the file that have been opened.
+ Its reverse command is Shift-Alt-F1 which will rotate through the open
+ files in the opposite direction.
+
+   Shift-F1 will popup a window for you to select a particular file
+ directly, avoiding the time required to rotate through several files to
+ get to the one you want.
+
+   To leave the editor, and close all files, use the File menu command
+ ESC-F-X.
+
+

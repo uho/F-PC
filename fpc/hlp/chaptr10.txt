@@ -1,0 +1,735 @@
+CHAPTER 10.  USER CONTRIBUTIONS
+
+
+
+
+
+This is the fun part of this manual because it shows the human side of
+F-PC.  F-PC is a platform, from which one can launch whatever his
+imagination carries him.  Here you will see how different people use this
+platform to build a wide variety of programs doing totally different
+things.  Many of them deal with very serious subjects, like object
+oriented programming, floating point mathematics, etc.  Many of them are
+very lighthearted, drawing pictures, running a clock, printing a banner,
+and so forth.  With such a broad spectrum of topics, you will surely find
+many programs useful and enlightening.  We hope that in seeing these
+applications, you will also be motivated to polish up some of your
+programs by adapting them to the F-PC environment and contribute them to
+this section.
+
+In F-PC 2.25 there were a set of .ARC files containing contributions from
+many users:
+
+        ZIMMER.ARC      Utilities provided by Tom Zimmer.
+        SMITH.ARC       Floating pointing packages by Bob Smith.
+        CURLEY.ARC      Disassembler by Charles Cureley.
+        TING.ARC        Multitasking and other applications by C. H. Ting.
+        SMILEY.ARC      Graphics by Mark Smiley.
+        SLICE_FF.ARC    Slice data base by Robert Gesswein.
+        MISC.ARC        Extended data objects by George Hawkins.
+        MODROW.ARC      Clock by Jerry Modrow.
+        TANG.ARC        Multiple precision integer math by S. Y. Tang.
+
+In F-PC 3.5,  only the ZIMMER, SMITH, and CURLEY files are retained in
+the ZIP format, because there is not enough space on the diskettes and
+there is not enough time to test all the user contributions on the
+enhanced platform.  The contributions not included will be distributed
+separately from F-PC by the Silicon Valley FIG Chapter after they are
+tested and verified.
+
+
+10.1.   FROM TOM ZIMMER
+
+
+Tom Zimmer is the principal author of F-PC, besides many other Forth
+systems and applications. The files in ZIMMER.ARC are examples of his
+minor works tailored for F-PC.
+
+AUTOFOR.SEQ
+
+This file contains the tools to allow automatic forward reference
+resolution of Forth words.  There is a runtime overhead which is
+equivalent to a DEFERred word.  Words that are forward referenced are
+automatically defined, and then when really defined, they are
+automatically resolved.
+
+AUTOLOAD.SEQ
+
+A simple utility to make F-PC load a file automatically at boot time. Add
+this to the system and resave the system.  Place your forth commands in
+the file F-PC.CFG and they will be executed before F-PC handles the
+command line.
+
+BLKTOSEQ.SEQ
+
+This file contains the source for a utility to convert your  .BLK files
+into .SEQ files.  Type the following to convert a file:
+
+        FLOAD BLKTOSEQ <enter>
+        CONV <enter>
+        <file_to_convert> <enter>
+
+You will be prompted for a name of a block file.  The .BLK file will be
+converted to a sequential file, with the new extension .SEQ.  All extra
+blank lines will be omitted.  Shadow screens in .BLK files will be
+enclosed in F-PC's "Comment:" mechanism, and appended to each source
+block.  If a BLOCK file does not have shadows, then change its extension
+to .SCR, and F-PC will convert all screens sequentially.
+
+BLOCK.SEQ
+
+A new virtual block system for Forth.  This is Tom's own implementation.
+It is very fast, and uses a true 'Least Recently Used' buffer allocation
+mechanism.  You can also change the block size to be anything you want,
+as well as specify as many or as few block buffers as you can hold in
+memory.
+
+BOOKMARK.SEQ
+
+A Bookmark utility for the F-PC editor, allows saving and restoring 5
+different file and line offsets. For example:
+
+        OPEN F-PC 3 LIST        \ Open a file and specify a line.
+        M1                      \ Save place with Bookmark # 1
+        OPEN SEDITOR            \ Open the editor
+        400 LIST                \ Specify line 400
+        M2                      \ Save place with Bookmark # 2
+        BM1                     \ Go Back to bookMark # 1
+        L                       \ List line 3 of F-PC
+        BM2                     \ Go Back to bookMark # 2
+        L                       \ List line 400 of SEDITOR
+
+M1 to M5 and BM1 to BM5 are valid bookmarks.
+
+CARDFILE.SEQ
+
+A card contains 1024 characters arranged in 16 lines of 64 characters.
+CARDFILE uses menus and windows to edit and manipulate cards.  Back to
+blocks!
+
+CODEHIGH.SEQ
+
+Utility to allow calling high level words from assembly (code)
+definitions.
+
+COMMAND.SEQ
+
+A nestable comment line entry routine.  Can be placed in a program to
+allow entering Forth commands without fear of aborting the currently
+running Forth word.
+
+CONSTANT.SEQ
+
+A utility to allow defining multiple constants and variables as follows:
+
+        CONSTANTS       3 george        12 robert
+                        14 betty        72 bongo    ;
+
+        VARIABLES       Gort!           clatoo
+                        borada  nicto       ;
+
+Note the ";" terminating the list of constants. If you use multiple
+lines, you can put "\" delimited comments on the same line as the
+constants or variables.
+
+DOSIO.SEQ
+
+A conversion utility to allow F-PC to accept re-directed input and output
+from the DOS command line.  You can make filters that use all of the
+power of Forth.
+
+EVAL.SEQ
+
+A utility to allow run-time interpretation of compiled strings.  This
+implements text macros.
+
+EMMEXMPL.SEQ
+
+An example of how to use the Expanded Memory Manager. Tests and uses
+expanded memory to save a bunch of screens and display them on the screen
+very quickly.
+
+EMMHEADS.SEQ
+
+After loading EXPANDED.SEQ, you can load this file and save the system to
+a new file. The new resulting .EXE file will use expanded memory for
+HEADS, freeing up 64k of normal RAM for other uses. This will mostly be
+useful if you are trying to write a LARGE application.
+
+EXPANDED.SEQ
+
+An interface to EMM (Expanded Memory Manager). Most of this file was
+developed by using the examples right out of the INTEL book.
+
+FORWARD.SEQ
+
+A neat mechanism to handle forward references, and have them
+automatically resolved.
+
+FUNKEY.SEQ
+
+A simple utility to allow the 10 function keys to be assigned to Forth
+words.  Saves some key strokes.
+
+HANOI.SEQ
+
+A cute demo of a character graphics Towers of Hanoi.
+
+LOCALS.SEQ
+
+An implementation of local variables for F-PC, places then in a separate
+stack for flexibility. Four locals are defined, LOCALA through LOCALD. A
+simple syntax is provided for allocating these variables, and
+deallocation is automatic at definition end.
+
+MONITOR.SEQ
+
+An on screen editor, allows you to cursor up and change all the stuff on
+the screen, then re-enter it by pressing <enter> on a line.
+
+NEWCOM.SEQ
+
+A utility to allow the easy creation of VERY SMALL .COM files.
+
+OBJECT.SEQ
+
+Object oriented utility words from Forth Dimensions Volume 10, number 2
+by Rick Hoselton. Sightly modified to run on F-PC.
+
+SCROLL.SEQ
+
+Some simple code utilities to allow scrolling an area of the screen as
+specified by two pairs of x/y coordinates up or down one line.
+
+SEQTOBLK.SEQ
+
+This file contains the source for a utility to convert your .SEQ files
+back to .SCR files.  Type the following to convert a file:
+
+        FLOAD SEQTOBLK <enter>
+        CONV <enter>
+        <file_to_convert> <enter>
+
+You will be prompted for a name of the sequential file.  The .SEQ file
+will be converted to a BLOCK file, with the new extension .SCR.  Screen 0
+will be blank.  The first line of each block will be blank, preceded by a
+"\".  The last line of each block will also be blank.  The resulting will
+be an exact multiple of 1024 bytes in length.  The resulting file will
+need to be substantially edited, to move entire definitions onto one
+screen, as they are likely to be split across screens in the move.
+
+WINDEX.SEQ
+
+Displays a more or less alphabetized list of Forth words showing
+vocabulary and file where it was defined.  Just type
+
+        ALLWORDS <enter>
+
+to display an index of all forth words.  Load PRINT.SEQ and use PFILE
+<name>, then print the file to disk with
+
+        PRINT ALLWORDS.
+
+WINDOW.SEQ
+
+A nice window package for Forth.  Much is in assembly, so its very fast.
+Primarily useful in an application package.  Try the demo.
+
+WYSE50.SEQ
+
+A simple package to allow EMITted Wyse 50 terminal escape codes to be
+emulated on the IBM screen.  This has limited functionality, since only a
+few of the sequences are implemented.
+
+
+10.2.   FROM CHARLES CURLEY
+
+
+Charles Curley is the F-PC team's devil's advocate.  His lean, mean,
+implementations of real- FORTH run on 6502, 6809, LSI-11, 80X8X and
+680XX, both under operating systems and stand alone.  Prior to working at
+Maxtor he worked at or contracted to Rockwell International, Jet
+Propulsion Lab, Hughes Aircraft, Strand Lighting and other companies.
+His code has been used to check out the Gallileo spacecraft, write and
+debug rock shooting games, and light exhibits at world fairs. He sees
+F-PC as a sneaky plot to sell more Maxtor hard disk drives.
+
+DISASSEM.SEQ
+
+A 8086 disassembler.  This disassembler is patched into SEE, so all you
+have to do is type:
+
+        SEE <code_word> <enter>
+
+You will see a line of Assembly code.  Continuing to press <enter> after
+each line shows additional instructions.  Press ESC to terminate
+disassembly.
+
+You can also disassemble from an address:
+
+        <addr> DISASSEM <enter>
+
+The disassembler displays Postfix notation ala F83.
+
+FDIS.SEQ
+
+A disassembler for 8087 machine code.  Extension of the F-PC
+disassembler.  Bob Smith did it, but the file is grouped here.
+
+DIS8086.SEQ
+
+Donation from Bill Muench, is a modified version of Curley's DISASSEM.SEQ
+above, adjusted to disassemble in PREFIX mode.  The disassembly can be
+sent to a file from either of the above files by using PFILE to specify a
+<printfile>, then typing:
+
+        PFILE EXIT.SEQ <enter>
+        PRINT SEE EXIT <enter>
+        PCLOSE <enter>
+
+to disassemble EXIT to the file EXIT.SEQ.
+
+
+10.3.   FROM BOB SMITH
+
+
+Dr. Robert L. Smith was a member of IEEE Floating Point Standards
+Committee.  He was also a member of the Forth Implementation Team which
+gave us figForth.  He has heavily participated in the Forth Standards
+Team and the current ANS Forth Standards Committee.  Bob is well know for
+his meticulous coding style and his attention to precision to the last
+half bit.  He generously contributed his 8087 floating point package and
+a software floating point package to F-PC.
+
+COMPLEX.SEQ
+
+Some complex number routines, notably, a complex square root algorithm.
+Requires HFLOAT or SFLOAT and FLT-EXT.
+
+DMULDIV.SEQ
+
+A 64 bit by 32 bit mixed divide, with a 32 bit quotient and a 32 bit
+remainder result.  Also, a 32 bit by 32 bit multiply, yielding a 64 bit
+product (all unsigned).  Written by Robert L. Smith in 8086 assembly.
+
+HFLOAT.SEQ
+
+Software support for the 8087 floating point chip. This package was
+modified from a version by Mark Smiley to support the prefix assembler
+used in F-PC.
+
+SFLOAT.SEQ
+
+Software floating point package for those of us who don't have an 8087.
+It is compatible with the Forth Venders Group floating point standard.
+Several files are loaded by SFLOAT.SEQ.  This IS a COPYRIGHTed package,
+and may be used for your personal purposes only.  You may not sell it as
+part of any software package without the consent of Robert Smith.
+
+This is a software floating point package for use with the F-PC Forth
+system.  It follows most of the recommendations of the FVG (Forth Vendors
+Group) Standard Floating-Point Extension.  The intention is that the
+functions be as accurate as is reasonable, consistent with speed as the
+secondary goal.  The basic four functions plus square root should be
+precise to one half a bit in the least significant bit of the
+representation.  The higher functions have intrinsic errors no larger
+than one bit in the least significant place.
+
+The representation uses a 16 bit word for the sign and biased exponent of
+the floating point number, and 32 bits for the significand (sometimes
+called the "mantissa").  That means that the intrinsic accuracy is
+approximately 9 and a half decimal digits.  The largest and smallest
+representable numbers cover roughly the range from 10 to the plus and
+minus 4000 power, which is far greater than almost anyone would ever
+need.  The representation does NOT include special cases for infinity,
+unnormalized numbers, and Not-A-Number.  The format is definitely NOT the
+IEEE Floating Point Standard format.  The reason is basically one of
+speed.  The functions in this package are approximately 5 (FIVE) times
+faster than software implementations using the IEEE standard.  In spite
+of that, it does meet the basic requirement of having the basic four
+functions be accurate to within one-half a bit.  The precision is
+somewhat greater than one would obtain from the 32-bit IEEE format.
+
+To load the package from F-PC, type  FLOAD SFLOAT  followed by a carriage
+return.  After SFLOAT has been loaded, you may enter floating point
+numbers in exponential format.  The following is a list of possible
+entries:
+
+                -1.2345E4
+                .9876E-3
+                123.456(10)
+
+The rules are: If the number is negative, it must be preceded with a
+minus sign.  Do not use "+" with positive numbers.  The separator between
+the mantissa and exponent must be either the letter "E" or a left
+parenthesis.  In the examples above, the "E" is used for compliance with
+FVG, but the left parenthesis may be used, especially if you desire to
+enter your numbers in another base.  The terminating symbol may be
+omitted, but you may wish to use a right parenthesis, as in the third
+example above.
+
+The simplest numeric output is  E. .  Other possible functions are: E.R ,
+F. , and F.R .  There is also a floating point stack printout word, .FS .
+If you wish to turn off the Floating Point interpreter, enter  NOFLOATING
+.  To re-enter the floating point interpreter, enter  FLOATING .
+
+FLOATING POINT GLOSSARY
+
+The low level words in the HFLOAT and SFLOAT packages differ
+significantly because of the hardware facilities.  However, the high
+level application words are very similar, based on the proposed FVG
+floating point standard.  These high level words will be used in
+applications requiring floating point numbers.  It is thus appropriate to
+summarize this set of high level floating point words common to both
+HFLOAT and SFLOAT.
+
+
+HFLOAT/SFLOAT GLOSSARY
+
+
+FLOATING POINT STACK  WORDS
+
+
+FDUP            ( F: r -- r r )
+        Duplicate the floating point number at the top  of the stack.
+
+FDROP           ( F: r -- )
+        Drop the top floating point number from the  stack.
+
+FNIP            ( F: r1 r2 -- r1 )
+        Remove the second floating point number  from the stack.
+        Equivalent to FSWAP FDROP .
+
+FOVER           ( F: r1 r2 -- r1 r2 r1 )
+        Push a copy of the floating point number  second on the stack.
+
+FSWAP           ( F: r1 r2 -- r2 r1 )
+        Interchange the top two floating point  numbers on the stack.
+
+FROT            ( F: r1 r2 r3 -- r2 r3 r1 )
+        Rotate the top three elements on the floating  point stack,
+        bringing the third element to the top.
+
+F-ROT           ( F: r1 r2 r3 -- r3 r1 r2 )
+        Reverse rotate the top three elements on the  floating point
+        stack, putting the top element to the third position.
+
+FPICK           ( F: rn rn-1 ... r0 -- rn rn-1 ... r0 rn ; n -- )
+        Using a zero referenced value of n , pick the n-th value from the
+        floating point stack and push it onto the floating point stack.
+        Thus 0 FPICK  is equivalent to FDUP .
+
+FNSWAP          ( F: rn rn-1 ... r0 -- r0 rn-1 ... r1 rn ; n -- )
+        Exchange the floating point value at the n-th location on the
+        floating point stack with the floating point value at the top of
+        the floating point stack.  Thus  1 FNSWAP  is equivalent to FSWAP
+        .
+
+
+FLOATING POINT MATH WORDS
+
+
+F-              ( F: r1 r2 -- r3 )
+        Subtract the floating point number at the top  of the stack from
+        the floating point number second on the stack. Report overflow
+        errors.
+
+F\-             ( F: r1 r2 -- r3 )
+        Reverse subtraction.  Subtract the floating  point number second
+        on the stack from the floating point number at the top of the
+        stack. Report overflow   errors.
+
+F+              ( F: r1 r2 -- r3 )
+        Add the two floating point numbers at the top  of the stack. The
+        result is placed back on the stack. Report overflow errors.
+
+F*              ( F: r1 r2 -- r3 )
+        Multiply the top two floating point numbers  on the stack. Report
+        overflow errors.
+
+F/              ( F: r1 r2 -- r3 )
+        Divide the floating point number second on  the stack by the
+        floating point number at the top of the stack. Report overflow
+        errors and division by zero.
+
+FSQRT           ( F: r1 -- r2 )
+        Replace the floating point number at the top  of the stack with
+        its square root.  Report an error if r1 is negative.
+
+FMAX            ( F: r1 r2 -- r3 )
+        Replace the top two numbers on the floating  point stack with the
+        greater of the two.
+
+FMIN            ( F: r1 r2 -- r3 )
+        Replace the top two numbers on the floating  point stack with the
+        smaller of the two.
+
+FABS            ( F: r1 -- r2 )
+        Replace the floating point number at the top  of the floating
+        point stack with its absolute value.
+
+FNEGATE         ( F: r1 -- r2 )
+        Negate the floating point number at the top of  the floating
+        point stack.
+
+1/F             ( F: r1 -- r2 )
+        Take the reciprocal of the floating point  argument.
+
+
+FLOATING POINT LOGIC WORDS
+
+
+F0<             ( F: r1 -- ; -- flag )
+        Test the floating point number at the top of  the floating point
+        stack. If the number is less than zero, push a -1 flag on the
+        parameter stack. If the floating point number is greater than or
+        equal to zero, push a 0 flag on the parameter stack. In either
+        case, drop the floating point number from the floating point
+        stack.
+
+F0>             ( F: r1 -- ; -- flag )
+        Test the floating point number at the top of  the stack, then
+        drop the number.  If the number was greater than zero, push a -1
+        flag on the parameter stack.  Otherwise push a zero.
+
+F0=             ( F: r -- ; -- flag )
+        Test the floating point number at the top of  the stack, then
+        drop it. If the number is zero, push a -1 on the parameter stack.
+        The flag is set to 0 if the floating point number was not zero.
+
+F=              ( F: r1 r2 -- ; -- flag )
+        Compare the top two floating point numbers.   If the numbers are
+        equal, push a flag of -1 on the parameter stack. If the two
+        numbers are not equal, push a zero.  In either case, drop the two
+        numbers from the floating point stack.
+
+F<              ( F: r1 r2 -- ; -- flag )
+        Compare the top two floating point numbers.   If the number
+        second on the floating point stack is less than the top number,
+        push a flag of -1 onto the parameter stack. Otherwise push a 0
+        onto the parameter stack. In either case, the top two numbers on
+        the floating point stack are dropped.
+
+F>              ( F: r1 r2 -- ; -- flag )
+        Compare the top two floating point numbers.   If the number
+        second on the floating point stack is greater than the top
+        number, push a flag of -1 onto the parameter stack. Otherwise
+        push a 0 onto the parameter stack.  In either case, the top two
+        numbers on the floating point stack are dropped.
+
+
+TRANSDENTIAL FUNCTIONS
+
+
+FLN             ( F: r1 -- r2 )
+        Natural logarithm function.   Time: 1260  usec.
+
+FLOG            ( F: r1 -- r2 )
+        Logarithm of base 10.
+
+FEXP            ( F: r1 -- r2 )
+        Floating point exponential function  e^x
+
+FALN            ( F: r1 -- r2 )
+        Alternative name for the exponential function.   This is the name
+        specified in the FVG Standard Floating Point Extension.
+
+FALOG           ( F: r1 -- r2 )
+        Take the inverse log of r1, i.e., raise 10 to  the power of r1.
+
+FTAN            ( F: r1 -- r2 )
+        The input is a floating point number in  radians. The output is
+        is the tangent of the number. An error condition exists for
+        sufficiently large input values.
+
+FSIN            ( F: r1 -- r2 )
+        Returns the sine of the input number in  radians. Input and
+        output values are floating point numbers. An error condition
+        exists for sufficiently large input values.
+
+FCOS            ( F: r1 -- r2 )
+        Returns the cosine of the floating point  argument in radians. An
+        error condition exists for sufficiently large input arguments.
+
+FATAN           ( F: r1 -- r2 )
+        Returns a floating point value equal to the  arctangent of the
+        input argument.  The result is expressed in radians.
+
+FASIN           ( F: r1 -- r2 )
+        Returns a floating point value equal to the  arcsine of the input
+        argument.  The result is expressed in radians. If the input
+        argument exceeds 1.0 in value, an error condition results.
+
+FACOS           ( F: r1 -- r2 )
+        Returns a floating point value equal to the  arccosine of the
+        input argument.  The result is expressed in radians. If the input
+        argument exceeds 1.0 in value, an error condition results.
+
+FSINH           ( F: r1 -- r2 )
+        Hyberbolic sin function.  Not in HFLOAT.
+
+FCOSH           ( F: r1 -- r2 )
+        Hyperbolic cosine function.  Not in  HFLOAT.
+
+FTANH           ( F: r1 -- r2 )
+        Hyperbolic tangent function.  Not in  HFLOAT.
+
+FASINH          ( F: r1 -- r2 )
+        Inverse hyperbolic sin function.  Not in  HFLOAT.
+
+FACOSH          ( F: r1 -- r2 )
+        Inverse hyperbolic cosine function.  Not in  HFLOAT.
+
+FATANH          ( F: r1 -- r2 )
+        Inverse hyperbolic tangent function.  Not in  HFLOAT.
+
+FTRIG0          ( F: r1 -- r2 )
+        Returns a floating point value equal to the  square root of the
+        absolute value of (1.0 - (r1^2)). This is a useful auxiliary
+        function suggested in APL.  Not in HFLOAT.
+
+FLN2            ( F: -- r1 )
+        Push a floating point number with a value  approximately equal to
+        the natural logarithm of 2. Not in HFLOAT.
+
+F**N            ( F: r1 -- r2 ; n -- )
+        Raise the floating point number to the integral  power specified
+        by the number on top of the parameter stack. Not in HFLOAT.
+
+F/LN2           ( F: r -- r/ln2 )
+        Divide the floating point number by the  natural logarithm of 2.
+        Not in HFLOAT.
+
+
+MISCELLANEOUS WORDS
+
+
+FCONSTANT       ( F: -- r )
+        Create a floating point constant.
+
+FVARIABLE       ( -- addr )
+        Create a floating point variable.
+
+PI              ( F: -- r1 )
+        Push a floating point number with a value  approximately equal to
+pi.
+
+F0.0            ( F: -- r1 )
+        Push a floating point number with a value  equal to 0.
+
+F1.0            ( F: -- r1 )
+        Push a floating point number with a value  equal to 1.
+
+FINFINITY       ( F: -- r1 )
+        Push the floating point number representing  the largest
+        representable number onto the floating point stack.
+
+E.              ( F: r -- )
+        Print a floating point number in exponential  (power of ten)
+        format
+
+.FSINH          ( F: r1 -- r2 )
+        Hyberbolic sin function. Not in HFLOAT.
+
+E.R             ( F: r -- ; n1 n2 )
+        Display the floating point number r on the  currently selected
+        output device in exponential form with n1 digits to the right of
+        the decimal point, right justified in a field of width n2. Not in
+        HFLOAT.
+
+F.              ( F: r -- )
+        Display the floating point number on the  currently selected
+        output device in fixed-point form; i.e., the location of the
+        decimal point is adjusted so that no exponent need be displayed.
+        The number of digits to the right of the decimal point specified
+        by the most recent execution of the word PLACES are printed to
+        the right of the decimal point. A trailing blank follows.  For
+        example, 4 PLACES 1.2345E02 F. will display as 123.4500b (where
+        the "b" denotes an ASCII blank). If the number of digits to the
+        left of the decimal point is greater than 14, the error routine
+        is called.  Not in HFLOAT.
+
+F.R             ( F: r -- ; n1 n2 )
+        Display r on the currently selected output  device in fixed point
+        form with n1 digits to the right of the decimal place, right
+        justified in a field of width n2.  If the number cannot be
+        represented within the given field width, the error routine is
+        called and the value is printed in exponent form.  For example,
+        1.2345e2 4 12 F.R will display as bbbb123.4500 (where each "b"
+        character denotes an ASCII blank). Not in HFLOAT.
+
+FLOATS          ( -- )
+        Set the flag FLTS .  Allows floating point  numbers to be input
+        using imbedded decimal points and optional exponent fields. For
+        example:
+                FLOATS    1.234   -5.4
+        will produce two floating point numbers. Note, however, that a
+        single precision integer, such as 7 , will remain a single
+        precision integer, and a double number with a terminating decimal
+        point, such as 1234. , will remain a double number.
+
+FNUMBER         ( F: -- r ; adr -- -1 )
+                ( adr -- d 1 )
+        Convert the string at the specified address  into a real or
+        integer number, with a flag of -1 or 1, respectively. If the
+        number cannot be converted, print an error message.  Not in
+        HFLOAT.
+
+F#              ( F: -- r )
+        Convert the string following F# into a  floating point number.
+        This includes numbers with or without decimal points. Thus F# 34
+        yields the equivalent of 34X0 .  If SFLOAT is loaded, even if in
+        NOFLOATING mode, F# still converts the following number and
+        pushes it onto the floating point stack.  Not in HFLOAT.
+
+#?              ( number --- d 1 )
+                ( F: -- r ; number --- -1 )
+        If possible, convert the following word in the  input stream into
+        a number.  If the string converts to a floating point number, the
+        flag is set to -1 .  If the string converts to an integer, the
+        flag is set to 1. If the string cannot be converted, a standard
+        error message is sent. Not in HFLOAT.
+
+FLITERAL        ( F: -- r )
+        Create an in-line literal.
+
+F@              ( F: -- r ; addr -- )
+        Fetch the floating point number at the  specified address and
+        push it onto the floating point stack. Drop the address from the
+        parameter stack.
+
+F!              ( F: r -- ; addr -- )
+        Store the floating point number at the top of  the floating point
+        stack in the area specified by the address at the top of the
+        parameter stack. Drop the address from the parameter stack and
+        drop the top element from the floating point stack.
+
+F,              ( F: r -- )
+        Allot space at HERE and store the floating  point number. Similar
+        to , . Not in HFLOAT.
+
+FLOAT           ( F: -- r ; dbl -- )
+        Convert the double number at the top of the  parameter stack to a
+        floating point number which is then pushed onto the floating
+        point stack.  As with all double numbers, the location of the
+        decimal point is effectively ignored.
+
+FIX             ( F: r -- ; -- d )
+        Convert a floating point number to the nearest  signed double
+        integer equivalent, removing the real number from the floating
+        point stack and leaving the double integer result on the Forth
+        parameter stack. When the real number lies exactly halfway
+        between two integers, the result is the nearest EVEN number.
+        Underflow gives a zero result. An error condition results if the
+        resulting number is too large to be represented as an UNSIGNED
+        double number.  If more error control is desired, you may create
+        your own version using DINTABS.
+
+INT             ( F: r -- ; -- d )
+        Convert a signed floating point number to its  truncated double
+        integer value.  If the conversion did not succeed, report an
+        error.
+
+
+
+

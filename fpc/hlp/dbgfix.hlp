@@ -1,0 +1,21 @@
+\ DBGFIX.HLP    make INLINE NEXT kernel debugable.      by Tom Zimmer
+
+DEBUGABLE       ( --- )
+
+          This handy little utility allows me to build the F-PC kernel
+        with INLINE NEXT, for performance, and at will convert the
+        kernel back to JMP NEXT for use when DEBUGging. It is a one way
+        street however so once the conversion is made, the system stays
+        debugable until you restart F-PC.  The word DEBUGABLE is called
+        by the debugger, to switch the kernel to a debugable form, just
+        as you start the debug process. On an XT class machine this may
+        take as much as a second, but is only done once the first time
+                you use the debugger.
+
+          This utility works by patching each occurance of the unique
+        sequence "26 AD FF E0" to JMP NEXT.
+
+          You do not normally need to call this word, it is called
+        automatically by the debugger.
+
+  

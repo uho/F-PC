@@ -1,0 +1,31 @@
+\ SEDCODE.HLP   The Assembly code needed for SED        by Tom Zimmer
+
+
+linelist        ( --- a1 )
+        A constant that returns the address of the beginning of the
+        line pointer list.
+
+
+tb:             ( W -- tsegb W )
+        Put the text segment under the top entry on the stack.
+
+tl:             ( W -- lseg  W )
+        Put the line list segment under the top entry on the
+        stack.
+
+?exit           ( f1 -- )
+        Leave the current definition, if the boolean f1 is true.
+
+getdiskfree     ( dv --- avail.clusters bytes/sec secs/cluster )
+        Return the available clusters, bytes per sector, and sectors
+        per cluster for dv the current drive.
+
+>lineptr        ( n1 --- a1 )
+        Index from line n1 to the offset in the line pointer table
+        of that line.
+
+39clipline      ( a1 n1 n2 --- a2 n3 )
+        while n2 is greater than 77, subtract 39 from n1 and add
+        39 to a1. Return the result a2, and n3.
+
+

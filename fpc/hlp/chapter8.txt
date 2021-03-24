@@ -1,0 +1,665 @@
+CHAPTER 8.   PASM, THE F-PC ASSEMBLER
+
+
+
+
+
+PASM is an assembler which is based on the F83 8088/86 assembler and an
+8086 assembler published in Dr. Dobb's Journal, February 1982, by Ray
+Duncan. This assembler was subsequently modified by Robert L. Smith to
+repair bugs, and support the prefix assembler notation.  Bob discovered a
+very simple method to force a postfix assembler to assemble prefix code,
+by deferring assembly until the next assembler command or the end of
+line, when all the arguments for the previous assembler command are piled
+up on the top of the data stack.  Tom Zimmer has made additional
+modifications to allow syntax switching, and to increase compatibility in
+postfix mode with the F83 Assembler.
+
+Writing assembly programs is black magic.  It is not appropriate to
+discuss the joys and frustrations in working at such a low level in this
+manual.  However, F-PC provides the best environment for you to do
+experiments using assembly language, because you can first verify the
+algorithm and methodology in high level Forth code and gradually reduce
+the code to the assembly level.  You will find numerous examples in which
+the high level code in F83 is recoded in assembly, in addition to many of
+the F83 kernel words which were in assembly already.
+
+The best way to learn 8086 assembly language is to use PASM, armed with
+all the code words in F-PC as templates and examples.  Factor your high
+level words carefully so that words at the bottom level can be
+conveniently recoded in assembly.  Take the F-PC kernel words as
+templates to start with, and modify them so that they will do exactly
+what you want them to do.
+
+
+8.1.    PREFIX OR POSTFIX ?
+
+
+PASM supports dual syntaxes.  The words PREFIX and POSTFIX switch between
+the two supported modes.  The postfix mode is very similar to F83's
+CPU8086 Assembler.  Prefix mode, which is the default mode, allows a
+syntax which is much closer to MASM used by Intel and MicroSoft.
+
+The assembler supports prefix syntax in an attempt to provide a syntax
+which is more readable to programmers of other languages.  The use of
+sequential text files for source code encourages the programmer to write
+programs in the vertical code style with one statement per line.  This
+style is what traditional assembler requires.  F-PC works well in this
+style, if you choose to do so. However, F-PC does not prevent you from
+writing in the horizontal code style, by which you can squeeze many
+statements into one line and make you own life miserable.   It supports
+postfix syntax to prevent alienating the established base of F83 users.
+
+The prefix notation is close to the original Intel assembly syntax, and
+certainly will be more familiar to programmers of other languages.  All
+the code words defined in F-PC are coded in the prefix notation.  Please
+consider writing any new assembly code you need in the prefix mode for
+distribution and assimilation with F-PC.
+
+The assembly of a machine instruction is generally deferred to the
+following three events: when the next assembly mnemonic is encountered,
+at the end of a line, or when the command END-CODE or A; is executed.
+Therefore, a good style in writing code words in F-PC is to put one
+assembly instruction in one line, followed by the parameter specification
+or the arguments.  Multiple assembly instructions are allowed in the same
+line.  It is a good ideal to put the assembly structure words in separate
+lines with proper indentation so that the nested structures in a code
+definition can be perceived more readily.
+
+
+8.2.    PASM GLOSSARY
+
+
+Here we will only give a small list of PASM words in this glossary.  All
+assembly mnemonics are identical to those defined in F83 8086 Assembler.
+All the structure directives and test conditions are also identical to
+those in F83.  Only the most important FORTH words controlling the
+assembler are listed here.
+
+PREFIX          ( -- )
+        Assert prefix mode for the following code definitions.
+
+POSTFIX         ( -- )
+        Assert postfix mode for the following code definitions.
+
+CODE     <name> ( -- )
+        Define a new code definition using the following string as its
+        name. Assembly commands follow, terminated by END-CODE.
+
+END-CODE                ( -- )
+        Terminate a code definition, check error conditions, and make
+        the code definition available for searching and execution.
+
+LOCAL_REFS      ( -- )
+        This mode WILL NOT allow local labels to cross CODE word
+        boundaries.  The local label mechanism is cleared each time a
+        new CODE word is started. This is the DEFAULT mode.
+
+GLOBAL_REFS     ( -- )
+        All local labels will be available across all following code
+        definitions. The label mechanism is NOT reset at the beginning
+        of a CODE definition, so a local label reference can cross CODE
+        word boundaries. The local label mechanism MUST be reset before
+        use in this mode, with the CLEAR_LABELS word.
+
+CLEAR_LABELS    ( -- )
+        Clear the local label mechanism, to the unused or clean state,
+        in preparation for using local labels.  This word need only be
+        used in the GLOBAL_REFS mode. The LOCAL_REFS mode automatically
+        performs a CLEAR_LABELS each time a CODE definition is started.
+
+A;              ( -- )
+        Complete the assembly of the previous machine instruction.
+
+BYTE            ( -- )
+        Assemble current and subsequent code using byte arguments, if
+        register size is not explicitly specified in prefix mode. WORD
+        is default in postfix mode.
+
+WORD            ( -- )
+        Assemble current and subsequent code using 16 bit arguments, if
+        register size is not explicitly specified in postfix mode. BYTE
+        is default in prefix mode.
+
+LABEL           ( -- )
+        Start an assembly subroutine or mark the current code address to
+        be referenced later.
+
+
+
+
+Figure  8.1.    Comparison of assembly syntax
+
+
+PREFIX                  POSTFIX                 MASM
+
+AAA                     AAA                     AAA
+ADC AX, SI              SI AX ADC               ADC AX,SI
+ADC DX, 0 [SI]          0 [SI] DX ADC           ADC DX,0[SI]
+ADC 2 [BX+SI], DI       DI 2 [BX+SI] ADC        ADC 2[BX][SI],DI
+ADC MEM BX              BX MEM #) ADC           ADC MEM,BX
+ADC AL, # 5             5 # AL ADC              ADC AL,5
+AND AX, BX              BX AX AND               AND AX,BX
+AND CX, MEM             CX MEM #) AND           AND CX,MEM
+AND DL, # 3             3 # DL AND              AND DL,3
+CALL NAME               NAME #) CALL            CALL NAME
+CALL FAR [] NAME        FAR [] NAME #) CALL     ?????
+CMP DX, BX              BX DX CMP               CMP DX,BX
+CMP 2 [BP], SI          SI 2 [BP] CMP           CMP [BP+2],SI
+DEC BP                  BP DEC                  DEC BP
+DEC MEM                 MEM DEC                 DEC MEM
+DEC 3 [SI]              3 [SI] DEC              DEC 3[SI]
+DIV CL                  CL DIV                  DIV CL
+DIV MEM                 MEM DIV                 DIV MEM
+IN PORT# WORD           WORD PORT# IN           IN AX,PORT#
+IN PORT#                PORT# IN                IN AL,PORT#
+IN AX, DX               DX AX IN                IN AX,DX
+INC MEM                 BYTE MEM INC            INC MEM BYTE
+INC MEM WORD            MEM #) INC              INC MEM WORD
+INT 16                  16 INT                  INT 16
+JA NAME                 NAME JA                 JA NAME
+JNBE NAME               NAME #) JNBE            JNBE NAME
+JMP NAME                NAME #) JMP             JMP
+JMP FAR [] NAME         NAME [] FAR JMP         JMP [NAME]
+JMP FAR $F000 $E987                             JMP F000:E987
+LODSW                   AX LODS                 LODS WORD
+LODSB                   AL LODS                 LODS BYTE
+LOOP NAME               NAME #) LOOP            LOOP NAME
+MOV DX, NAME            NAME #) DX MOV          MOV DX,[NAME]
+MOV AX, BX              BX AX MOV               MOV AX,BX
+MOV AH, AL              AL AH MOV               MOV AH,AL
+MOV BP, 0 [BX]          0 [BX] BP MOV           MOV BP,0[BX]
+MOV ES: BP, SI          ES: BP SI MOV           MOV ES:BP,SI
+MOVSW                   AX MOVS                 MOVS WORD
+POP DX                  DX POP                  POP DX
+POPF                    POPF                    POPF
+PUSH SI                 SI PUSH                 PUSH SI
+REP                     REP                     REP
+RET                     RET                     RET
+ROL AX, # 1             AX ROL                  ROL AX,1
+ROL AX, CL              AX CL ROL               ROL AX,CL
+SHL AX, # 1             AX SHL                  SHL AX,1
+XCHG AX, BP             BP AX XCHG              XCHG AX,BP
+XOR CX, DX              DX, CX XOR              XOR CX,DX
+
+
+
+8.3.    SYNTAX COMPARISON
+
+
+The differences among the F-PC prefix mode, the F83 postfix mode, and the
+Intel MASM notation are best illustrated by the table in Figure 8.1.
+Although the table is not exhaustive, it covers most of the cases useful
+in doing PASM programming.  You are welcome to suggest additional cases
+to be included in this table.
+
+  8.4. USAGE OF 8086 MACHINE REGISTERS IN F-PC
+
+
+To write assembly code, you have to know the CPU real well.  Most CPU's
+can be understood and programmed using a CPU model, consisting of the
+register set and the instructions which manipulate data among the
+registers, memory, and external devices.  In F83, only a 64K bytes
+segment of memory is used, and all segment registers in 8086 are
+generally pointing to the same code segment.  Since F-PC uses many
+segments to store code, heads, lists, and other data, you have to know
+how these segment registers are used and how information in different
+segments can be accessed conveniently.
+
+Following is a list of the 8086 registers and their usage in F-PC:
+
+        CS      Code seg: used for any code definitions (Must be
+                preserved by code word.)
+
+        DS      Data seg: used for data other than ." strings (NOTE:
+                CS=DS and underlying kernel primitives rely on this
+                correspondence!  Must be preserved by code word.)
+
+        ES      Extra seg: used as the segment location for the current
+                instruction pointer (IP).  (Must be preserved by code
+                word.)
+
+        SS      Stack seg: used as the segment location for the current
+                stack pointer (SP). (Must be preserved by code word.)
+
+        BP      Return Pointer (RP).  (Must be preserved by code word.)
+
+        SP      Stack Pointer (SP).  (Must be preserved by code word.)
+
+        SI      Instruction Pointer (IP).  (Must be preserved by code
+                word.)
+
+        AX, BX, CX, DX, & DI    Scratch registers free to use without
+                                restoration.
+
+        PC      Program Counter.  Not used by F-PC.
+
+        DF      Direction Flag.  Assumed to be 0/increment. Some older FF
+                (or before?) words do an initial CLD (e.g., CMOVE), but
+                this shouldn't be necessary. If you specifically need
+                DF=1, then do:  STD ...code... CLD
+
+AX is used as a general purpose accumulator.  BX is most useful as a base
+register for indexing into an array.  CX is used to hold a count for
+looping and repeating operations.  DX is useful in holding the address of
+an I/O port.  DS:SI pair is used to read memory with auto-indexing, and
+ES:DI pair is used to write memory with auto-indexing.
+
+F-PC uses SP as the data stack pointer and BP as the return stack
+pointer.  SP is convenient in the PUSH and POP instructions, while BP is
+more convenient in indexing.  There are many occasions that you might
+want to swap SP and BP to use the most effective way to address data on
+either stack.
+
+The F-PC Technical Reference Manual discusses in great details how F-PC
+itself is constructed based on the 8086 assembly code.  If you are
+interested in squeezing the last drop of blood from PC/XT/AT, be sure to
+study carefully  the Technical Reference Manual and the kernel files in
+F- PC.
+
+
+8.5.    ADDRESSING MODES
+
+
+The most difficult problem in using 8086 assembler is to figure out the
+correct addressing mode and code it into an instruction.  You can get a
+good ideal and probably figure out most of the addressing mode syntax
+from the above table.  However, there are cases where the table falls
+short.  Here we will try to summarize the addressing syntax more
+systematically to show you how F-PC handles addresses in the prefix mode.
+
+Register Mode
+
+Source or destination is a register in the CPU.  The source registers
+are:
+
+        AL  BL  CL  DL  AH  BH  CH  DH
+        AX  BX  CX  DX  SP  BP  SI  DI  IP  RP  CS  DS  SS  ES
+
+Destination register specifications are:
+
+        AL, BL, CL, DL, AH, BH, CH, DH,
+        AX, BX, CX, DX, SP, BP, SI, DI, IP, RP, CS, DS, SS, ES,
+
+The register name must be followed by a 'comma', to be recognized by PASM
+as a destination register.
+
+Immediate Mode
+
+The argument is assembled as a literal in the instruction.  The immediate
+value must be preceded by the symbol #, which is a word and must be
+delimited by spaces:
+
+        MOV     AX, # 1234
+        ADD  CL, # 32
+        ROL     AX, # 3
+
+Direct Mode
+
+An address is assembled into the instruction.  This is used to specify an
+address to be jumped to or a memory location for data reference.  The
+address is used directly as a 16 bit number.  Depending on the
+instruction, the address may be assembled unmodified or assembled as an
+eight or 16 bit offset in the branch instructions.  To jump or call
+beyond a 64K byte segment, the address must be preceded by FAR [] .
+Examples are:
+
+        CALL    FAR [] <label>
+        JMP     <dest>
+        MOV     BX, <source>
+        INC     <dest> WORD
+        JZ      <label>
+
+The destination address may be taken from the data stack directly:
+
+        MOV     CX, # 16
+        HERE            ( save current code address on stack) ...
+        ... LOOPZ       ( loop back to HERE if condition fails)
+
+Index Mode
+
+One or two registers can be used as index registers to scan through data
+arrays.  The contents of the index register or the sum of the contents of
+two index registers are used to form a base address. An offset is added
+to the base address to form the true address for data reference.
+Examples are:
+
+        CMP     2 [BP], SI
+        DEC  3 [SI]
+        MOV     BP, 0 [BX]
+
+The following register index specifications are allowed in F-PC:
+
+        [SI]  [IP]  [BP]  [RP]  [DI]  [BX]
+        [BX+SI]  [SI+BX]  [BX+IP]  [IP+BX]  [BX+DI]  [DI+BX]
+        [BP+SI]  [SI+BP]  [BP+IP]  [IP+BP]  [RP+IP]  [IP+RP]
+        [BP+DI]  [DI+BP]  [RP+DI]  [DI+RP]
+
+There must be an offset number preceding the index register
+specification, even if the offset is 0. When the index register is used
+as destination, a comma must be appended immediately:
+
+        MOV     0 [BX+IP], AX
+
+Implied Mode and Segment Override
+
+The implied mode is where mistakes are most likely to occur because you
+will have to be keenly aware of which segment register is used by the
+instruction at any instance.  Since the segment register is implied and
+not stated explicitly, the bug generally can hide very securely
+underneath laughing at you.  The code works when you test it but fails
+when the segment register is modified.
+
+        Branch and jump instructions use CS segment register.
+        Data movement instructions use DS segment register.
+        Stack instructions use SS segment.
+        String instructions use DS:SI as source and ES:DI as destination.
+
+If you need to specify an address with a segment register other than the
+default implied register, use a segment override instruction before the
+address specification:
+
+        CS:   DS:  ES:
+
+Examples are:
+
+        MOV     ES: BP, SI
+        CMP     CS: 2 [BP], AX
+        ADD     AX, ES: 10 [BX+DI]
+
+The 8086 addressing modes are so confusing that even experienced
+programmers need a good Intel 8086 manual to find the right addressing
+mode and the F-PC assembler syntax table to determine the correct
+argument list.
+
+The best way to write assembly code is still to keep the code short and
+simple.  It is very easy in F- PC to break a long CODE definition into
+many small fragments which are initially defined as separate CODE
+definitions.  After verifying that each fragment works, you can edit out
+the CODE, NEXT, and END-CODE lines to combine the fragments into a single
+CODE definition.
+
+Charles Curley kindly contributed an 8086 disassembler.  It is helpful to
+disassemble the code word you defined and see what the computer thinks of
+what you mean.  There is always this 'Do what I mean, not what I say'
+syndrome.  When everything else has failed, you can jump into DOS and
+call up DEBUG and use the facility there to find what goes wrong.  In DOS
+DEBUG, you can step through a piece of code one instruction at a time.
+This is absolutely the last thing you want to do.
+
+
+8.6.    ASSEMBLY MACROS IN PASM
+
+
+Another area of interest is the assembly macros.  Here is the definition
+of the NEXT macro:
+
+        : NEXT  >PRE    JMP >NEXT A;    PRE> ;
+
+The macro itself is simply assembling the sequence JMP >NEXT.  The
+surrounding words are used for support.  Since PASM supports both postfix
+as well as prefix notation, it is not known on entry to a macro which
+mode is in effect.  The words >PRE and PRE> select prefix, and restore
+the previous mode so macros will always be in prefix notation.  The A;
+after >NEXT, forces the assembling of the JMP instruction before
+switching mode.
+
+You can find many other examples of assembly macros in PASM.SEQ,  like
+1PUSH, 2PUSH, and all the assembly structure building directives.
+
+
+8.7.    LOCAL LABEL
+
+
+To support large code definitions, Bob Smith introduced 'local labels' to
+F-PC.  The local labels are place markers $: preceded by a number.  They
+are used to mark locations in a large code definition for forward and
+backward jumps and branches which uses $ preceded by the number of the
+local label as address specification.  They can be used quite freely in a
+range of code words and reused to save head space by replacing LABELs
+which have global names and cannot be reused.
+
+The use of local labels is best demonstrated by an example taken from the
+software floating point package SFLOAT.SEQ by Bob Smith, shown in Figure
+8.2.  Up to 32 local labels can be used to mark addresses of assembly
+code.  They can be referred to before or after their placements.  They
+can be referenced across code word boundaries.
+
+Local labels in PASM are useful within a CODE definition, using
+LOCAL_REFS as the default label mode. If you need to use local labels
+between CODE definitions, you will have to select the GLOBAL_REFS mode,
+and use CLEAR_LABELS to initialize the local labels manually each time
+you want to start a new set of local labels.
+
+This technique is especially useful where the one-entry-one-exit dogma is
+very awkward and when a piece of code has multiple entry points and can
+be shared among many code word definitions.  It enables us to construct
+structured spaghetti code, if there were such thing.
+
+Local label allows relative short branches within 127 bytes.  To jump
+beyond this range, the long jump label L$ should be used:
+
+                ...
+                ...
+                JMP     L$
+                ...
+                ...
+        L$:     ...
+                ...
+
+The long jump label can only be used to jump forward.  After L$: is used,
+you can do another long forward jump using L$ again.
+
+
+
+8.8.    INLINE CODE
+
+
+
+INLINE allows us to include machine code inside a high level colon
+definition.  This is easily done in F-PC because it is built on direct
+threaded code.  Every word is compiled as a code address in the colon
+definition.  The code in the code segment pointed to by the code address
+is executed directly because it contains genuine 8086 machine code.
+Whether the code belongs to a colon definition or a code definition does
+not make any difference.  INLINE only has to compile the address pointing
+to the top of the dictionary in the code segment.  The assembler is then
+invoked to compile machine code.  If the code is terminated by NEXT or
+one of its derivatives, the next word compiled in the colon definition
+will be executed after the assembly code is done.  END-INLINE only has to
+clean up the assembly environment and return the control back to the
+colon compiler.
+
+Here is an example on how to use INLINE and END-INLINE to add assembly
+code in the middle of a colon definition:
+
+        : TEST ( -- )
+                5 0 DO
+                        I                       \ Get loop index
+                        INLINE
+                                pop ax          \ pop I
+                                add ax, # 23    \ add 23
+                                1push           \ push sum
+                        END-INLINE
+                        .                       \ print results
+                LOOP
+                ;
+
+
+Figure  8.2.    Examples of local labels
+
+LABEL DENORM    \ CX = count, BX = Hi, DX = LO, AX = Guard, Round, & Sticky.
+        CLEAR_LABELS
+        XOR     AX, AX          \ Clear GRS bits
+        CMP     CX, # 10        \ Check size of shift
+        JL      7 $             \ Branch if shift less than 16
+        CMP     CX, # 18        \ Cnt >= 16.  Compare with 24.
+        JGE     1 $             \ Branch if shift >= 24
+        SUB     CX, # 10        \ 16 <= cnt < 24.  Subtract 16 from cnt.
+        MOV     AX, DX          \ Shift by one word.
+        MOV     DX, BX
+        XOR     BX, BX          \ Clear MS word.
+        AND     AL, AL          \ Don't miss any sticky bits.
+        JZ      8 $
+        OR      AH, # 2         \ Set a sticky bit.
+        JMP     8 $             \ Shift from 0 to 7 bits.
+1 $:    CMP     CX, # 20        \ Cnt >= 24.  Compare with 32.
+        JGE     3 $             \ Branch if shift >= 32.
+        MOV     AH, BL          \ 24 <= cnt < 32, so shift by 3 bytes.
+        MOV     AL, DH
+        OR      AL, DL          \ OR in the sticky bits.
+        JZ      2 $             \ Shall we set a sticky bit?
+        OR      AH, # 2         \ Yes.
+2 $:    MOV     DL, BH          \ Continue the 3-byte shift.
+        XOR     DH, DH          \ Clear the high 3 bytes.
+        XOR     BX, BX
+        SUB     CX, # 18        \ Adjust the shift counter.
+        JMP     8 $             \ Shift remaining 0 to 7 places.
+3 $:    CMP     CX, # 28        \ Cnt >= 32.  Check against 40.
+        JGE     5 $             \ Branch if shift count > 40.
+        MOV     AX, BX          \ 32 <= cnt < 40.  Do a 2 word shift.
+        OR      AL, DH          \ Check the sticky bits.
+        OR      AL, DL
+        JZ      4 $             \ If sticky byte not zero,
+        OR      AH, # 2         \  then set sticky bit.
+4 $:    XOR     BX, BX          \ Clear high and low words.
+        XOR     DX, DX
+        SUB     CX, # 20        \ Adjust shift counter.
+        JMP     8 $             \ Go to final shift area.
+5 $:    OR      BX, DX          \ Shift count >= 40
+        JZ      0A $            \ In theory, this should never jump.
+        MOV     AH, # 2         \ So set a sticky bit.
+        XOR     BX, BX          \ Clear all the rest.
+        XOR     DX, DX
+        RET
+7 $:    CMP     CX, # 8         \ Count < 16.  See if less than 8.
+        JL      8 $
+        MOV     AH, DL          \ 8 <= cnt < 16.
+        MOV     DL, DH          \ Move by one byte.
+        MOV     DH, BL
+        MOV     BL, BH
+        XOR     BH, BH          \ Clear high byte.
+        SUB     CX, # 8         \ Adjust shift count.
+8 $:    AND     CX, CX          \ Test for zero count.
+        JZ      0A $
+9 $:    SHR     BX, # 1         \ Shift right by one bit.
+        RCR     DX, # 1
+        RCR     AX, # 1
+        LOOP    9 $             \ Loop until count is 0.
+0A $:   RET
+        END-CODE
+
+
+
+8.9.    ASSEMBLER STYLE
+
+
+
+To code 80x86 assembly routines successfully, you have to pay attention
+to many things simultaneously, making it very exciting and interesting
+occasionally, but frustrating most of the time.  To make it easier for
+yourself, you can follow the following coding style to avoid the most
+serious pitfalls in writing assembly code:
+
+code gizzmo ( input1 input2 input3 ... -- output1 output2 ...)
+
+        pop     ax              \ input section
+        pop     bx              \ pop everything into registers
+        pop     cx
+        ...
+
+        push    si              \ saving section
+        push ds         \ save all registers you will use
+        push es
+        push cs
+
+        ...                     \ code body
+        ...                     \ do your creative coding
+        ...
+
+        pop     cs              \ restoring section
+        pop     es              \ restore all saved registers
+        pop     ds
+        pop     si
+
+        push    cx              \ output section
+        push dx         \ 2push
+        push ax         \ 1push
+        next
+
+        end-code                \ you can breath now
+
+Make a boiler plate code template and delete whatever is not needed.
+This style sheet will save you lots of grief if you follow it
+religiously, with a prayer, some incense, and a bottle of aspirins.
+
+The 8086 registers have their special characteristics.  Counts should be
+popped into CX, data into AX or DX, and addresses into BX.  For string
+operations, DS:SI is used for source and ES:DI for destination.  Because
+F-PC uses ES:SI as its IP, they must be saved and restored.  You should
+also constantly remind yourself that F-PC requires that CS, DS, and SS
+all point to the Code Segment, and that ES points to the List Segment.
+If you do not restore them to this state, NEXT will certainly crash the
+system to verify the fact.  However, you should not fear crashing the
+system.  It is the daily portion which keeps a Forth programmer alert and
+nourished.  It also helps to remind the computer who is the master lest
+it forgets, which it often does.
+
+
+8.10.   DEBUGGING CODE WORDS
+
+
+Debugging large code words is very difficult.  You are encouraged to
+avoid writing large code words for this reason.  The best way to optimize
+your  Forth application is first writing everything in high level colon
+words.  After you have debugged the application and have a working
+system, examine the colon words carefully to identify the 'critical
+routines' where the computer spends most of its time.  Only these
+routines need to be converted to code words.
+
+If a critical routine is a long colon definition, try to break it into
+small pieces which can be conveniently converted to code words.  If the
+code words are small, coding and testing them will be easy.  If you have
+to build a large code word, code it in small pieces anyway.  It is easy
+to merge small code words into a large code word.
+
+If you take every precaution in writing a code word but it still fails to
+work, you have a last chance. Because F-PC has the capability to spawn a
+DOS shell, using the command SYS and ` (back tick), you can invoke the
+DEBUG program in DOS to step through a code word.  For example, if you
+want to debug the code word GIZZMO, load and assemble it into your
+dictionary and execute:
+
+        '  GIZZMO  HEX  U.
+
+to find its address in the dictionary.  You can find the code segment of
+your dictionary by
+
+        ?CS:  U.
+
+Write these numbers on a piece of paper so that you can find the code
+after you are in DOS DEBUG.  To invoke DOS DEBUG, type:
+
+        SYS  DEBUG      or      `  DEBUG
+
+You have to make sure that you have COMMAND.COM and DEBUG.COM in your
+current directory or in the PATH before you execute the SYS word.  If
+these files are accessible, you will see the DEBUG prompt '-'.  Now you
+can use the DEBUG commands to set up registers, disassemble code to see
+if the code was assembled correctly, and also step through the code one
+instruction at a time.  Go find and dust off your DOS manual.
+
+The only other thing you have to be careful about is that DEBUG
+initializes the segment registers, the stack pointers, and the CPU
+registers in its own way, very different from the way F-PC sets them up.
+You must initialize all the registers used by F-PC correctly.  If GISSMO
+needs parameters from the data stack, you must push them on the data
+stack before stepping through GIZZMO.
+
+DEBUG does not  provide the most  friendly  interface to its user.  You
+have to be prepared to pay the price before dipping into assembly coding.
+Try to minimize the pain by staying in the friendly environment in F-PC
+as long as possible, where the interpreter, the compiler, the editor, and
+the high level debugger are ready and eager to render their best
+services.
+

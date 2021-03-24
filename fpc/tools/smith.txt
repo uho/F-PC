@@ -1,0 +1,39 @@
+SMITH.SEQ       Documentation on utilities provided by Robert L. Smith.
+
+         DMULDIV.SEQ
+
+          A 64 bit by 32 bit mixed divide, with a 32 bit quotient and
+        a 32 bit remainder result.  Also, a 32 bit by 32 bit
+        multiply, yielding a 64 bit product (all unsigned).  Written
+        by Robert L. Smith in 8086 assembly.
+
+        FFLOAT.SEQ
+
+          Software support for the 8087 floating point chip. This is
+        Robert Smith's new Fast floating point interface to the hardware
+        chip.
+
+        SFLOAT.SEQ
+
+          Software floating point package for those of us who don't have
+        an 8087. It is compatable with the Forth Venders Group floating
+        point standard. Several files are loaded by SFLOAT.SEQ.  This
+        IS a COPYRIGHTed package, and may be used for your personal
+        purposes only.  You may not sell it as part of any software
+        package without the consent of Robert Smith.
+
+        COMPLEX.SEQ
+
+          Routines to assist in complex arithmetic.  Note particularly
+        the complex division algorithm!
+
+        FLTBUG.SEQ
+
+          Provides additional support for hardware floating point
+        information while using DEBUG or DBG .  The floating point
+        stack may be displayed while debugging, along with the 80x87
+        status and control word information.  Note that code level
+        debugging (using CODEBUG.SEQ) now also supports floating
+        point.
+
+

@@ -1,0 +1,40 @@
+\ PATHSET.HLP   Words used to set the path of a file.   by Tom Zimmer
+
+
+flhndl          ( --- a1 )
+        A Constant/variable that returns the address of the handle
+        we are working with.
+
+?drive.extract  ( handle --- drive-value )
+        Given handle, return drive-value, the drive specified in
+        handle, or return the current drive if no drive was specified
+        in handle.
+
+?drive.prepend  ( drive-value handle --- )
+        Given drive-value and handle, prepend the drive-value into
+        handle, as letter followed by ":".
+
+pathhndl        ( --- a1 )
+        A handle that returns a1 the address of the handle that
+        contains the default drive path.
+
+prepend.path    ( handle --- f1 )
+        Prepend the default drive and path to handle, and return f1
+        the boolean that tells if we were successful.
+
+viewpath         ( --- a1 )
+        A handle that holds the path for the compiled files in FF.
+
+setview         ( | name --- )
+        Set the path in VIEWPATH for subequent VIEW or LL or HELP
+        commands. Use one of the following formats:
+
+                SETVIEW <enter>         \ makes current dir the default.
+                SETVIEW C: <enter>      \ Drive C: root is the default.
+                SETVIEW \FF\ <enter>    \ current drive, path \FF\.
+                SETVIEW D:\FF\ <enter>  Drive D:, path \FF\.
+
+        When specifying a path, be sure to include the trailing \
+        character in creating your path.
+
+

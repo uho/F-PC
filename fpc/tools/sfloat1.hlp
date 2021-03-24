@@ -1,0 +1,249 @@
+\ Software Floating Point Package for FORTH  -- Forward, sequential version.
+\          (c) Copyright 1988  by Robert L. Smith
+\                  2300 St. Francis Dr.
+\                  Palo Alto, CA 94303
+\
+\  Permission to use this package or its derivatives is granted for private
+\  use.  For permission to use in programs or packages sold for profit,
+\  please contact the author.
+
+FPPACKAGE       A dummy word for ANEW to forget to.
+
+F#BYTES  ( -- n )                       \ FVG Optional
+        The number of bytes in a floating point word.
+
+FPSTAT   Holds error information        \ FVG Optional
+
+FPSIZE   ( -- n )               \ HIDDEN
+        The maximum number of floating point variables in the floating
+        point stack.
+
+FPSTACK                         \ HIDDEN
+        An array to hold the floating point stack.
+
+FSP0    ( -- addr )
+        Returns the address of the base of the floating point stack.
+
+FSP     ( -- addr )
+        Returns the address of a variable which points to the top of
+        the floating point stack.
+
+FDEPTHB   ( -- n )
+        The depth of the floating point stack, in bytes.
+
+FDEPTH   ( -- n )
+        The depth of the floating point stack in floating point words
+        (three words or six bytes).
+
+FCLEAR    ( -- )
+        Empty the floating point stack.
+
+AND!    ( n addr -- )
+        Performs a logical AND function with n and the contents at
+        addr, returning the result to addr .
+
+OR!     ( n addr -- )
+        Performs a logical OR function with n and the contents at addr,
+        returning the result to addr.
+
+FPOP    ( F: r -- ; -- d n )
+        Pops the return stack and pushes the same bit pattern onto the
+        parameter stack.  The double number is the fractional part, and
+        the single number is the combined sign and biased exponent.
+
+FPUSH   ( F: -- r ; d n -- )
+        Removes three numbers from the parameter stack and pushes them
+        onto the floating point stack.
+
+FPCOPY  ( F: r -- r ; -- d n )
+        Copy the contents of the floating point number at the top of the
+        floating point stack onto the parameter stack.  Equivalent to
+        FDUP FPOP .
+
+FPFRACT  ( F: r -- r ; -- d )
+        Copy the fractional part of the floating point number at the top
+        of the floating point stack onto the parameter stack.
+
+FPSEXP   ( F: r -- r ; -- n )
+        Copy the sign and exponent of the floating point number at the
+        top of the floating point stack onto the parameter stack.
+
+2/?     ( n1 -- n2 n3 )
+        n2 is n1 shifted right by 1, and n3 is the least significant bit
+        of n1.
+
+.NAME   ( n1 -- )
+        Print the name of the word whose execution address is n1.
+
+FPERR   ( F: r1 -- r2 ; n -- )          \ FVG Optional
+        A defered word to execute on a floating point error.
+
+.FP.    ( -- )                  \ HIDDEN
+        Print the string "Floating Point".
+
+(FPERR)  ( F: r1 -- r2 ; n -- ) \ HIDDEN
+        Default word to execute on a floating point error.
+
+DENORM                          \ HIDDEN
+        A code-level subroutine to de-normalize a floating point number.
+        CX = count, BX = Hi, DX = LO, AX = Guard, Round, & Sticky.
+
+F-     ( F: r1 r2 -- r3 )               \ FVG Required
+        Subtract the floating point number at the top of the stack from the
+        floating point number second on the stack.  Report overflow errors.
+
+F\-    ( F: r1 r2 -- r3 )     \ Reverse subtraction
+        Subtract the floating point number second on the stack from the
+        floating point number at the top of the stack.  Report overflow
+        errors.
+
+F+      ( F: r1 r2 -- r3 )              \ FVG Required
+        Add the two floating point numbers at the top of the stack.  The
+        result is placed back on the stack.  Report overflow errors.
+
+F*    ( F: r1 r2 -- r3 )                \ FVG Required
+        Multiply the top two floating point numbers on the stack.  Report
+        overflow errors.
+
+F/     ( F: r1 r2 -- r3 )               \ FVG Required
+        Divide the floating point number second on the stack by the floating
+        point number at the top of the stack.  Report overflow errors and
+        division by zero.
+
+FSQRT   ( F: r1 -- r2 )                 \ FVG Required
+        Replace the floating point number at the top of the stack with its
+        square root.  Report an error if r1 is negative.
+
+FDUP   ( F: r -- r r )                  \ FVG Required
+        Duplicate the floating point number at the top of the stack.
+
+FDROP   ( F: r -- )                     \ FVG Required
+        Drop the top floating point number from the stack.
+
+F2DROP   ( F: r1 r2 -- )
+        Drop the top two floating point numbers from the stack.
+
+FNIP    ( F: r1 r2 -- r1 )
+        Remove the second floating point number from the stack.
+        Equivalent to FSWAP FDROP .
+
+FOVER   ( F: r1 r2 -- r1 r2 r1 )        \ FVG Required
+        Push a copy of the floating point number second on the stack.
+
+F2DUP   ( F: r1 r2 -- r1 r2 r1 r2 )
+        Push a copy of the top two elements on the floating point stack.
+
+FSWAP   ( F: r1 r2 -- r2 r1 )           \ FVG Required
+        Interchange the top two floating point numbers on the stack.
+
+FROT    ( F: r1 r2 r3 -- r2 r3 r1 )     \ FVG Required
+        Rotate the top three elements on the floating point stack, bringing
+        the third element to the top.
+
+F-ROT   ( F: r1 r2 r3 -- r3 r1 r2 )
+        Reverse rotate the top three elements on the floating point stack,
+        putting the top element to the third position.
+
+FPICK   ( F: rn rn-1 ... r0 -- rn rn-1 ... r0 rn ; n -- )
+        Using a zero referenced value of n , pick the n-th value from the
+        floating point stack and push it onto the floating point stack.
+        Thus  0 FPICK  is equivalent to FDUP .
+
+FNSWAP   ( F: rn rn-1 ... r0 -- r0 rn-1 ... r1 rn ; n -- )
+        Exchange the floating point value at the n-th location on the
+        floating point stack with the floating point value at the top
+        of the floating point stack.  Thus  1 FNSWAP  is equivalent to
+        FSWAP .
+
+F0<   ( F: r1 -- ; -- flag )            \ FVG Required
+        Test the floating point number at the top of the floating point
+        stack.  If the number is less than zero, push a -1 flag on the
+        parameter stack.  If the floating point number is greater than or
+        equal to zero, push a 0 flag on the parameter stack.  In either
+        case, drop the floating point number from the floating point
+        stack.
+
+FDUP0<    ( F: r1 -- r1 ; -- flag )
+        Test the floating point number at the top of the floating point
+        stack.  Do not drop that number.  If the number is less than zero,
+        push a -1 flag on the parameter stack.  Otherwise, push a zero
+        flag.
+
+F0>   ( F: r1 -- ; -- flag )
+        Test the floating point number at the top of the stack, then drop
+        the number.  If the number was greater than zero, push a -1 flag
+        on the parameter stack.  Otherwise push a zero.
+
+F0=   ( F: r -- ; -- flag )             \ FVG Required
+        Test the floating point number at the top of the stack, then drop
+        it.  If the number is zero, push a -1 on the parameter stack.
+        The flag is set to 0 if the floating point number was not zero.
+
+F2DUP0=   ( F: r1 r2 -- r1 r2 ; -- flag )
+        Compare the top two floating point numbers, but do not drop them.
+        If the two numbers are equal, push a flag of -1 onto the parameter
+        stack.  If the numbers are not equal, push a flag of 0.
+
+F=   ( F: r1 r2 -- ; -- flag )          \ FVG Required
+        Compare the top two floating point numbers.  If the numbers are
+        equal, push a flag of -1 on the parameter stack.  If the two
+        numbers are not equal, push a zero.  In either case, drop the two
+        numbers from the floating point stack.
+
+F2DUP>   ( F: r1 r2 -- ; -- flag )
+        Compare the top two floating point numbers, but do not pop them
+        from the stack.  If the number second on the stack is greater than
+        the top number, push a flag of -1 onto the parameter stack.
+        Otherwise, push a zero onto the parameter stack.
+
+F2DUP<   ( F: r1 r2 -- ; -- flag )
+        Compare the top two floating point numbers, but do not pop them
+        from the stack.  If the number second on the stack is less than
+        the top number, push a flag of -1 onto the parameter stack.
+        Otherwise, push a zero onto the parameter stack.
+
+F<   ( F: r1 r2 -- ; -- flag )          \ FVG Required
+        Compare the top two floating point numbers.  If the number second
+        on the floating point stack is less than the top number, push
+        a flag of -1 onto the parameter stack.  Otherwise push a 0 onto
+        the parameter stack.  In either case, the top two numbers on the
+        floating point stack are dropped.
+
+F>   ( F: r1 r2 -- ; -- flag )
+        Compare the top two floating point numbers.  If the number second
+        on the floating point stack is greater than the top number, push
+        a flag of -1 onto the parameter stack.  Otherwise push a 0 onto
+        the parameter stack.  In either case, the top two numbers on the
+        floating point stack are dropped.
+
+F<=   ( F: r1 r2 -- ; -- flag )
+        Compare the top two floating point numbers.  If the number second
+        on the floating point stack is less or equal to the top number,
+        push a flag of -1 onto the parameter stack.  Otherwise push a 0
+        onto the parameter stack.  In either case drop the top two numbers
+        from the floating point stack.
+
+F>=   ( F: r1 r2 -- ; -- flag )
+        Compare the top two floating point numbers.  If the number second
+        on the floating point stack greater than or equal to the top
+        number, push a flag of -1 onto the parameter stack.  Otherwise
+        push a 0 onto the parameter stack.  In either case drop the top
+        two numbers from the floating point stack.
+
+FMAX   ( F: r1 r2 -- r3 )
+        Replace the top two numbers on the floating point stack with the
+        greater of the two.
+
+FMIN   ( F: r1 r2 -- r3 )               \ FVG Required
+        Replace the top two numbers on the floating point stack with the
+        smaller of the two.
+
+FABS   ( F: r1 -- r2 )                  \ FVG Required
+        Replace the floating point number at the top of the floating point
+        stack with its absolute value.
+
+FNEGATE   ( F: r1 -- r2 )               \ FVG Required
+        Negate the floating point number at the top of the floating point
+        stack.
+
+

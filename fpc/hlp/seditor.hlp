@@ -1,0 +1,819 @@
+\ SEDITOR.HLP   Sequential EDitor          Written by 1987 Tom Zimmer
+
+editor          ( --- )
+        The EDITOR vocabulary, contains all of the editor words.
+
+real.firstline          First edit line on the screen.
+first.textline          First text line on screen, same as above.
+lines/screen            Total lines on the screen.
+statusline              The line where the status line will be displayed.
+helpline                The line where the help line will be displayed
+ch/l                    Maximum characters that will fit on a line.
+helpkey                 The default value of the help key is F1 key
+
+last.textline           Last line text will use.
+torig                   Offset of text in the text segment
+crlfval                 value of line terminator CRLF.
+blbl                    value of two blanks.
+linebuf.len             Length of the linebuffer
+formfeed                value of a form feed character
+prtlines                printed lines per page
+
+nfil                    An empty file constant array, for initialization.
+blnks                   128 blanks, for speed of output
+
+screenline              current screen line
+screenchar              current screen character
+curline                 current line number
+
+origcur                 original cursor chape value.
+cursave         ( --- ) Save the original cursor shape.
+currest         ( --- ) Restore the original cursor shape.
+
+imode           insert mode flag
+lastline        last valid line in file.
+lmrgn           Left margin location
+memleft
+newfl           was new file created?
+changed         edit changed flag
+markline        mark/get line #
+markchar        mark/get character offset
+updated         have we updated to disk yet?
+lookflg         did we find anything last time?
+xrmrgn          Maximum right margin of longest line.
+wrapped         Did we wrap a line?
+wraplen         What was the wrap length
+wraploc         Where did it wrap
+escflg          are we escaping during filename entry
+filtering       are we looking for ESC and Alt-F10?
+lchng           line changed flag
+ldel.cnt        count of line deletes
+emptyline
+leftsave        save place for left margin
+rightsave       save place for right margin
+edready         ready to edit, we have a file, and can enter
+                editor on it, with no problem.
+lastldline      last line we were editing.
+
+showstat        The function to display the status line.
+exit.edit       The exit editor function, defaults to QUIT
+doacharx
+
+vstaton         Is status displaying on?
+statcnt         How long ago did we display the status line,
+                do we need to do it again?
+
+slook.buf       search buffer used for searching.
+
+linebuf         Our line buffer
+temp.buf        A temporary buffer used for several things.
+split.buf       The split a line buffer, for saving part of line.
+wrap.buf        The wrap buffer, used when wrapping a line.
+temp2.buf       Another temporary buffer.
+
+ldel.buf        The line delete offset for the line delete segment.
+linelen         The line length constant/variable.
+
+--'s.buf        An array filled with the - character, for speed.
+
+-s              ( n1 --- )
+                Print out n1 -'s
+
+gremit          Create a class of words that emit graphics characters.
+
+|.              A graphics character.
+--              A graphics character.
+|               A graphics character.
+.|              A graphics character.
+'|              A graphics character.
+|'              A graphics character.
+
+ss              Print some speedy spaces.
+
+||              Print a vertical line character at the right edge
+                of the screen.
+
+.l              ( n1 n2 --- )
+        Print n1 left justified in fld width n2.
+
+margin.save     ( --- )
+        Save the current values of the left and right margin variables
+        for later restoral.
+
+margin.restore  ( --- )
+        Restore the left and right margin values saved previously.
+
+emptykbd        ( --- )
+        Empty out the keyboard typeahead buffer.
+
+?shiftkey       ( --- f1 )
+        Is the shift key being held down? Reads a low memory location,
+        masks with the 02 value below to return a boolean flag.
+
+                02 = Shift key, 08 = Alt key, 40 = Caps lock.
+
+eeol            ( --- )
+        Erase the current line from the cursor position, to the right
+        edge of the screen.
+
+creeol          ( --- )
+        Print a carraige return, and erase all of the next line. Leaves
+        the cursor at the beginning of the line following the current line.
+
+erase.bottom    ( --- )
+        Erase the screen from the line below the current line, to the
+        bottom of the screen.
+
+terminate.edit  ( --- )
+        Terminate the current edit session. Calls EXIT.EDIT which is
+        a defered word.
+
+?terror         ( f1 a1 n1 --- )
+        Using the boolean f1. If f1 is true, then terminate the edit
+        after printing the message specified by a1,n1. If f1 is false,
+        then throw a1,n1 away and continue execution.
+
+set.newfile     ( --- )
+        Build a new empty file in the edit buffer.
+
+?softerror      ( bool a1 n1 --- )
+        If bool is true, warn the user of a non-fatal error, by printing
+        message a1,n1 on the status line. Delay 2 seconds for the user to
+        see the message before continuing.
+
+change.ext    ( a1 --- )
+        Rename the file specified by the current file handle to
+        be the same name with a new extension specified by counted
+        string a1.
+
+clearit         ( --- )
+        Perform the Cold bood INITSTUFF, and clear out the DOS
+        command line buffer.
+
+read.openfile   ( --- )
+        Read the file that is currently open into the edit buffer.
+        The read is clipped to 64000 characters.
+
+read.oldfile    ( --- )         \ get existing file
+        Test the currenly open file for a length of greater than 64000.
+        If the file is longer than 64000 characters, then the file
+        reat up to 64000 characters, and renamed with the .ORG extension.
+
+?diskfull       ( --- f1 )
+        Test the current drive to make sure there is enough space to
+        save the file just read. If there is not enough space in disk,
+        then warn the user that no changes can be saved.
+
+read.file       ( --- )
+        Open and read the file spedified by the current file handle.
+        if the file does not exist, setup a new file. Also checks
+        disk space requirements after an existing file is read.
+        Will not allow the reading of a file with the extension .BAK.
+
+?change.bak     ( --- )
+        Change the extension of the current file to .BAK.
+
+write.file      ( --- )
+        Write the file currently in memory out to disk. Will inform
+        the user if an error occurs while writting, giving him another
+        chance to write to another disk.
+
+show.dir        ( --- )
+        If the computer is running DOS 3.x then use a system call to
+        print a list of all the .SEQ files in the current directory.
+        Does not do this on a DOS 2.x computer, because most of them
+        are PC 8088 machines, and it would result in long delays.
+
+skeyfilter      ( n1 --- n2 )
+        A special filter that converts ESC and Alt-F10 to be the same
+        as the Enter key, except they turn on the ESCFLG variable to
+        mark an aborted operation.
+
+getafile        ( --- f1 )
+        Accepts a filename from the terminal input stream. If the
+        input stream is empty, then prompt for a filename using
+        GETFILE. If no name is entered, then a flase flag is returned,
+        else a true flag is returned. Then name is placed in the
+        current file handle.
+
+get.filename    ( --- f1 )
+        Prompsts the user for a filename to edit. If no name is
+        entered, then prints exit message about author and leaves
+        the last file open. returns a true flag for good name entered,
+        or false for no name entered.
+
+set.file        ( | name --- f1 )
+        If a name follows on command line, then it is accepted.
+        If no name is following, then prompts for a name.
+
+get             ( | name --- f1 )
+        Prompt for a name, and then read it, otherwise return with
+        false flag.
+
+put             ( --- )
+        Save the file currently in memory. If there is not enough disk
+        space to save the curent file, then prompts the user to insert
+        another disk to save on. No return to editing is allowed, only
+        ESC to DOS without saving is allowed if no new disk is inserted.
+
+linebuf:        ( --- seg a1 )
+        Return the segment and address of the edit line buffer.
+
+lineptr         ( --- a1 )
+        Return the address in the edit buffer segment of the current
+        edit line.
+
+lineinfo        ( --- a1 n1 )
+        Return the address and length of the current line in the
+        edit segment.
+
+showcur         ( --- )
+        Display the cursor on the screen. Automatically adjusts
+        for horizontal scrolling.
+
+#lineinfo       ( n1 --- seg a1 n2 )
+        For line n1, return the segmetn, address, and length of that
+        line in edit space.
+
+stripbl's       ( --- )
+        String the blanks from the line of text in the line buffer.
+        Adjusts the count at the beginning of the line buffer.
+
+restore.name    ( --- )
+        When aborting an edit, this word is called to restore the
+        backup file to the proper extension. This will be done
+        unless the current file in memory has been saved, and there
+        is in fact no backup file on the disk. In this case, the
+        normal extension file on the disk is left there and not deleted.
+
+getline         ( --- )
+        Read the current line from the edit segment, to the line
+        buffer.
+
+putline         ( --- )
+        If the line in the line buffer has been modified, write it
+        from the line buffer to the edit segment.
+
+curline+        ( --- )
+        Move down one line in the edit segment buffer, making the next
+        line the current line. This routine really just moves a line
+        located in the edit segment from one place to another, adjusting
+        the current line pointer.
+
+curline-        ( --- )
+        Move up one line in the edit segment buffer, making the previous
+        line the current line. See also CURLINE+.
+
+rsplit          ( --- a1 )
+        This variable holds the line length at which line splitting occurs
+        if no line breaks are found in the text. Specifically this is
+        set to 64, so .BLK files will be split into lines, and can then
+        be edited properly.
+
+?lf's           ( --- )
+        Test the file that has just been read from disk to see if it
+        contains the line break character "linefeed". If no linefeed
+        character is found in the first 250 characters of the file,
+        then an autosplit of lines will occur at 64 character boundries.
+        The file is also renamed to .TMP if the splitting occurs.
+
+stripCtl-Z's    ( --- )
+        Shorten the file as required to strip any Control Z characters
+        that may have been appended to the end of the file by any
+        other editor.
+
+?lastline       ( --- f1 )
+        return a boolean flag f1 true if the current line is the
+        last line in the file.
+
+?firstline      ( --- f1 )
+        Return a boolean flag f1 true if the current line is the first
+        line in the file.
+
+?stripbl's      ( --- )
+        If the lines were split at 64 characters, then process all lines
+        and strip any trailing blanks from each line. Also appends
+        a CRLF to each line.
+
+
+>lf             ( a1 --- a2 )
+        Adjust address a1 within the edit segment to become address a2
+        the address of the next linefeed character in the buffer. Also
+        adjusts XRMRGN to maintain it as the value of the longest
+        line in the file, used to set the firth margin automatically.
+
+build.linelist  ( --- )
+        Build that values in the line pointer table from the text
+        in the edit segment. The line pointer table is used to allow
+        the lines of the file to be manipulated very quickly.
+
+sinit           ( --- )
+        Initialize the editor. This word is called after reading a
+        file into the edit segment, it builds the line pointer table,
+        and initializes all variables in the editor.
+
+sltype          ( n1 --- )
+        Type file line n1 to the display at the current cursor location.
+        The cursor is moved to the correct line before this routine
+        is called.
+
+<statfunc>      ( --- )
+        Show the status line on the display. Shows Line, Column, ect.
+
+fullfunc        ( --- )
+        Displays the status line with a MEM FULL message at the top left
+        of the status display. Used when the edit file has filled the
+        space available for editing.
+
+statfunc        ( --- )
+        Display the status line with either an INSERT or an OVERTYPE
+        message to the left of the status line.
+
+lsl             ( --- n1 )
+        A constant that return the last screen text line.
+
+?full           ( --- f1 )
+        Returns a boolean f1 true if the file in memory has increased
+        in size to greater than 64000 characters.
+
+?showfull       ( --- )
+        Test for memory full, and select the full memory status display
+        function if memory is full.
+
+?maxlines       ( --- f1 )
+        return a boolean f1 true if the file has grown to be larger
+        than the maximum number of lines allowed.
+
+sdisp           ( --- )
+        Display the current line from the line buffer to the display.
+
+scrshow         ( --- )
+        Re-display all of the lines of the screen.
+
+<sdln>          ( --- )
+        Move down one line in the file, without displaying anything
+        on the screen.
+
+<suln>          ( --- )
+        Move up one line in the file, without displaying anything
+        on the screen.
+
+sdisplay        ( --- )
+        Display the current edit line on the screen.
+
+ins.linelist    ( --- )
+        Insert a new entry into the line pointer list at the current
+        line.
+
+?appendline     ( --- )
+        Conditionally add a line to the end of the current edit file
+        if the current line is the last line.
+
+clipdown        ( --- )
+        Clip the line on which the cursor will be displayed, to be
+        within the lines of the file.
+
+sdln            ( --- )
+        Move down one line in the current file, with screen display.
+
+<shom>          ( --- )
+        Move to the beginning of the current file without screen
+        display.
+
+shom            ( --- )
+        Move to the beginning of the current file with screen display.
+
+send            ( --- )
+        Move to the end of the current file with screen display.
+
+suln            ( --- )
+        Move up one line in the current file with screen display.
+
+?cursor         ( --- )
+        Adjust the cursor chape to the current editor mode, Insert
+        or Overwrite.
+
+line>ldel.buf   ( --- )
+        Save the current line in the line buffer to the line delete
+        buffer in the delete segment.
+
+ldel>linebuf    ( --- )
+        Move a line from the line delete segment buffer to the line
+        buffer.
+
+<ldel>          ( --- )
+        Delete the current edit line, saving it in the line delete
+        buffer. Does not show results to the display.
+
+ldel            ( --- )
+        Delete the current edit line and display the results to the
+        screen. The line is saved in the line delete buffer.
+
+?stripblanklines ( --- )
+        If the current file was a file split at 64 character boundries,
+        then this routine will strip off (delete) any blank lines that
+        occur at the end of the file.
+
+to.line         ( n1 --- )
+        Move forward from the current line to line n1. Automatically
+        stops at the end of the file.
+
+backto.line     ( n1 --- )
+        Move back from the current line to line n1. Automatically
+        stops at the first line of the file.
+
+.elapse         ( --- )
+        Print the total time spent in the editor to the display.
+
+updt            ( --- )
+        Save any changes that have been made to the current file,
+        and continue editing.
+
+squt            ( f1 --- f2 )
+        Abort the current edit session, and discard any changes
+        that have been made. Mark memory as empty.
+
+<sesc>          ( f1 --- f2 )
+        Save any changes that have been made to the current file, and
+        terminate the edit. Returns F2 true to cause the edit to
+        terminate.
+
+sesc            ( f1 --- f2 )
+        Leave the editor, select save and exit, or if shift is held
+        down, then select abort the save.
+
+<nlnx>
+        A defered word to allow a forward reference. See NLN
+
+?addline        ( -- )
+        If this is the last line, then add a blank line following
+        this line. Saves and restores the cursor position.
+
+rchr            ( --- )
+        Move right one character in the current edit line. Will go
+        down to the beginning of the next line if you move to the right
+        of the right margin.
+
+chrptr          ( --- a1 )
+        Return address a1 the address of the current character in the
+        current line in the line buffer.
+
+shoml           ( --- )
+        Move to the beginning of the current edit line.
+
+sendl           ( --- )
+        Move to the end of the current edit line.
+
+?leftshow       ( --- )
+        reshow the screen fi the screen scrolled while moving the
+        cursor left.
+
+lchr            ( --- )
+        Move the cursor left in the current line. Will wrap up to
+        the end of the previous line if the cursor trys to move to
+        the left of column 0.
+
+?showstatus     ( --- )
+        Show the status line on the display if it needs to be shown,
+        and this routine has been performed for 200 times. This
+        routine is place in KEY?, so it is called all the time we
+        are waiting for a key.
+
+statkey         ( --- c1 )
+        Wait for a key from the user, also resets STATCNT after a
+        key has been pressed.
+
+pdn             ( --- )
+        Move down a screen full of lines in the file.
+
+pup             ( --- )
+        Move up a screen full of lines in the file.
+
+>space          ( --- )
+        Move to the next space in the current line.
+
+space>          ( --- )
+        Move to the next non-space in the current line.
+
+<<space>        ( ---  f1 )
+        Move to the previous space in the current line, returning
+        f1 true if a space was found, false otherwise.
+
+<text           ( --- )
+        Move to the previous non-space character in the current line.
+
+rwrd            ( --- )
+        Move right in the current line to the beginning of the next
+        word on the line.
+
+lwrd            ( --- )
+        Move left in the current line to the beginning of the
+        previous word in the line, or the beginning of the line if
+        no previous word is found.
+
+splitline       ( --- )
+        Split the current line at the cursor into two lines.
+
+<nln>           ( --- )
+        Split the current line into two lines at the cursor if we
+        are in insert mode. Does not redisplay the screen.
+
+nln             ( --- )
+        Split the current line into two lines at the cursor if we
+        are in insert mode. Also redisplays the screen.
+
+fdbuf           ( --- a1 )
+        Forward word delete buffer, Holds the words deleted with
+        word delete. Word undelete removes and re-inserts the words
+        from this buffer.
+
+csaveflg        ( --- a1 )
+        Holds a flag that controls whether we are saving word deleted
+        characters in the FDBUF buffer.
+
+csaveon         ( --- )
+        Turns forward delete buffering on.
+
+csaveoff        ( --- )
+        Turns forward delete buffering off.
+
+csave           ( c1 --- )
+        Save character c1 into the forward delete buffer if saving
+        is on, else discard c1.
+
+<fdel>          ( --- )
+        Delete the character under the cursor.
+
+split.lineend   ( --- )
+        Split the line at the cursor, saving the line end in
+        WRAP.BUF.
+
+prepend.split   ( --- )
+        Prepend the text in wrap.buf to the current edit line.
+
+showst          ( --- )
+        A defered word that shows the status line.
+
+?lmargin        ( --- )
+        If the cursor is at the left screen edge, adjust it to the
+        correct left margin.
+
+?right          ( --- )
+        Move right on character on the current line, may wrap to the
+        next line.
+
+del<>bl's       ( --- )
+        Delete non blank characters in the current line from the cursor
+        to the right until a blank character is found.
+
+delbl's         ( --- )
+        Delete blank characters in the current line from the cursor
+        to the right until a non-blank character is found or the
+        right margin is reached.
+
+AppendLine      ( --- )
+        Append this line to the previous line.
+
+bdel            ( --- )
+        Delete the character before the cursor. May join this line
+        with the previous line if in insert mode and cursor is on
+        column 0.
+
+schr            ( c1 --- )
+        Insert or overtype character c1 into the current edit line.
+        May wrap to the next line if the right margin is encountered.
+
+wudel           ( --- )
+        Undelete a word from the forward delete buffer.
+
+linelook        ( --- f1 )
+        Scan through the current line looking for a match to the
+        text in SLOOK.BUF. Return boolean flag true if a match is
+        found.
+
+inputline       ( --- a1 )
+        A variable that holds the line where input parameters for
+        search, replace ect. will be prompted.
+
+looked          ( --- )
+        A variable that tells REPLACE that we have already done a
+        search. If no search has been done, replace is not allowed.
+
+input$          ( a1 n1 -- a2 )
+        Prompt for user parameters, after displaying the prompt a1,n1.
+        Accpt up to 64 characters.
+
+look.till       ( --- f1 )
+        Search the edit buffer starting at the next line, through the
+        end of the file for text located in SLOOK.BUF. Aborts if a
+        key is pressed during the search.
+
+look.back       ( --- f1 )
+        Save as LOOK.TILL, but searches backwards.
+
+<slooker>       ( --- )
+        Start searching forward starting at cursor location on
+        current line, proceeding through the end of the file for
+        text contained in SLOOK.BUF.
+
+slooker         ( --- )
+        Search for text contained in SLOOK.BUF. Senses the condition
+        of the SHIFT key, and specifies a search that is CaSe
+        Sensitive if Shift is held down.
+
+slookbk       ( --- )
+        Search backwards from cursor, looking for string held in
+        SLOOK.BUF. Searches case Insensitive.
+
+sloob           ( --- )
+        Search backwards, and display results.
+
+slooa           ( --- )
+        Search forward again, and display results.
+
+sloon           ( --- )
+        Search new, that is prompt for a search string, then perform
+        search forward.
+
+rep.buf         ( --- a1 )
+        Replace buffer, holds text used to replace found text.
+
+repset          ( --- a1 )
+        Variable that holds a flag to tell if a replace string has
+        been entered. If no string has been entered then no replace
+        will be allowed.
+
+<srepa>         ( --- )
+        Replace again, most recently found string with already
+        specified replace string.
+
+srepa           ( --- )
+        Replace again, and then perform another search.
+
+srepn           ( --- )
+        New replace, prompts for a replace string. Will not prompt
+        for a string until a search has been done first. After a
+        replace string has been entered, then a single replace
+        occurs followed by a search for the same text as the last
+        search.
+
+repall          ( --- )
+        Replace all occurances of searched text with replace text.
+        Repeats until all occurances of search text are found and
+        replaced.
+
+wr->fl          ( --- )
+        Write the current file in memory out to a file that the user
+        is prompted to enter. If ESC is pressed, no write will be
+        performed.
+
+<joinln>        ( --- )
+        joint this line with the next line.
+
+joinln          ( --- )
+        Join this line with the next line.
+
+itgl            ( --- )
+        Toggle the insert mode between Insert and Overwrite.
+
+fdel            ( --- )
+        Forward delete of the character under the cursor. If the
+        cursor is at the end of the line, the following line will
+        be joined to the current line.
+
+wdel            ( --- )
+        Forward delete the word under the cursor. If the cursor
+        is at the end of the line, the following line will be
+        joined to the current line.
+
+smrk            ( --- )
+        Set the mark for line get, cut, and copy.
+
+sbtab           ( --- )
+        Move left to the previous tab position on the screen.
+
+dnln            ( --- )
+        Move down one line in the current edit file.
+
+upln            ( --- )
+        Move up one line in the current edit file.
+
+tscrn           ( --- )
+        Move the cursor to the top of the current edit screen.
+
+bscrn           ( --- )
+        Move the cursor to the bottom of the current edit screen.
+
+scldn           ( --- )
+        Scroll the screen down one line.
+
+sclup           ( --- )
+        Scroll the screen up one line.
+
+stab            ( --- )
+        Tab right on the screen.
+
+tabxp           ( --- )
+        Expand tabs (9) in the current file to spaces at
+        8 character multiples.
+
+lundel          ( --- )
+        Un-delete one line from the line delete buffer segment.
+
+sgetl           ( --- )
+        Get one line from the mark, to the current cursor line.
+        The mark line is incremented.
+
+spltln          ( --- )
+        Split the current edit line at the cursor.
+
+showscreen      ( --- )
+        Re-display the status line, the text lines, and the cursor.
+
+^cc             ( --- )
+        Allow entry of any character into the edit buffer, prompts
+        for the entry of any character on the keyboard to be pressed.
+
+lmset           ( --- )
+        Set the left margin to the current column.
+
+tabset          ( --- )
+        Set the TAB increment to the value of the current column.
+
+notavail        ( --- )
+        Warning message that the function just performed is not
+        available without loading the enhances edit function set.
+
+shelp
+        Defered word, used to display Help screens. See the file
+        EDITHELP.SEQ.
+
+exportx
+        Defered word, used for the block text Copy function. See
+        the file PRINTING.SEQ.
+
+excutx
+        Defered word, used to cut a block of text. See the file
+        PRINTING.SEQ.
+
+importx
+        Defered word, used to insert text previously cut or
+        copied. See the file PRINTING.SEQ.
+
+pmenux
+        Defered word, brings up the printing menu. See the file
+        PRINTING.SEQ.
+
+kerr
+        Defered word, used for all keys that are not defined. It
+        just beeps.
+
+s^tbl           ( n1 --- )
+        An execution table definition. performs function n1, as one
+        of the functions to be done for a control key 0 to 31.
+
+sfuntbl         ( n1 --- )
+        An executuion table definition. Performs the function n1,
+        as one of the functions to be done for a function key.
+
+?controls       ( c1 --- c1 )
+        Handle control keys entered from the keyboard.
+
+?functions      ( c1 --- c2 )
+        Handle the function keys pressed at the keyboard.
+
+?del            ( c1 --- )
+        Handle the DEL key.
+
+?schr           ( c1 --- )
+        Handle all printable characters.
+
+doachar         ( c1 --- f1 )
+        Handle all characters entered at the keyboard.
+
+scrline         ( --- a1 )
+        A variable that holds the starting screen line when we
+        are entering the editor.
+
+check.shndl     ( --- )
+        Verify the current handle is within the legal range for
+        the handle stack.
+
+find.line       ( --- )
+        Find the line that contains the character offset specified
+        in the variable LASTLINE.
+
+reedit          ( --- )
+        Re-enter the editor, main loop for editing.
+
+<sed>           ( t1 --- )
+        Main entry point for the editor, prompts and reads a file
+        then calls REEDIT.
+
+esed            ( t1 --- )
+        Start at the first line, and load a new file.
+
+eed             ( --- )
+        Enter the editor where we were before, with screen on line 8.
+
+

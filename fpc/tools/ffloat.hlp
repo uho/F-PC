@@ -1,0 +1,915 @@
+\ FFLOAT.HLP    Help file for 8087 floating point support package.
+
+WAIT?   ( -- addr )             \ ASSEMBLER
+        A variable to indicate if we need to assemble a WAIT instruction
+        along with a floating point instruction.
+
+<FW>    ( -- addr )             \ ASSEMBLER
+        A variable that holds the type and size information for the
+        floating point operand of the instruction to be assembled.
+
+8087NPU  ( -- flag )            \ ASSEMBLER
+        This flag indicates if we are assembling for an 8087 chip versus
+        one of the later (80287, 80387, etc).  If set, WAIT instructions
+        will be generated between floating point instructions.
+
+NOWAIT   ( -- )                 \ ASSEMBLER
+        Turns off the temporary WAIT? flag.
+
+COMP-WAIT   ( -- )              \ ASSEMBLER
+        Optionally assemble a WAIT instruction.
+
+FPSTACK?   ( -- flag )          \ ASSEMBLER
+        Used by the floating point assembler to determine if a floating
+        point stack operand appears in the instruction.
+
+ST      Floating Point Stack operand
+ST0     Floating Point Stack operand
+ST(0)   Floating Point Stack operand
+ST1     Floating Point Stack operand
+ST(1)   Floating Point Stack operand
+ST2     Floating Point Stack operand
+ST(2)   Floating Point Stack operand
+ST3     Floating Point Stack operand
+ST(3)   Floating Point Stack operand
+ST4     Floating Point Stack operand
+ST(4)   Floating Point Stack operand
+ST5     Floating Point Stack operand
+ST(5)   Floating Point Stack operand
+ST6     Floating Point Stack operand
+ST(6)   Floating Point Stack operand
+ST7     Floating Point Stack operand
+ST(7)   Floating Point Stack operand
+
+ST,     Floating Point Stack operand
+ST0,    Floating Point Stack operand
+ST(0),  Floating Point Stack operand
+ST1,    Floating Point Stack operand
+ST(1),  Floating Point Stack operand
+ST2,    Floating Point Stack operand
+ST(2),  Floating Point Stack operand
+ST3,    Floating Point Stack operand
+ST(3),  Floating Point Stack operand
+ST4,    Floating Point Stack operand
+ST(4),  Floating Point Stack operand
+ST5,    Floating Point Stack operand
+ST(5),  Floating Point Stack operand
+ST6,    Floating Point Stack operand
+ST(6),  Floating Point Stack operand
+ST7,    Floating Point Stack operand
+ST(7),  Floating Point Stack operand
+
+WORD-TYPE                            \ ASSEMBLER
+        A creating word for assembler helper words.
+
+INTEGER*2       Defines type of floating point operand.
+INTEGER*4       Defines type of floating point operand.
+INTEGER*8       Defines type of floating point operand.
+REAL*4          Defines type of floating point operand.
+REAL*8          Defines type of floating point operand.
+TEMP-REAL       Defines type of floating point operand.
+BCD             Defines type of floating point operand.
+
+MF    ( -- n )                       \ ASSEMBLER
+
+ESC,   ( n -- )  Returns bits 1 and 2 of the current operand word type.
+        Generates a basic floating-point instruction using ESC .
+
+N1FPF   Used to generate simple floating point instructions with no WAIT .
+
+N1FP    Creating word for simple floating point instructions with no WAIT .
+
+FNCLEX          Clear floating-point exception flags with no WAIT .
+FNINT           Initialize the floating-point processor with no WAIT .
+FNENI           Enable interrupts from floating point processor, no WAIT .
+FNDISI          Disable interrupts from f-p processor, no WAIT .
+FNSTWAX         80287: store Status word in AX, with no WAIT .
+
+W1FPF    Used to generate simple floating point instructions with WAIT .
+
+W1FP     Creating word for simple floating point instructions with WAIT .
+
+FCLEX           Clear floating-point exception flags with WAIT .
+FINT            Initialize the floating-point processor with WAIT .
+FENI            Enable interrupts from floating point processor, with WAIT .
+FDISI           Disable interrupts from f-p processor, with WAIT .
+FSTWAX          80287: store Status word in AX, with WAIT .
+
+1FP     Creating word for simple floating point instructions.
+
+FCOMPP          Compare Real and Pop twice.
+FTST            Compare the top stack element against zero.
+FXAM            Examine the top stack element, set condition codes.
+FLDZ            Load a floating point zero.
+FLD1            Load a floating point 1.
+FLDPI           Load a floating point value of pi.
+FLDL2T          Load a floating point log to base 2 of 10.
+FLDL2E          Load a floating point log to base 2 of e.
+FLDLG2          Load a floating point log to base 10 of 2.
+FLDLN2          Load a floating point log to base e of 2.
+FSQRT,          Assembler instruction to take the square root.
+FSCALE          Scale by 2 raised to the integer second on stack.
+FPREM           Floating point partial remainder function.
+FRNDINT         Rounds top stack item to an integer.
+FXTRACT         Extracts sign and exponent of top f.p. stack item.
+FABS,           Changes the top stack item to positive. Assembler inst.
+FCHS            Reverses the sign of the top f.p. stack item.
+FPTAN           Partial tangent function.
+FPATAN          Partial arctangent function.
+F2XM1           Calculate ((2^x) - 1).
+FYL2X           Calculate  y*logb2(x), where logb2 = log base 2.
+FYL2XP1         Calculate  y*logb2(x+1).
+FINCSTP         Increment the floating point stack pointer.
+FDECSTP         Decrement the floating point stack pointer.
+FNOP            Floating point no-operation.
+
+N2FPF           Assist class 2 f-p assembler instructions with no WAIT .
+
+N2FP            Generate class 2 f-p assembler instructions with no WAIT .
+
+FNSTCW          Store the Control Word with no WAIT .
+FNSTSW          Store the Status Word with no WAIT .
+FNSTENV         Store the Environment with no WAIT .
+FNSAVE          Store the Environment and register stack with no WAIT .
+
+W2FPF           Assist class 2 f-p assembler instructions with WAIT .
+
+W2FP            Generate class 2 f-p assembler instructions with WAIT .
+
+FSTCW           Store the Control Word with WAIT .
+FSTSW           Store the Status Word with WAIT .
+FSTENV          Store the Environment with WAIT .
+FSAVE           Store the Environment and register stack with WAIT .
+
+2FPF            Assist class 2 f-p assembler instructions.
+
+2FP             Generate class 2 f-p assembler instructions.
+
+FLDCW           Load the Floating point processor Control Word.
+FLDENV          Restore the FPU environment.
+FRSTOR          Restore the entire FPU from memory.
+
+3FPF            Assist class 3 floating point assembler generation.
+
+3FP             Generate class 3 floating point assembler instructions.
+
+FLD             Push the source operand onto floating point stack.
+FSTP            Store the top f.p. stack operand to memory (no pop).
+
+4FPF            Assist class 4 floating point assembler generation.
+
+4FP             Generate class 4 f.p. assembler instructions.
+
+FXCH            Exchange the contents of the destination and f.p.
+                stack top.
+FFREE           Change the destination register tag to "empty".
+
+5FPF            Assist class 5 floating point assembler generation.
+
+5FP             Generate class 5 f.p. assembler instructions.
+
+FADDP           Floating point add and pop.
+FMULP           Floating point multiply and pop.
+FSUBP           Floating point subtract and pop.
+FSUBRP          Reversed floating point subtract and pop.
+FDIVP           Floating point divide and pop.
+FDIVRP          Reversed floating point divide and pop.
+
+6FPF            Assist class 6 floating point assembler generation.
+
+6FP             Generate class 6 f.p. assembler instructions.
+
+FCOM            Floating point compare.
+FCOMP           Floating point compare and pop.
+FST             Store the top of f.p. stack to destination.
+
+7FPF            Assist class 7 floating point assembler generation.
+
+7FP             Generate class 7 f.p. assembler instructions.
+
+FADD            Floating point addition.
+FMUL            Floating point multiplication.
+FSUB            Floating point subtraction.
+FSUBR           Reversed floating point subtraction.
+FDIV            Floating point division.
+FDIVR           Reversed floating point division.
+
+WSS:            Generate a WAIT, then a Stack Segment prefix.
+
+WCS:            Generate a WAIT, then a Code Segment prefix.
+
+WDS:            Generate a WAIT, then a Data Segment prefix.
+
+WES:            Generate a WAIT, then an Extra Segment prefix.
+
+2/?   ( n1 -- n2 n3 )              \ FORTH
+        n2 is the result of shifting n1 right by 1 bit.  n3 is the
+        least significant bit of n1.
+
+OR!  ( n1 addr -- )                \ FORTH
+        Perform a logical OR of n1 with the contents at addr, leaving
+        the result in addr.
+
+FPSTAT   ( -- addr )               \ FORTH
+        A variable holding a 32 bit code for error flags.
+
+.FP.     ( -- )                    \ FORTH
+        A simple display word to simplify (FPERR) .
+
+.NAME    ( addr -- )               \ FORTH
+        Print the name of the word specified by the cfa argument.
+
+.NAMES   ( addr1 addr2 -- )               \ FORTH
+        Print the names corresponding to the cfas specified on the
+        parameter stack.         
+
+(FPERR)  ( F: r1 -- r1 ; n1 n2 -- )  \ FORTH
+        Print an error message depending on the bit set in the error
+        code n2 .  n1 is the cfa of the routine in which the error
+        was detected.
+
+INITFP   ( -- )                    \ FORTH
+        Initialize the numeric co-processor.
+
+CLEARFP   ( -- )                   \ FORTH
+        Clear the floating point exceptions flags on the NPU.
+
+FSTACK-SIZE    ( -- n )            \ FORTH
+        Returns the maximum number of floating point elements allowed
+        on the floating point stack.
+
+FSTACK  ( -- addr )                \ FORTH
+        An array of floating point values used as a stack.
+
+FSP0     ( -- addr )               \ FORTH
+        Points to the base of the floating point stack.
+
+FLOAT-WORK  ( -- addr )            \ FORTH
+        A variable to hold a 10 byte floating point temporary.
+
+FVTOS   ( -- addr )                \ FORTH
+        The address represents the apparent top of the NPU co-processor
+        stack.  If the actual information is in the NPU, then it
+        does NOT appear in memory (or at least, it is just an accident,
+        if it does).
+
+FVBOS   ( -- addr )                \ FORTH
+        The address represents the apparent bottom of the NPU.  The
+        difference between FVTOS and FVBOS should represent the actual
+        arguments in the NPU.  Any overflow from the NPU should appear
+        in memory between FVBOS and FXSP0 .
+
+FCLEAR   ( -- )                    \ FORTH
+        Resets the floating point stack pointer to FSP0 .
+
+FDROP   ( F: r -- )                \ FORTH
+        Drop a f.p. number from the f.p. stack.
+
+(1VLOAD)                           \ FORTH
+        A code level subroutine used to insure that at least one argument
+        is on the real NPU stack.
+
+(2VLOAD)                           \ FORTH
+        A code level subroutine used to insure that at least two arguments
+        are on the real NPU stack.
+
+1VLOAD  A CODE word which may be called from high level Forth to insure
+        that at least one argument is on the real NPU stack.
+
+(3VLOAD)                           \ FORTH
+        A code level subroutine used to insure that at least three arguments
+        are on the real NPU stack.
+
+(1VEMPTY)                          \ FORTH
+        A code level subroutine to ensure that at least one position
+        on the NPU stack is empty!
+
+(1VL1VE)                           \ FORTH
+        A code level subroutine to ensure that at least one argument is
+        on the real NPU stack, and that at least one position on the
+        stack is empty!
+
+(2VEMPTY)                          \ FORTH
+        A code level subroutine to ensure that at least 2 positions on
+        the real NPU stack are empty.
+
+F!      ( F: r -- ; addr -- )      \ FORTH
+        Store the f.p. number at the top of the f.p. stack into memory
+        beginning at the address specified at the top of the parameter
+        stack.
+
+F@      ( F: -- r ; addr -- )      \ FORTH
+        Push the f.p. number pointed to by the address at the top of the
+        parameter stack onto the f.p. stack.  The address is popped from
+        the parameter stack.
+
+FCONSTANT   ( F: r -- ) ( compiling )  \ FORTH
+        Create a floating point constant.  Analogous to  CONSTANT .
+
+FVARIABLE   ( -- ) ( compiling )   \ FORTH
+        Create a floating point variable.  Analogous to  VARIABLE .
+
+FP>DI   ( F: r -- ; -- d )       \ FORTH
+        Round the floating point number at the top of the 8087's stack
+        to an integer value.  Pop it off and push it onto the normal
+        parameter stack as a double number.
+
+FP>QI   ( F: r -- ; -- q )       \ FORTH
+        Round the floating point number at the top of the 8087's stack
+        to an integer value.  Pop it off and push it onto the normal
+        parameter stack as a quad number.
+
+QI>FP   ( F: -- r ; q -- )       \ FORTH
+        Pop the quad number at the top of the parameter stack, push
+        it onto the 8087's stack and convert it to a f.p. number.
+
+FPSW>   ( -- n )                 \ FORTH
+        Push the NPU Status word onto the parameter stack.
+
+FEXAM   ( F: r -- r ; -- n )                 \ FORTH
+        Examine the status of the top word in the floating point stack.
+
+FPCW>   ( -- n )                 \ FORTH
+        Push a copy of the NPU Control word onto the parameter stack.
+
+>FPCW   ( n -- )                 \ FORTH
+        Pop the new control word from the parameter stack and put it
+        into the NPU.
+
+>FREGS   ( addr -- )             \ FORTH
+        Load the NPU environment and stack from the array pointed to
+        by addr.
+
+>FREGS>   ( addr -- )            \ FORTH
+        Save a copy of the NPU environment and stack in the array
+        pointed to by addr.
+
+PI      ( F: -- pi )             \ FORTH
+        Push a value of pi onto the (memory) floating point stack.
+
+F1.0    ( F: -- 1.0 )            \ FORTH
+        Push a floating point 1.0 onto the floating point stack.
+
+F0.0    ( F: -- 0.0 )            \ FORTH
+        Push a floating point 0.0 onto the floating point stack.
+
+F*      ( F: r1 r2 -- r3 )       \ FORTH
+        Replace the two numbers at the top of the f.p. stack with
+        the product of the two numbers.
+
+F+      ( F: r1 r2 -- r3 )       \ FORTH
+        Replace the two numbers at the top of the f.p. stack with
+        the sum of the two numbers.
+
+F-      ( F: r1 r2 -- r3 )       \ FORTH
+        Subtract the top f.p. number from the second f.p. number.
+        Replace the top two numbers with that difference.
+
+F\-     ( F: r1 r2 -- r3 )       \ FORTH
+        Subtract the second f.p. number from the top f.p. number.  Replace
+        the top two numbers with that difference.
+
+F/      ( F: r1 r2 -- r3 )       \ FORTH
+        Divide the second f.p. number by the top f.p. number.  Replace
+        the top two numbers by the quotient.
+
+FABS    ( F: r1 -- |r1| )        \ FORTH
+        Clear the sign bit of the floating point value at the top of
+        the f.p. stack, yielding a positive value.
+
+FNEGATE   ( F: r1 -- r2 )        \ FORTH
+        Reverse the sign of the number at the top of the f.p. stack.
+
+FSQRT   ( F: r1 -- r2 )          \ FORTH
+        Replace the value at the top of the f.p. stack with its square
+        root.
+
+FLOG    ( F: r1 -- r2 )          \ FORTH
+        Replace the value at the top of the floating point stack with
+        its base 10 logarithm.
+
+FLN     ( F: r1 -- r2 )          \ FORTH
+        Replace the value at the top of the floating point stack with
+        its natural logarithm.
+
+1/F     ( F: r1 -- r2 )          \ FORTH
+        Replace the value at the top of the floating point stack with
+        its reciprical.
+
+F2*     ( F: r1 -- r2 )          \ FORTH
+        Multiply the f.p. number on the top of the f.p. stack by 2.0 .
+
+F2/     ( F: r1 -- r2 )          \ FORTH
+        Divide the top f.p. number by 2.0 .
+
+F2**N*   ( F: r1 -- r2 ; n -- )  \ FORTH
+        Multiply the top f.p. number by 2 raised to the nth power.  n
+        may be either positive or negative.
+
+FLOAT   ( F: -- r ; d -- )       \ FORTH
+        Pop the double integer from the parameter stack and push it onto
+        the f.p. stack, converting it to a floating point number.
+
+(ROUND)   ( F: r -- ; n -- d )   \ FORTH
+        Round the number at the top of the floating point stack according
+        to the bits 10 and 11 in  n  on the parameter stack.  Drop n from
+        the parameter stack.  Pop the result from the f.p. stack and push
+        the result onto the parameter stack as a double precision number.
+
+FIX     ( F: r -- ; -- d )       \ FORTH
+        Round the number at the top of the floating point stack to an
+        integer, using the "round to even" rule.  Pop the result from the
+        floating point stack and push the double number result onto the
+        parameter stack.
+
+INT     ( F; r -- ; -- d )       \ FORTH
+        Round the number at the top of the floating point stack toward
+        zero.  Pop the result and push the double number onto the parameter
+        stack.
+
+RND>+INF   ( F: r -- ; -- d )    \ FORTH
+        Round the number at the top of the floating point stack toward
+        positive infinity.  Pop the result and push the double number
+        onto the parameter stack.
+
+RND>-INF   ( F: r -- ; -- d )    \ FORTH
+        Round the number at the top of the floating point stack toward
+        negative infinity.  Pop the result and push the double number
+        onto the parameter stack.
+
+FDUP    ( F: r -- r r )          \ FORTH
+        Duplicate the number at the top of the f.p. stack.
+
+FOVER   ( F: r1 r2 -- r1 r2 r1 )  \ FORTH
+        Push a copy of the second item on the parameter stack onto the
+        parameter stack.
+
+FSWAP   ( F: r1 r2 -- r2 r1 )    \ FORTH
+        Exchange the top two items on the f.p. stack.
+
+FNSWAP   ( F: rn rn-1 ... r1 r0 -- r0 rn-1 ... r1 rn ; n -- )   \ FORTH
+        Exchange the item at the top of the f.p. stack with the n-th
+        item (counting from 0) on the floating point stack.
+
+FROT    ( F: r1 r2 r3 -- r2 r3 r1 )   \ FORTH
+        Rotate the top three items on the floating point stack, bringing
+        the third item to the top.
+
+F-ROT   ( F: r1 r2 r3 -- r3 r1 r2 )   \ FORTH
+        Rotate the top three items on the floating point stack, moving the
+        top item to the third position.
+
+FNIP    ( F: r1 r2 -- r2 )            \ FORTH
+        Remover the second item from the floating point stack.
+
+FTUCK   ( F: r1 r2 -- r2 r1 r2 )      \ FORTH
+        Place a copy of the top item on the floating point stack under the
+        second item on the f.p. stack.
+
+FPICK   ( F: rn rn-1 ... r0 -- rn rn-1 r0 rn ; n -- )   \ FORTH
+        Push a copy of the n-th item on the floating point stack onto the
+        floating point stack.  Counting begins at 0.
+
+(RVS0)   ( F: r -- ; -- fpsw )        \ FORTH
+        Pop the top element in the f.p. stack and compare it against zero.
+        Push the 8087 status word onto the parameter stack.
+
+C3C0X   ( fpsw -- n )                 \ FORTH
+        Convert the copy of the 8087 status word at the top of the
+        parameter stack.  If the comparison was made relative to zero,
+        the possible results are:
+
+                0       The f.p. number was positive and non-zero.
+                1       The f.p. number was negative and non-zero.
+                2       The f.p. number was zero.
+                3       The f.p. number was not comparable.
+
+        If the comparison is made between two numbers on the floating
+        point stack, the possible results are:
+
+                0       Second element > top element.
+                1       Second element < top element.
+                2       Second element = top element.
+                3       The two values are not comparable.
+
+F0=     ( F: r -- ; -- f )             \ FORTH
+        Pop and test the f.p. number at the top of the f.p. stack.
+        If the number was a floating point zero, push a true flag on
+        the parameter stack.  Otherwise push a false flag (0).
+
+FDUP0=   ( F: r -- r ; -- f )          \ FORTH
+        Compare the number at the top of the f.p. stack with zero.  If
+        the number is zero, return a true flag.  Otherwise, return a false
+        flag.
+
+F0<     ( F: r -- ; -- f )             \ FORTH
+        Pop and test the f.p. number at the top of the f.p. stack.
+        If the number is less than zero, push a true flag on the parameter
+        stack.  Otherwise push a false flag.
+
+F0>     ( F: r -- ; -- f )             \ FORTH
+        Pop and test the f.p. number at the top of the f.p. stack.
+        If the number is greater than zero, push a true flag on the
+        parameter stack.  Otherwise push a false flag.
+
+(RVSR)   ( F: r1 r2 -- ; -- fpsw )     \ FORTH
+        Compare the top two words on the f.p. stack.  Push the resulting
+        status word from the 8087 onto the parameter stack.  The f.p.
+        stack is popped twice.
+
+F=      ( F: r1 r2 -- ; -- f )         \ FORTH
+        If the top two elements on the f.p. stack are equal, return a
+        true flag.  Otherwise return a false flag.  In either case, the
+        top two elements on the f.p. stack are popped.
+
+F<      ( F: r1 r2 -- ; -- f )         \ FORTH
+        Compare the top two elements on the f.p. stack.  If the second
+        number is less than the first, return a true flag.  Otherwise
+        return a false flag.  In either case the f.p. stack is popped
+        twice.
+
+F>      ( F: r1 r2 -- ; -- f )         \ FORTH
+        Compare the top two elements on the f.p. stack.  If the second
+        number is greater than the first, return a true flag.  Otherwise
+        return a false flag.  In either case the f.p. stack is popped
+        twice.
+
+FMIN    ( F: r1 r2 -- r3 )             \ FORTH
+        Replace the top two elements on the f.p. stack by the algebraically
+        smaller of the two.
+
+FMAX    ( F: r1 r2 -- r3 )             \ FORTH
+        Replace the top two elements on the f.p. stack by the algebraically
+        larger of the two.
+
+(FLIT)   ( F: -- r )                   \ FORTH
+        Move the in-line floating point literal onto the f.p. stack.
+
+FLITERAL   ( F: r -- )                 \ FORTH
+        Pop a number from the f.p. stack and create an in-line literal
+        floating point number.  Used while compiling.
+
+TRIG-MODE   ( -- addr )                \ FORTH
+        A variable used to indicate the trigonmetric mode.  If the
+        contents at the address are true, then the arguments to the
+        trigonmetric functions are specified in degrees.  If the contents
+        are false, then the arguments are specified in radians.
+
+DEGREES   ( -- )                       \ FORTH
+        Set the trigonometric mode to degrees.
+
+RADIANS   ( -- )                       \ FORTH
+        Set the trigonometric mode to radians.
+
+DEG->RAD   ( F: r1 -- r2 )             \ FORTH
+        Convert the angle at the top of the f.p. stack from degress to
+        radians.
+
+RAD->DEG   ( F: r1 -- r2 )             \ FORTH
+        Convert the angle at the top of the f.p. stack from radians to
+        degress.
+
+2PI     ( -- addr )                    \ FORTH
+        Push an address on the parameter stack which points to a f.p.
+        value of  2*pi .
+
+PI/4    ( -- addr )                    \ FORTH
+        Push an address on the parameter stack which points to a f.p.
+        value of  pi/4 .
+
+PI/2    ( -- addr )                    \ FORTH
+        Push an address on the parameter stack which points to a f.p.
+        value of  pi/2 .
+
+[SIN]   ( F: r -- sin[r] )             \ FORTH
+        The input argument is in the range 0 < r <= pi/4 .  The result
+        is the floating point value of the sine of the input argument.
+
+[COS]   ( F: r -- cos[r] )             \ FORTH
+        The input argument is in the range  0 < r <= pi/4 .  The result
+        is the cosine of the argument.
+
+[TAN]   ( F: r -- tan[r] )             \ FORTH
+        The input argument is in the range 0 < r <= pi/4 .  The result
+        is the tangent of the argument.
+
+?DEG->RAD   ( F: r1 -- r2 )            \ FORTH
+        If the trigonmetric mode is set to degrees, convert the argument
+        (presumably in degrees) to radians.  Otherwise return the
+        argument unchanged.
+
+SMALL-ANGLE   ( F: -- r )              \ FORTH
+        The trigonometric functions above do not work properly for
+        arguments close to or equal to zero.  SMALL-ANGLE is used
+        as a reference, such that the sine and tangent functions
+        may be approximated by the arguments with negligable error.
+
+FSIN1   ( F: r1 -- r2 )                \ FORTH
+        A high level use of [SIN] for the range  0 <= r <= pi/4 .
+
+FCOS1   ( F: r1 -- r2 )                \ FORTH
+        A high level use of [COS] for the range  0 <= r <= pi/4 .
+
+FSIN    ( F: r -- sin[r] )             \ FORTH
+        The floating point sine function.  There is no check made
+        for very large magnitude arguments.
+
+FCOS    ( F: r -- cos[r] )             \ FORTH
+        The floating point cosine function.  There is no check made
+        for very large arguments.
+
+INFINITY   ( F: -- r )                 \ FORTH
+        A floating point representation for infinity.
+
+FINFINITY=   ( F: r1 -- ; -- flag )    \ FORTH
+        Test and drop the top item on the floating point stack.  If the
+        item had a value of infinity (either + or -), return a true flag.
+
+FTAN1   ( F: r -- tan[r] )             \ FORTH
+        The tangent function for arguments in the range  0 <= r <= pi/4 .
+
+TANARG<>0   ( F: r -- tan[r] ; n -- )  \ FORTH
+        An auxillary function for calculating the floating point tangent.
+        The value on the parameter stack is a quadrant number  0 <= n <= 3.
+
+TANARG=0   ( F: -- tan ; n -- )        \ FORTH
+        Auxilliary tangent function.
+
+FTAN    ( F: r -- tan[r] )             \ FORTH
+        The trigonometric tangent function.  There is no check made for
+        very large magnitude arguments.
+
+(POWER)                                \ FORTH
+        A subroutine for calculating a f.p. number raised to a f.p.
+        power.
+
+(FALN)                                 \ FORTH
+        An auxilliary function for calculating exp(r), where the input
+        and output arguments are at the top of the 8087 stack.
+
+(FALOG)                                \ FORTH
+        An auxilliary function for calculating 10^r , where the input
+        and output arguments are on the 8087 stack.
+
+FEXP    ( F: r -- e^r )                \ FORTH
+        The exponential function  e^r .
+
+FALN    ( F: r -- e^r )                \ FORTH
+        The inverse natural logarithm function.  Identical to  FEXP .
+
+FALOG   ( F: r -- 10^r )               \ FORTH
+        The inverse common logarithm.
+
+FLOATDPL   ( F: -- r ; d -- )          \ FORTH
+        Float the double precision argument on the parameter stack.
+        Scale the floating point value by DPL .
+
+F**     ( F: r1 r2 -- r2^r2 )          \ FORTH
+        Raise the second number on the f.p. stack to the power specified
+        at the top of the stack.
+
+(FATAN)                                \ FORTH
+        An auxilliary function for calculating the arctangent function.
+
+FATAN   ( F: r -- arctan[r] )          \ FORTH
+        The arctangent function.  Return an angle whose tangent is the
+        input argument.
+
+ARCRANGE   ( F: r -- r ; -- f )        \ FORTH
+        Return a true flag if r is outside of the range: -1 <= r <= 1 .
+
+FASIN   ( F: r -- arcsin[r] )          \ FORTH
+        The arcsin function.  Return an angle whose sine is the input
+        argument.
+
+FACOS   ( F: r -- arccos[r] )          \ FORTH
+        The arccosine function.  Return an angle whose cosine is the
+        input argument.
+
+XVALUE   ( XVALUE name )               \ FORTH
+        A word for creating a word similiar to a CONSTANT, but whose
+        value may be changed using the  IS  function.
+
+FP?     ( -- flag )                    \ FORTH
+        A near constant for determining if a number with an imbedded
+        decimal point is a double number or a floating point number.
+
+FLOATS   ( -- )                        \ FORTH
+        Sets flag FP? which allows the user to enter floating point
+        numbers as simple numeric strings with imbedded decimal points.
+        The exponential notation is optional.
+
+DOUBLES  ( -- )                        \ FORTH
+        Clears the flag FP? .  Restores the usual Forth convention that
+        a decimal point attached to a number causes the number to be
+        treated as a double number.
+
+EXP?    ( -- addr )                    \ FORTH
+        A variable used in scanning the input stream to indicate the
+        existance of the exponential indicator "E" in a possible f.p.
+        number.
+
+FLOATING   ( -- addr )                 \ FORTH
+        A variable used to indicate if the current literal number is
+        a floating point number.
+
+FLOATING?   ( -- flag )                \ FORTH
+        Returns the contents of the variable  FLOATING .
+
+(FP-CHECK)   ( flag addr -- flag' addr )  \ FORTH
+        Test if character at addr is allowed as a part of a floating
+        point literal.  Also changes "e" to "E".
+
+FP-CHECK   ( addr -- addr flag )       \ FORTH
+        Examine counted string at addr .  Return a true flag if the
+        string can be converted to a floating point literal.
+
+FMUL10   ( F: n -- 10*n )              \ FORTH
+        Multiply the f-p number by decimal 10.
+
+(FADDI)   ( F: r1 -- r2 ; n -- )       \ FORTH
+        Convert the integer on the parameter stack to a floating point
+        number and add it to the current f-p number at the top of the
+        f-p stack.
+
+QCONVERT   ( q1 addr1 -- q2 addr2 )    \ FORTH
+        Convert the string at addr1 to a quad precision number,
+        accumulating the results in the quad value under the address.
+
+QNEGATE   ( q -- -q )                  \ FORTH
+        Negate the quad precision number at the top of the parameter stack.
+
+QFLOAT   ( F: -- r ; q -- )            \ FORTH
+        Convert the quad integer on the parameter stack to a floating point
+        number on the f-p stack.
+
+(MANTISSA)   ( F: -- r ; addr1 -- addr2 )   \ FORTH
+        Convert the leading part of the string at addr1 to a floating point
+        number.  Conversion proceeds until the end of the string or until
+        an "E" exponential lead-in character is encountered.
+
+(EXP)   ( addr -- d )                  \ FORTH
+        Convert the string at addr to a double integer representing the
+        exponential part of a floating point number.
+
+FNUMBER   ( addr -- | r | n | d )      \ FORTH
+        If possible, convert the string at addr to a number.  The number
+        may be a single integer, a double integer, or a floating point
+        number.  If it is f-p, set the variable FLOATING to "true".
+        FNUMBER  will replace  NUMBER .
+
+F]   ( -- )                            \ FORTH
+        Enter the compiling state, allowing possible floating point
+        literals.
+
+FMAG   ( F: r1 -- r1 ; -- n)           \ FORTH
+        Consider the floating point number as a product of a power of
+        ten and a mantissa m such that  1 <= m < 10.  Return the power
+        of ten on the parameter stack.
+
+FLOAT-BCD   ( -- addr )                \ FORTH
+        An array to hold the result of a BCD conversion of a floating
+        point number.
+
+#BCD   ( -- addr )                     \ FORTH
+        A variable holding the number of digits of BCD conversion
+        desired.
+
+R>BCD   ( F: r -- ; )                  \ FORTH
+        Convert a floating point number to a full BCD string at
+        FLOAT-BCD .
+
+.DIGITS   ( first last -- )            \ FORTH
+        Print a range of digits from the string at FLOAT-BCD .
+
+FULL2   ( n -- )                       \ FORTH
+        Print the low order 2 digits of n ,
+
+(I10)   ( -- addr )                    \ FORTH
+        Pointer to a variable which holds the integer 10 .
+
+FIXBCD   ( n1 -- n2 )                  \ FORTH
+        Auxilliary function for E.  This checks for improperly rounded
+        exponent calculation.
+
+F.SPECIAL   ( F: r -- ; cc n -- )      \ FORTH
+        This handles printing of special cases of a floating point number.
+        cc  is a condition code after the top of the f-p stack has been
+        checked with FEXAM. 
+
+E.   ( F: r -- )                       \ FORTH
+        Convert the floating point number to a BCD string with full
+        17 digit accuracy.
+
+#PLACES   ( -- addr )                  \ FORTH
+        A variable holding the number of places of accuracy desired
+        for BCD conversion.
+
+PLACES   ( n -- )                      \ FORTH
+        Set the desired number of decimal digits of accuracy for
+        floating point numeric output conversion.
+
+FPARSE   ( F: r1 -- rint rfrac )       \ FORTH
+        Convert the floating point number into an integer part and
+        a fractional part.
+
+.INT   ( F: r -- )                     \ FORTH
+        Convert the integer on the f-p stack and print it.
+
+(F2.0)   ( -- addr )                   \ FORTH
+        A variable holding the image of a floating point 2.0 .
+
+FRNDFRC   ( F: r1 -- r2 )              \ FORTH
+         An auxilliary function used in displaying f-p numbers.  It
+         adds a small part of itself for checking rounding range (?).
+
+.FRACT   ( F: r1 -- )                  \ FORTH
+         Print the f-p number as a fraction.
+
+F.     ( F: r -- )                     \ FORTH
+         Print the f-p number in "F" format (the integer part, a decimal
+         point, and the fractional part).  There are #PLACES of decimals
+         printed in the fractional part.
+
+E.R0   ( #dec #cols -- )               \ FORTH
+         An auxillary function used to print a formatted floating point
+         zero under E.R .
+
+E.R#   ( F: r -- ; #dec -- )           \ FORTH
+         Print a formatted floating point number using the exponential
+         format using #dec number of significant decimal places.  A leading
+         minus sign, a decimal point, the exponential part, and a terminal
+         space are also printed.
+
+E.R    ( F: r -- ; #dec #col -- )      \ FORTH
+         Print a formatted floating point number in exponental format
+         using #dec number of decimal places in an area #col wide.  The
+         width includes a terminal space (unless the magnitude of the
+         exponent is greater than 99).
+
+F.R0    ( #dec   #col -- )             \ FORTH
+         Print a floating point zero in the fractional format.  Use
+         #dec decimal places in #col columns.
+
+F.R+-   ( -- addr )                    \ FORTH
+         A variable that holds the sign of a floating point number
+         for printing.
+
+F.R#INT   ( -- addr )                  \ FORTH
+         A variable for temporary storage.
+
+(F.R)    ( |r| #dec   #col -- +frac #dec )   \ FORTH
+         An auxillary function used in  F.R .
+
+F.R   ( F: r -- ; #dec #col -- )       \ FORTH
+         Display a floating point number in fractional format in a 
+         field #col wide and #dec decimal places of accuracy.
+
+FDEPTH   ( -- n )                      \ FORTH
+         Put the depth of the floating point stack on the parameter
+         stack.
+
+.FS    ( -- )                          \ FORTH
+         Display the floating point stack without dropping the values.
+
+ROUND    ( F: r -- ; -- d )            \ FORTH
+         Convert a floating point number to a double integer, rounding
+         toward 0.
+
+IFLOAT    ( F: -- r ; n -- )           \ FORTH
+         Convert a single precision integer to a floating point number.
+
+R>N    ( F: r -- ; -- n )              \ FORTH
+         Convert a floating point number to a single integer, rounding
+         toward zero.
+
+F2DUP    ( F: r1 r2 -- r1 r2 r1 r2 )   \ FORTH
+         Similiar to 2DUP for the floating point stack.
+
+FMOD    ( F: r1 r2 -- r3 )             \ FORTH
+         Returns the remainder after dividing r1 by r2.
+
+F,   ( F: r -- )                       \ FORTH
+        Emplace the floating point number at the end of the dictionary.
+
+FARRAY   ( Comp:  rn ... r1 r0 n+1 -- ) ( Run:  k -- rk_addr)  \ FORTH
+        Create an array of floating point numbers.
+
+?FSTACK   ( -- )                       \ FORTH
+        Checks the floating point stack for overflow or underflow.  An
+        ABORT" error message is printed for either case.  The NPU status
+        is checked for "Invalid Operation", and an appropriate message
+        is displayed if relevant.
+
+FR   ( -- addr )                       \ FORTH
+         Returns the address of a buffer used to hold a copy of
+         the NPU stack and envirnment.  Used for debugging.
+
+FFILL   ( -- )                         \ FORTH
+         Clears the NPU, and sets all the bits in the NPU stack.
+         Used for debugging only.
+
+FR.   ( -- )                           \ FORTH
+         Displays the NPU environment, the NPU stack, and the
+         current virtual stack values.  Used for debugging only.
+

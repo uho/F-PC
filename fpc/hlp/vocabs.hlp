@@ -1,0 +1,43 @@
+\ VOCABS.HLP    ONLY ALSO vocabulary operators.
+
+
+ROOT            ( --- )
+        The root vocabulary that is always available in the
+        vocabulary list.
+
+ALSO            vocabulary stack -> ( voc1 --- voc1 voc1 | current = ? )
+        Duplicate the the top of the CONTEXT vocabulary stack.
+
+ONLY            vocabulary stack -> ( root .. voc1 -- root | current = ? )
+        Clean off the vocabulary stack, leaving only ROOT.
+
+SEAL            vocabulary stack -> ( root .. voc1 -- voc1 | current = ? )
+        Remove all vocabularies from the CONTEXT vocabulary stack
+        leaving only voc1 as the CONTEXT vocabulary. This prevents
+        access to any other vocabularies unless an escape mechanism is
+        included in the voc1 vocabulary.
+
+PREVIOUS        vocabulary stack -> ( voc1 voc2 -- voc1 | current = ? )
+        Pop one vocabulary off the CONTEXT vocabulary stack.
+
+FORTH           vocabulary stack -> ( voc1 voc2 -- voc1 forth | current = ? )
+        A pseudonym FORTH in the ROOT vocabulary, to assure FORTH
+        will always be available.
+
+DEFINITIONS     vocabulary stack -> ( voc1 -- voc1 | current = voc1 )
+        Sets the current vocabulary to the same vocabulary as the
+        top entry of the CONTEXT vocabulary stack.
+
+ORDER           ( -- )
+        Displays the contents of the CONTEXT vocabulary stack.
+
+VOCS            ( -- )
+        Displays a list of all vocabularies in the dictionary.
+
+HIDDEN          vocabulary stack -> ( voc1 voc2 -- hidden voc2 | current = ? )
+        The HIDDEN vocabulary, sets CONTEXT to HIDDEN when executed.
+
+BUG             vocabulary stack -> ( voc1 voc2 -- bug voc2 | current = ? )
+        The BUG vocabulary, sets CONTEXT to BUG when executed.
+
+

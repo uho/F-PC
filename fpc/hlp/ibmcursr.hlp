@@ -1,0 +1,44 @@
+\ IBMCURSR      IBM Specific display       Enhancements by Tom Zimmer
+
+
+IBM-AT          ( col row -- )
+        Move to the COL and ROW specified on the IBM display screen.
+        This is done using a BIOS level interupt. This word is normally
+        the defered function of AT, you should use AT for portability.
+
+IBM-DARK        ( -- )
+        Clear the screen of the IBM, and place the cursor in the upper
+        left  hand corner. This is the defered function of DARK. Use
+        DARK for portability.
+
+IBM--LINE       ( -- )
+        Delete the current line on the IBM display, causes all lines
+        lower on the screen to scroll up. This is the defered function
+        of -LINE. Use -LINE for portability.
+
+>IBM            ( -- )
+        Select the IBM display as the default display.
+
+SET-CURSOR      ( N1 --- )
+        Set the cursor shape to the mask value n1.
+
+GET-CURSOR      ( --- SHAPE )
+        Get the cursor shape mask SHAPE.
+
+CURSOR-OFF      ( --- )
+        Turn off the cursor.
+
+CURSOR-ON       ( --- )
+        Turn the cursor back on.
+
+NORM-CURSOR     ( --- )
+        Set the cursor to the normal underline shape.
+
+BIG-CURSOR      ( --- )
+        Set the cursor to a block cursor.
+
+MED-CURSOR      ( --- )
+        set the cursor to a thick cursor, not line, and not block
+        sort of double thick.
+
+

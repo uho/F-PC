@@ -1,0 +1,28 @@
+\ SAVESYS.HLP   SAVE-SYSTEM and TURNKEY                 by Tom Zimmer
+
+
+SAVE            ( Addr len name --- )
+        Save the memory of the current code segment starting at "addr"
+        for length "len", to "name".
+
+SAVE-SYSTEM     ( | name -- )
+        Save all of Forth to "name" the file.
+
+TBOOT           ( --- )
+        Trunkey boot, a defered word that is set to perform the
+        function of a turnkeyed application.
+
+TSETSEGS        ( --- )
+        Perform the initialization required for Forth to operate.
+        Allocates space for the code and list segments.
+
+TSTART          ( --- )
+        The start word for TURNKEY. initailized the interpreter, and
+        performs default to open a file specified on the command
+        line, then executes your application.
+
+TURNKEY         ( A1 | name.COM --- )
+        Save a1 into TBOOT, and save the resulting Forth memory
+        image to the file "name.COM".
+
+

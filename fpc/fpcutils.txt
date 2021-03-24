@@ -1,0 +1,233 @@
+
+øF-PC-Utils             Utilities Provided in F-PC
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  F-PC provides a number of tools to make exploring and programming in
+Forth easier and more efficient.
+
+                                Categories
+
+ùDecompiler             Un-compiles memory to see what was compiled.
+ùDebugger               Source level debugger for Forth words
+ùDump-Memory            Examine any memory area of the computer.
+ùWhere-Used             Shows where a word is used.
+ùStack-Print            Examine the contents of the forth stack.
+ùView/Browse            Hypertext link around the F-PC source code.
+ùWord-Help              Operational Help on any F-PC word.
+ùWords-Like             Scans dictionary for words containing a string.
+ùMulti-File-Search      Scan multiple filespecs for a string.
+ùMulti-File-Edit        Edit multiple files containing a string.
+
+
+
+
+øDecompiler                   Forth Decompiler
+                              ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+   The word ùSEE will Un-compile any (non-code) Forth word and show you the
+compiled source for that word.
+
+
+        Typing: SEE ùHEX <Enter>                <Enter> is the Enter key.
+
+        Will show:      : HEX
+                                16 BASE ! ;
+
+
+  The decompiler can also be used on other Forth words types as well.  The
+primary advantage of the decompiler is that it is available even when the
+source code is not available for viewing.
+
+
+
+
+
+øDebugger                 Debug Hi-level Forth Words
+                          ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  F-PC contains a source level debugger that allows stepping through Forth
+Colon definitions as they execute while examining the stack operations.
+This can be very useful when looking for renowned "Stack Underflow"
+problem.
+
+  Two words are available for starting the debugger, they are:
+
+       ùDEBUG <word> <Enter>    Start debugging <word> when it is later
+                                executed.
+
+       ùDBG   <word> <Enter>    Start debugging <word> now.
+
+When the debugger is invoked, the source for <word> will be shown on the
+upper lines of the display with the current word hilighted in reverse
+video. A running word by word scroll with the current stack contents will
+appear at the bottom of the screen allowing you to step through the
+definition and watch what happens.
+
+
+øDump-Memory              Display Memory Contents
+                          ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  F-PC has words to dump any portion of memory in the computer. Multiple
+words are provided to make it easier to examine certain areas of the
+computers memory.
+
+       Stack contents            Word               Function
+   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+   ( address length )           ùDUMP           Dumps CODE segment
+
+   ( segment offset length )    ùLDUMP          Dumps ANY segment
+
+   ( relative-segment length )  ùXDUMP          Dumps LIST segment
+
+   ( offset length )            ùYDUMP          Dumps HEAD segment
+
+
+  XDUMP takes the "relative-segment" that is compiled into the BODY field
+of a COLON definition and adds the contents of XSEG to determine where to
+XDUMP from.
+
+øWhere-Used             Where is This Word Used
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  Just as it is useful to look at a word's source to see how it works, it
+is also useful to see how a word is used.  The word to do this is:
+
+        ùREF <word> <Enter>
+
+  All words that use <word> will be listed along with their vocabularies.
+
+
+
+
+
+
+
+
+
+  See also ùWORDS  ùHELP
+
+
+øStack-Print                Display Data Stack
+                            ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+  F-PC provides two ways to look at the stack non-destructively.  At the
+Forth command level, you can type ù.S <enter>, to see the stack displayed
+horizontally with the top of stack to the right.  The second way to display
+the stack is with a background task that is watching the keyboard waiting
+for both SHIFT keys to pressed. Then the routine detects both Shift keys,
+it pulls down a stack from the top of the screen which will remain visible
+until you release the Shift keys.  you can try it NOW, although you will
+probably only see the message "Stack Empty" appear.  At the Forth command
+level, after you have placed several items on the stack, a menu-like window
+will be pulled down showing the stack contents.
+
+
+
+
+
+
+
+øView/Browse            View or Browse a word
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  When installed on a hard disk drive F-PC has immediate access to the
+source for every word in the system. You can browse ANY Forth word by
+typing the following command:
+
+        ùBROWSE <word> <Enter>
+
+  F-PC will lookup <word> and startup a browser on its source file for you
+to examine.
+
+  F-PC actually has several ùALIAS or shortcut names you can use for the
+above command. Any of the following will work the same as BROWSE.
+
+                        ùB      ùVIEW   ùV
+
+
+
+
+
+øWord-Help              Give me Help on a Word
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+  Just as the source for any word in F-PC can be Browsed of Viewed, you can
+get usage Help on any word in F-PC with the following command:
+
+
+        ùHELP <word> <Enter>
+
+  The <word> will be looked up, and the help file containing help for
+<word> will be shown to you in a browser.
+
+  An ùALIAS or shorthand name for HELP is ùH .
+
+
+
+
+See also ùWORDS  ùREF
+
+
+øWords-Like              Words Containing
+                         ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  F-PC can show you which words in its 2000+ word dictionary that contain a
+particular sequence of characters.  The command is:
+
+                ùWORDS <sub-string> <Enter>
+
+  All word in the dictionary regardless of which vocabulary they are in
+will be displayed along with the vocabulary name they are in.
+
+  You can even pass two strings to WORDS and it will show words which
+contain only BOTH strings.
+
+                ùWORDS <sub-string1> <sub-string2> <enter>
+
+
+
+  See also ùREF ùHELP
+
+
+øMulti-File-Search      Find a String on Disk
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  There are times when you would like to know in which files a particular
+word or phrase is used.  For example you might want to know every place
+that uses a particular graphics word, or maybe you can't remember shich
+file contains the serial interface words.  F-PC makes it easy to look for
+such things on your hard disk with the following command:
+
+                ùFLOOK GRAPHINIT SRC\*.SEQ <filespec> <filespec>
+
+  In this example, we are looking for the word GRAPHINIT in the
+subdirectory SRC, and we are looking in all .SEQ files.  Multiple file
+specifications can follow and all files matching will be searched. The
+search is NOT case sensitive.  You can print all occurances found in the
+above command by preceeding it with the ùPRINT command as follows:
+
+                ùPRINT FLOOK GRAPHINIT SRC\*.SEQ
+
+  See also ùEDITALL
+
+øMulti-File-Edit   Edit all occurances of a String
+                   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+  Like FLOOK on the previous screen, there are times when you want to
+change all or almost all occurances of a character sequence from one string
+to another.  F-PC provides the ability to do this in the following command:
+
+                ùEDITALL GRAPHINIT SRC\*.SEQ <filespec> <filespec>
+
+  In this example perhaps you want to change all occurances of GRAPHINIT to
+GRAPHICS-INIT, as would occur if you changed the graphics package you were
+using.  Each file containing GRAPHINIT will be started in the editor at the
+first occurance found. You can then change it and search for additional
+occurances with Alt-F6, the repeat search command in the editor.
+
+  When you leave the editor saving changes, the search will continue and
+start the editor on the next file where a match is found.
+
+  See also ùFLOOK
+
+

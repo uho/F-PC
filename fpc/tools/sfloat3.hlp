@@ -1,0 +1,388 @@
+\ SFLOAT3    Third part of Software Floating-Point Package.
+\
+\               (c) Copyright 1988 by Robert L. Smith
+\                       2300 St Francis Dr.
+\                       Palo Alto, CA 94303
+\                          (415)856-9321
+\
+\       Permission is granted to use this package or its derivatives for
+\       private use.  For permission to use it in programs or packages
+\       sold for profit, please contact the author.
+\
+
+1GEXPTAB                        \ HIDDEN
+        Table of (1 - e**(k/16))  for k <= 0
+        Table of (e**(k/16) - 1)  for k >= 0
+
+GEXPTAB   ( -- addr )           \ HIDDEN
+        Points to center of 1GEXPTAB.
+
+Y**2                            \ HIDDEN
+        Label for code subroutine for squaring the argument in (BX,CX).
+
+FRACT*                          \ HIDDEN
+        Label for code subroutine to multiply two 32 bit floating point
+        fractions.
+
+GEXP1-                          \ HIDDEN
+        Auxiliary function for exp(x) -1.
+
+GEXP1   ( F: r1 -- r2 )         \ HIDDEN
+        Auxilliary function for exp(x) for small arguments x < 2^-4
+
+FNORMALIZE   ( F: ur1 -- r2 )
+        Normalize the unnormalized floating point number at the top of the
+        stack.
+
+>INTFRACT   ( F: r1 -- r2 ; -- int )
+        Convert a floating point number into an integer and a real number
+        fractional part.  Note that r2 may not be normalized.
+
+FLOOR   ( F: r -- ; -- n )
+        Convert the floating point number to the largest integer less
+        than or equal to the floating point number.
+
+CEILING   ( F: r -- ; -- n )
+        Convert the floating point number to the smallest integer not
+        less than the floating point number.
+
+GEXPTAB@   ( F: -- r ; n -- )           \ HIDDEN
+        Fetch a floating point number from the EXPTAB indexed by the
+        integer at the top of the stack.
+
+AUX-    ( F: r1  -- r2 ; n -- )         \ HIDDEN
+        Auxilliary tables for calculating the exponential function.
+        Auxiliary function used with FEXP
+
+AUX+    ( F: r1 -- r2 ; n -- )          \ HIDDEN
+        Auxiliary function used with FEXP
+
+GEXP0   ( F: r1 -- r2 ; -- n )          \ HIDDEN
+        Auxiliary function used with FEXP
+
+GEXPLN2   ( F: r1 -- r2 ; -- n )        \ HIDDEN
+        Auxiliary function used with FEXP
+
+FEXP    ( F: r1 -- r2 )
+        Floating point exponential function  e^x
+
+FALN    ( F: r1 -- r2 )                 \ FVG Required
+        Alternative name for the exponential function.  This is the name
+        specified in the FVG Standard Floating Point Extension.
+
+F**     ( F: r1 +r2 -- r3 )              \ FVG Required
+        Leave the value of r1 raised to the power +r2.  Note that +r2 must
+        be non-negative, even if it converts exactly to an integer.
+
+FALOG   ( F: r1 -- r2 )                 \ FVG Required
+        Take the inverse log of r1, i.e., raise 10 to the power of r1.
+
+F2**    ( F: -- r ; n -- )             \ HIDDEN
+        Return a floating point value of 2 raised to the specified power.
+
+F2**N-1   ( F: -- r ; n -- )            \ HIDDEN
+        Return a floating point number of 1 less than 2 raised to the
+        specified power.
+
+FEXP-1    ( F: r1 -- r2 )  \ ( e**x - 1 )       \ HIDDEN
+        (e^x) - 1.
+
+FSINH1   ( F: r1 -- r2 )                \ HIDDEN
+        Hyperbolic sin of a positive argument.
+
+FSINH    ( F: r1 -- r2 )                \ FVG Optional
+        Hyberbolic sin function.
+
+FCOSH   ( F: r1 -- r2 )                 \ FVG Optional
+        Hyperbolic cosine function.
+
+FTANH1   ( F: r1 -- r2 )                \ HIDDEN
+        Hyperbolic tangent function of a positive argument.
+
+FTANH   ( F: r1 -- r2 )                 \ FVG Optional
+        Hyperbolic tangent function.
+
+F1.0E10  ( F: -- r )
+        Return a floating point constant of 10^10 .
+
+F0.5    ( F: -- r )
+        Return a floating point constant of value 0.5 .
+
+T#      ( t1 -- t2 )
+        Convert the least significant digit of the triple number t1 to
+        an ASCII character and put it in the numeric output buffer.  The
+        remaining value of the number replaces t1 on the stack.
+
+TDUP0=   ( t -- t flag )
+        Push a flag of -1 on the stack if the triple number t is zero.
+        Otherwise push a value of 0.  The triple number is left unchanged.
+
+FPARTS  ( F: r -- ; t sign exp )
+        Convert a floating point number to a triple precision integer, the
+        sign of the number, and a power of ten.
+
+(E.)   ( F: r -- ; -- addr cnt )
+        Convert a floating point number to an address and count suitable
+        to be typed.  The output is in exponential format.
+
+E.   ( F: r -- )                        \ FVG Required
+        Print a floating point number in exponential (power of ten) format.
+
+E.R     ( F: r -- ; n1 n2 )             \ FVG Optional
+        Display the floating point number r on the currently selected
+        output device in exponential form with n1 digits to the right of
+        the decimal point, right justified in a field of width n2.
+
+F#PLACES   ( -- n )                     \ FVG Optional
+        A constant leaving the maximum number of significant digits when a
+        real number is converted to its decimal ASCII equivalent for
+        display.
+
+PLACES   ( n -- )                       \ FVG Required
+        Set the default number of digits that will be printed to the right
+        of the decimal point by the F. operator.  The argument will be
+        limited to the range 0 to 10.  Default value is 10.
+
+(F.FRACT)   ( F: r -- #pl )             \ HIDDEN
+        An auxilliary function for F. and F.R to convert the digits to
+        the right of the decimal point in a form suitable for display.
+
+(F.INT1)     ( F: r -- ; sign -- addr cnt )     \ HIDDEN
+        An auxilliary function for F.R .
+
+HOLDBL   ( n -- )               \ HIDDEN
+        An auxilliary function to a spaces to the output string for
+        F.R .
+
+(F.INT2)                        \ HIDDEN
+        An auxilliary function for use with F.R
+
+(F.INTR)                        \ HIDDEN
+        Another auxilliary function for F.R
+
+(F.1)    ( F: r1 -- r2 r3 ; #pl -- sign flag )
+        An auxilliary function for use with F. and F.R for printing the
+        fractional part of a floating point number.
+
+F.      ( F: r -- )             \ FVG Required
+        Display the floating point number on the currently selected output
+        device in fixed-point form; i.e., the location of the decimal point
+        is adjusted so that no exponent need be displayed.  The number of
+        digits to the right of the decimal point specified by the most
+        recent execution of the word PLACES are printed to the right of the
+        decimal point.  A trailing blank follows.  For example, 4 PLACES
+        1.2345E02 F. will display as 123.4500b (where the "b" denotes an
+        ASCII blank).  If the number of digits to the left of the decimal
+        point is greater than 14, the error routine is called.
+
+F.R   ( F: r -- ; n1 n2 )               \ FVG Optional
+        Display r on the currently selected output device in fixed point
+        form with n1 digits to the right of the decimal place, right
+        justified in a field of width n2.  If the number cannot be
+        represented within the given field width, the error routine is
+        called and the value is printed in exponent form.  For example,
+        1.2345e2 4 12 F.R will display as  bbbb123.4500 (where each "b"
+        character denotes an ASCII blank).
+
+?FSTACK   ( F: -- )
+        Check the floating point stack for overflow or underflow.  Display
+        an error message if appropriate.
+
+.FS    ( F: -- )
+        Display the number of items on the floating point stack, and
+        display the top four numbers in exponent form.  If the stack is
+        less than 4 deep, display the actual number present.  The floating
+        point stack is left unchanged by this operation.
+
+UNPACK   ( F: r -- ; -- d n )           \ FVG Optional
+        Convert a floating point number to a double precision integer amd
+        a power of 10.
+
+FASINH   ( F: r1 -- r2 )                \ FVG Optional
+        Inverse hyperbolic sin function.
+
+FACOSH   ( F: r1 -- r2 )                \ FVG Optional
+        Inverse hyperbolic cosine function.
+
+FATANH   ( F: r1 -- r2 )                \ FVG Optional
+        Inverse hyperbolic tangent function.
+
+UMT*   ( ut1 n -- ut2 )
+        Multiply a triple number by a single.
+
+TS+   ( ut1 n -- ut2 )
+        Add a single precision number to a triple.
+
+TCONVERT   ( ut1 adr1 -- ut2 adr2 )
+        Similiar to CONVERT.  Fetches convertable digits from the specified
+        address and converts the digits according to BASE until a non-digit
+        is encountered.  addr2 points to the unconvertable character.
+
+TFLOAT   ( F: -- r ; ut -- )
+        Float a triple precision unsigned number.
+
+VARIABLE FPT  0 FPT !
+
+FLTS    ( -- addr )
+        A variable containing a flag.  If the flag is non-zero, numbers which
+        have an imbedded decimal point or comma are treated as floating point
+        values.  Otherwise, the numbers are treated as double numbers.
+
+FLOATS  ( -- )
+        Set the flag FLTS .  Allows floating point numbers to be input using
+        imbedded decimal points and optional exponent fields.  For example:
+
+                FLOATS    1.234   -5.4
+
+        will produce two floating point numbers.  Note, however, that a
+        single precision integer, such as 7 , will remain a single
+        precision integer, and a double number with a terminating decimal
+        point, such as 1234. , will remain a double number.
+
+DOUBLES   ( -- )
+        Clear the FLTS flag so that the usual rules for double numbers applies.
+
+PACK    ( F: -- r ; d n -- )            \ FVG Optional
+        Convert a double integer and a power of 10 to a floating point
+        number.
+
+-NUMBER   ( adr1 -- adr2 flag )
+        Fetch next charcter from string at adr1.  If character is an ASCII -
+        (minus) sign, return the incremented address and a flag of -1.  If
+        the character is not an ASCII "-", don't increment the address, and
+        return a flag of 0.
+
+1FNUMBER   ( F: -- r ; ut adr --  -1 )  \ or  ( ut adr -- 0 ) if not convertable.
+        Attempt to convert the string specified by adr to a floating point
+        number.  If the result is successful, return the number and a -1 flag
+        on the stack.  If the attempt fails, return a zero on the stack.
+        Note that  ut  is an unsigned triple precision number.
+
+(FNUMBER?)   ( F: -- r ; adr --  -1) \ (adr -- d 1 ) \ ( adr -- 0 )
+        Attempt to convert the string at adr into either a floating point
+        number or a double precision number, and return a flag.  If the
+        conversion process failed, return a flag of 0.  If the string was
+        converted into a floating point number, return the number and a flag
+        of -1.  If the string was converted into a double integer, return the
+        value and a flag of 1.  The value of  FLTS  (set by  FLOATS  or
+        cleared by  DOUBLES ) determines if a numeric string with an
+        imbedded decimal point is a floating point number or a double
+        number.
+
+FNUMBER   ( F: -- r ; adr -- -1 ) \ ( adr -- d 1 )
+        Convert the string at the specified address into a real or integer
+        number, with a flag of -1 or 1, respectively.  If the number cannot
+        be converted, print an error message.
+
+F#   ( F: -- r )
+        Convert the string following F# into a floating point number.
+        This includes numbers with or without decimal points.  Thus
+        F# 34  yields the equivalent of 34X0 .  If SFLOAT is loaded, even
+        if in NOFLOATING mode, F# still converts the following number and
+        pushes it onto the floating point stack.
+
+#?    ( number --- d 1 ) \ ( F: -- r ; number --- -1 )
+        If possible, convert the following word in the input stream into a
+        number.  If the string converts to a floating point number, the
+        flag is set to -1 .  If the string converts to an integer, the
+        flag is set to 1.  If the string cannot be converted, a standard
+        error message is sent.
+
+(FLIT)  ( F: -- r )
+        An in-line function to pick up an in-line literal (three words)
+        and push onto the floating point stack.
+
+FLITERAL    ( F: -- r )
+        Create an in-line literal.
+
+FINTERP       ( -- )
+        A version of INTERPRET which recognizes floating point numbers.
+
+(F])          ( -- )
+        A version of the compiler, ] , which recognizes floating point
+        number.
+
+DEFER OLD-INTERP                \ HIDDEN
+        A deferred word to hold the previous Interpreter.
+
+DEFER OLD-]                     \ HIDDEN
+        A deferred word to hold the previous Compiler.
+
+OLD-?STACK                      \ HIDDEN
+        A deferred word to hold the previous function which checks the
+        stack.
+
+FLOATING      ( -- )
+        Replace the current interpreter and compiler with the Floating
+        Point version.  This mostly affects the ability to enter floating
+        point numbers.
+
+NOFLOATING    ( -- )
+        Restore the previous interpreter and compiler.
+
+AUXTAN  ( F: r1 -- ur2 )   \ ur2 is tan(x) - x , |x| < 2**-4  \ HIDDEN
+        Auxilary tangent function.
+
+TANTAB  ( -- addr )                     \ HIDDEN
+        Table of tan(i/16)  for i = 0 to 12.
+
+GTAN0   ( F: r1 -- r2 r3 )              \ HIDDEN
+        The tangent is the ratio of r2 to r3.
+
+GTAN1   ( F: r1 -- r2 r3 ; flag )       \ HIDDEN
+        Return the tangent of r1 as a ratio of numbers r2 and r3.  The
+        flag is non-zero if r1 is sufficiently large that the quadrant
+        cannot be determined.
+
+GTAN2   ( F: r1 -- r2 r3 ; -- flag1 flag2 )     \ HIDDEN
+        Return the tangent of r1 as a ratio of numbers r2 and r3.  Flag1
+        is non-zero if r1 is sufficiently large that the quadrant cannot
+        be determined.  Flag2 is non-zero if r3 = 0.
+
+FTAN    ( F: r1 -- r2 )                 \ FVG Required
+        The input is a floating point number in radians.  The output is
+        is the tangent of the number.  An error condition exists for
+        sufficiently large input values.
+
+FSIN    ( F: r1 -- r2 )                 \ FVG Required
+        Returns the sine of the input number in radians.  Input and output
+        values are floating point numbers.  An error condition exists for
+        sufficiently large input values.
+
+FCOS    ( F: r1 -- r2 )         \ FVG Required
+        Returns the cosine of the floating point argument in radians.  An
+        error condition exists for sufficiently large input arguments.
+
+AUXATAN   ( F: r1 -- ur2 )      \ HIDDEN
+        Auxilliary arctangent function for small positive numbers in the
+        range 0 <= r1 < 2^-4 .
+
+ATANTAB   ( -- addr )           \ HIDDEN
+        A table of arctan (k/16), for k = 0 to 16.
+
+GATAN1   ( F: r1 -- r2 )        \ HIDDEN
+        Auxilliary arctangent function for 0 <= r1 <= 1.0
+
+GATAN2   ( F: r1 -- r2 )        \ HIDDEN
+        Auxilliary arctangent function for positive arguments.
+
+FATAN   ( F: r1 -- r2 )         \ FVG Required
+        Returns a floating point value equal to the arctangent of the
+        input argument.  The result is expressed in radians.
+
+FASIN   ( F: r1 -- r2 )         \ FVG Required
+        Returns a floating point value equal to the arcsine of the input
+        argument.  The result is expressed in radians.  If the input
+        argument exceeds 1.0 in value, an error condition results.
+
+FACOS   ( F: r1 -- r2 )         \ FVG Required
+        Returns a floating point value equal to the arccosine of the
+        input argument.  The result is expressed in radians.  If the
+        input argument exceeds 1.0 in value, an error condition results.
+
+FTRIG0  ( F: r1 -- r2 )
+        Returns a floating point value equal to the square root of the
+        absolute value of (1.0 - (r1^2)).  This is a useful auxilliary
+        function suggested in APL.
+
+

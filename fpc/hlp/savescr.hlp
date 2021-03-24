@@ -1,0 +1,19 @@
+\ SAVESCR.HLP   Routine to save and restore screen.     by Tom Zimmer
+
+svseg           ( --- seg1 )
+        A constant that returns the segment of the screen save
+        area. When not initialized, svseg return a zero.
+
+svinit          ( --- )
+        Cold start initialization word that allocates some space for
+        the screen save segment.
+
+savescr         ( --- )
+        Save the current contents of the screen to an external segment
+        save area. Nestable up to three times.
+
+restscr         ( --- )
+        Restore  the screen from the external segment screen save
+        area. Un-nestable up to three times.
+
+

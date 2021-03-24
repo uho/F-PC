@@ -1,0 +1,469 @@
+CHAPTER 6.  SEQUENTIAL FILES
+
+
+
+
+6.1.    SEQUENTIAL FILES IN F-PC
+
+
+More than 90% of what is in F-PC kernel came from F83.  Much of what you
+are seeing should be somewhat familiar.  Things that are different are
+normally different because they need to be.  There are a significant
+number of things about F83 that should have been changed, but were not
+for compatibility reasons.  However since BLOCK is not present (it is
+available as a load-on utility in the file BLOCK.SEQ in the ZIMMER
+archive) and is replaced by sequential files, you will have to adjust to
+them.  Nevertheless, many of the familiar file manipulation words from
+F83 are still present, and those that are will work in a very similar if
+not identical way.  Some of these are:
+
+        OPEN, CLOSE, VIEW, OK, ED, EDIT, LOAD, LIST
+
+Some words, like BLOCK and BUFFER, simply did not fit into the new scheme
+of things in a logical manner, and so were omitted.  To load an entire
+file, use the sequence
+
+        FLOAD <filename>
+
+Scanning through a file is best done with VIEW, although of course the
+file must have already been loaded. To scan through a file which has not
+been loaded, you can use LIST, which lists from a line number, rather
+than from a block, but the following sequence is easier:
+
+        OPEN <filename>         Open a file
+        n LIST                  List 23 lines from n'th line in the SED
+                                window
+
+These words are very fast, using indices into the file to maintain their
+line pointer information.  The text of the entire file is stored in a
+text segment, and the line number indices are stored in a line segment.
+Similar to LIST, LOAD and EDIT also take a line number as input to start
+the loading or editing function in the middle of the current file. The
+line number before LIST, LOAD, or EDIT is optional.  If the line number
+is omitted, the listing or loading starts from line 1.
+
+The compiler in F-PC has been tailored to be as fast as it could be made.
+Since much of the functionality of WORD has been reworked into assembly
+code for performance and all text data are in RAM memory, F-PC compiles
+sequential text files much faster than standard F83 compiles BLOCKs.  The
+compilation speed averages 20,000 lines per minute on a 10 MHz AT.
+
+Utilities are provided to convert large BLOCK files into sequential files
+and vice versa.  Converting a block file to a sequential file typically
+saves more than 60% in mass storage.
+
+
+6.2.    HANDLES
+
+
+According to DOS manual, a handle is a 16 bit number used by the
+operating system to identify a file or a device when it is opened or
+created.  I F-PC, a handle is a data structure which contains several
+fields,.  Words have been defined to traverse to the various fields.
+Here is a picture of the data structure of a handle as shown in Figure
+6.1.
+
+
+Figure  6.1.    The file handle array
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                  
+
+
+
+
+
+
+Each of the words shown in Figure 6.1 after 'handle array', steps from
+the address returned by the handle name, to the field indicated. The word
+HANDLE followed by <name> creates and initializes the above structure.
+When <name> is later used, it returns the address labeled +0 above.
+
+A file handle stack is used in F-PC to allow a file to load other files.
+SEQHANDLE is a value which contains the pointer to the currently opened
+file in the handle stack.  A sequential line read word LINEREAD is
+provided, which reads one line at a time from the file whose handle is in
+SEQHANDLE, returning an address of a counted string which also includes
+the CRLF characters at the end of the line.  You will have to strip them
+off if you don't want them.  The LINEREAD word is used as follows:
+
+: sample        (  -- )                         \ followed by <filename>
+        open                    \ open a file
+        0.0 seek                \ reset file pointer buffer
+        begin
+                lineread        \ read a line, returns an address of counted $
+                dup c@          \ check for length,
+        0 <> while              \ while buffer contains something
+                cr count 2- type\ type line just read without the CRLF chars.
+        repeat  drop            \ repeat till file empty.
+        close ;                 \ close the file.
+
+This simple example may seem complicated, but it really is easy to read
+the lines of a sequential file, and writing is just as easy.  The word
+LINEREAD automatically buffers the reads from disk in a 4K buffer to
+minimize the number of DOS calls performed.  Lines up to 250 characters
+can be read with LINEREAD.  Longer lines or lines not terminated by a
+CRLF will be split at 250 characters.
+
+For more detailed and comprehensive examples, please consult the files
+SEQTOBLK.SEQ and BLKTOSEQ.SEQ.  These two files contain code which
+converts sequential files to block files and vice versa.  You will find
+useful word sequences which open and close files, read data from a file,
+write data to a file, move the file pointer around, pushing and pooping
+the file stack, etc.
+
+
+6.3.   SEQUENTIAL FILE WORD SET
+
+  The file system interface in F-PC uses handles to talk to DOS, and
+only the number representing the File ID is passed to DOS from Forth. To
+make the interface as simple and clean as possible, you the Forth
+programmer need never deal with the details of how this works.  You only
+need to know that handles are created with the word HANDLE.  Handles are
+arrays within which special file information is stored, and when a
+handle's name is executed, it returns an address which is the address
+that is passed to the handle file control words.  Word definitions and
+usage in this set of file handling words are as follows:
+
+.FILES                          ( -- )
+
+Print to the screen a list of the files currently open. 
+
+.LOADED                 ( -- )
+
+Print a list of the files that have been loaded.  This list is used to
+locate the source file for a particular word that has been compiled.
+
+">$                     ( char-addr count -- counted-string )
+
+Convert a string compiled as a 'quoted string' to a counted string, by
+dropping the count and decrementing the char-addr by one.
+
+$>HANDLE                ( a1 handle-addr -- )
+
+Move the counted string at a1 into the filename field in a handle. 
+
+$>EXT                   ( a1 handle-addr -- )
+
+Move the counted string at a1 into the extension field of handle.  The
+extension string should not contain a decimal point, and should be
+exactly (3) three characters long.
+
+$HOPEN                  ( a1 -- return-code )
+
+Close the current file if one is open.  Move the counted string from
+address a1 to the current handle on the handle stack.  Return the result
+code from DOS as return-code.
+
+!HCB <filename> ( handle-addr -- )
+
+Pick up text from the input stream with WORD, and place the name into the
+handle array.
+
+?DEF.EXT                ( -- )
+
+Conditionally apply the extension specified in the array DEFEXT to the
+filename in handle. DEFEXT is a counted string, three characters long
+plus a count.
+
+CHARREAD                ( -- c1 )
+
+Read a character from the currently open file specified by SEQHANDLE.
+Before using this word, you will need to initialize the sequential input
+buffer to empty ( to force a refill from the currently selected file) by
+saying IBRESET.  This will force a disk read on the next call to
+CHARREAD, insuring that you get data from the file you selected.
+
+CLOSE                   ( -- )
+
+Close the currently open file on SEQHANDLE.  Move down one level on the
+handle stack, so another file may be open after performing this
+operation.  Normally you will be able to operate on the handle in SHNDL
+as an empty handle after performing CLOSE.
+
+CLR-HCB                 ( handle-addr -- )
+
+Clear the handle to nulls, and reset the handle identifier field to -1 to
+indicate no file is open.
+
+CURPOINTER              ( handle-addr -- double-current-ptr )
+
+Return the current 32-bit double pointer into the file specified by
+handle.
+
+DEFEXT                  ( -- a1 )
+
+Return the address of the default file extension that will be applied to
+any file to be opened, if no extension is specified in the filename when
+the HOPEN occurs.  The address a1 is the address of a 4 byte array
+containing a count byte, and three extension bytes following.  In no case
+should a string longer than 3 characters plus count be placed in DEFEXT.
+
+ENDFILE                 ( handle-addr -- double-end-ptr )
+
+Return the double-end number which represents the length of the file
+specified by handle.  The file must already be open.
+
+EXHREAD                 ( a1 n1 handle-addr segment -- n2 )
+
+Read from file handle into the buffer specified by segment and address a1
+for a length of bytes n1, and return n2 the length of bytes actually
+read.  The file must already be open.  Useful for reading from a file
+into memory other than Forth's Code Segment. A read from a file is
+limited to 65535 bytes.
+
+EXHWRITE                ( a1 n1 handle-addr segment -- n2 )
+
+Write from segment and address a1 for a length of n1 bytes to file
+handle, and return n2, the length of bytes actually written.  The file
+must already be open.  Useful for writing from memory other than Forth
+code segment to a file.  A write to a file is limited to 65535 bytes.
+
+FILE>TIB                ( a1 -- )
+
+Move the counted string filename from address a1 to the Terminal Input
+Buffer (TIB), available for use by !HCB.
+
+FLOAD <filename>        ( -- )
+
+Open and load the file specified by filename. 
+
+HANDLE  <handlename>            (  -- )
+
+Create a handle with name <handlename>.  When <handlename> is later
+executed, it returns the address of the handle array created.
+
+HANDLE>EXT              ( handle-addr -- a1 )
+
+Step from the handle address to the address of the file extension in the
+handle, if an extension exists; else it steps to the null following the
+filename.  The address a1 will be the address of a decimal point
+character if the file contains an extension, or the address of a null if
+no extension was contained in the handle.
+
+HCLOSE                  ( handle-addr -- return-code )
+
+Close the file currently open on handle, and return the result code from
+DOS as return-code.
+
+HCREATE                 ( handle-addr -- return-code )
+
+Create a file with the filename specified by the handle array, and return
+the DOS result code as return-code.
+
+HDELETE                 ( handle-addr -- return-code )
+
+Delete the filename as specified by handle name, and return the result
+code from DOS as return- code.
+
+HIDELINES               ( -- )
+
+Specify that lines loaded with FLOAD NOT be displayed to the display
+screen.
+
+HOPEN                   ( handle-addr -- return-code )
+
+Given the handle address, open the filename in it, and return the result
+code from DOS as return- code.
+
+HREAD                   ( a1 n1 handle-addr -- n2 )
+
+Read from file handle into the buffer address a1 for length of bytes n1,
+and return n2 the length of bytes actually read.  The file must already
+be open.  A read from a file is limited to 65535 bytes.
+
+HRENAME                 ( handle1 handle2 -- return-code )
+
+Rename the filename specified by handle1 to be the name specified in
+handle2, and return the DOS result code as return-code.
+
+HWRITE                  ( a1 n1 handle-addr -- n2 )
+
+Write from address a1 for length n1 bytes to file handle, and return n2
+the length of bytes actually written.  The file must already be open.  A
+write to a file is limited to 65535 bytes.
+
+IBRESET                 ( -- )
+
+Clear the input read buffer in preparation for reading a new file.  This
+is done by OPEN.
+
+LINEREAD                ( -- a1 )
+
+Read one line from the current file, buffered by INBUF, which holds 4k
+bytes.  Return a1 the address of OUTBUF, a 256 byte buffer used to hold
+lines read.  When switching to a new file, use MOVEPOINTER to reset the
+file pointer to the beginning of the file, and execute IBRESET so the
+next LINEREAD will cause a read from the disk file.  The read line length
+is limited to 250 bytes. Lines read with LINEREAD are terminated with
+LF=$0A.
+
+LIST                            ( line-number -- )
+
+List 18 lines starting at line-number from the currently open file.
+Default to line 1 if line-number is omitted.
+
+LOAD                            ( line-number -- )
+
+Start loading the currently open file, at line-number.  Used alone
+without a line number, it defaults to load from line 1.  Load through the
+end of the file or until \S if no errors are encountered.
+
+MOVEPOINTER             ( double-offset handle-addr -- )
+
+Move the filepointer into the file handle to the offset location
+specified by double-offset.  The file must already be open.
+
+PATHSET                 ( handle -- f1 )
+
+Check the file contained in handle.  If it does not contain a path, then
+apply the current drive and path to the handle. Return f1 FALSE if it
+succeeded; else TRUE if it failed to read the path from DOS.
+
+RWMODE                  ( -- a1 )
+
+A variable which holds the read/write attributes for any file to be
+opened by HOPEN, normally contains a two (2) for read/write.  It may be
+set to one (1) for write only, or to zero (0) for read only.
+
+SEEK                            ( d1 -- )
+
+Position the file pointer for the file currently open on SEQHANDLE, to
+d1, that is SEEK to position d1 relative to the beginning.
+
+SEQDOWN                 ( -- )
+
+Close the current file on the current level of the handle stack, and step
+down one level to the previous handle.  The handle stack is five levels
+deep allowing files to load files.
+
+SEQHANDLE       ( -- a1 )
+
+A VALUE that returns the address of the current file handle in the handle
+stack.
+
+SEQHANDLE+      ( -- a1 )
+
+A VALUE that returns the address of the next available handle in the
+handle stack.  This handle is used by the SED editor for temporary file
+operations like renaming, or deleting.  You can use SEQHANDLE+ as well,
+but its usage duration should be kept very short to avoid problems with
+other sections of the program using it.
+
+SEQUP                   ( -- )
+
+Step up one Handle on the handle stack, if there is a file open on that
+stack level, close it.  The handle stack is five levels deep.  FLOAD can
+thus be nested for four levels.
+
+SHOWLINES               ( -- )
+
+Specify that lines loaded with FLOAD will be displayed to the display
+screen.
+
+
+6.4.    CONVERSION BETWEEN SEQUENTIAL AND BLOCK FILES
+
+
+To ease your transition from F83 to F-PC, utilities are provided to
+convert block files used by F83 to the sequential files required by F-PC.
+
+The command sequence is :
+
+        FLOAD BLKTOSEQ <enter>     \ load converter
+
+        CONV <filespec> <enter>
+
+The file specified after CONV will be converted to a sequential file of
+the same name with .SEQ extension.  If a file specification is not given
+after CONV, CONV will request a valid file name to be converted.  CONV
+also assumes that the block file has shadow blocks in its second half if
+the source file has an extension of .BLK.  It then brackets the text in
+the shadow blocks between COMMENT: and COMMENT; , and inserts them after
+the corresponding source block.  However, if the source file has an
+extension of .SCR, the entire file will be converted as source blocks and
+the second half of the file is not treated as shadow blocks.
+
+The utility package SEQTOBLK.SEQ will do the opposite: converting a
+sequential file back to a block file.  The commands are:
+
+        FLOAD SEQTOBLK <enter>
+
+        CONV <enter>
+
+CONV will request the names of the sequential and block files.  The
+extensions must not be given, as the sequential file defaults to .SEQ and
+the block file to .SCR.  CONV does a line to line conversions and does
+not try to detect boundaries between definitions.  It tends to break long
+definitions and puts them in consecutive blocks.  However, as all
+experienced Forth programmers tend to write single line short
+definitions, the block file thus produced should be compilable under F83
+without trouble, we hope.
+
+These two conversion utility files contain the best examples on how to
+open/create files and how to read/write them.  If you have to use files
+in your application, pay special attention to these two files for advice
+and guidance.  The meanings of the words in the glossary become clear as
+you see them in action.
+
+
+6.5.    PROGRAMMING STYLE AND SEQUENTIAL FILES
+ 
+
+The use of sequential files for source code instead of blocks has its
+most significant influence on the style of Forth programming.  Using
+blocks, the favored style of Forth code is the 'Horizontal code style' by
+which code is arranged in horizontal lines with many Forth words spread
+in the same line.  This style emphasizes the structure of words, whose
+definitions appear to be small, modular units.  These units are then used
+to form other words which are again small units to build other words.
+Word definitions expressed in the horizontal style are concise and
+powerful.  The problem is that it tends to leave little space for
+comments and documentation.  The lack of comments and in-line
+documentation make Forth code difficult to understand and hard to
+maintain.
+
+There are only 16 lines in a block, while each line has 64 characters.
+The aspect ratio of a block is 4:1, an much elongated rectangle.  The
+block seems to exert a great pressure on the source code in the vertical
+directions and presses the code into flat, horizontal lines.  In a text
+file, the vertical pressure is completely released because the file does
+not have practical limitation on the number of lines it can contain.  The
+residual pressure is from the limited number of characters that one can
+put in a line.  This pressure in the horizontal direction tends to press
+the code into the 'Vertical code style' favored by traditional
+programming languages.  In the vertical code style, each line is limited
+to have one statement, leaving plenty of white space for comments and
+documentation.
+
+It is thus natural that you will find most of the source files in F-PC
+follows the vertical code style. It is especially evident in the low
+level code definitions.  Each line contains only a small number of Forth
+words, allowing much space for documentation, which may or may not be
+filled in by the author.  Nevertheless, this mechanism is apparently
+favoring less code in a line.  Indentation can also be used with much
+more freedom than under the pressure between block boundaries.
+
+By removing blocks from the system, F-PC also eliminates the last excuse
+for Forth programmers not to write clear and well-documented code.
+Henceforth, if we see bad, undocumented code in F- PC, we will shoot the
+programmer and leave Forth in peace.
+

@@ -1,0 +1,430 @@
+F-PC USER'S MANUAL
+
+
+F-PC Version 3.5, November 1989
+
+
+
+
+F-PC is a public domain Forth system optimized for IBM-PC/XT/AT type of
+computers under MS-DOS operating system.  It is supplied on a set of four
+diskettes with all the source code and documentation.  Files are all
+compressed in the .ARC format.  The diskettes are not copy-protected and
+the users are free to make backup copies and give copies to others.  The
+only exception is that Dr. Robert L. Smith reserved the copyright on his
+software floating point package contained in the files SFLOAT.SEQ,
+SFLOAT1.SEQ, SFLOAT2.SEQ, and SFLOAT3.SEQ.  This package is made
+available for unlimited personal, non-commercial use.  If you want to
+include the whole or part of this package in your product for sell at a
+profit, you should obtain a license from Robert Smith.
+
+This Manual is also in the public domain and the copyright is forfeited.
+You are free to copy it and distribute it with the F-PC diskettes.
+However, the companying F-PC Technical Reference Manual is copyrighted by
+Dr. C. H. Ting.
+
+As F-PC is produced on volunteer efforts and donated to the public
+domain, the authors and the F- PC Working Group declined to bear
+responsibility for any special, consequential or other damages on using
+F-PC system for any application, although every possible effort was made
+to ensure its integrity for correct operation.
+
+Authentic copies of F-PC diskettes, F-PC Technical Reference Manual and
+this F-PC User's Manual can be obtained from Offete Enterprises, Inc.
+The diskette set is $25.00, the Technical Reference Manual is $30.00, and
+this Manual is $20.00 plus handling and sales tax.
+
+There are two versions of F-PC in circulation.  Version 2.25 was released
+in November 1988.  All files were in the .ARC format.  Version 3.5 is
+released in November 1989 and files are in the .ZIP format.
+
+
+
+
+
+
+
+Offete Enterprises, Inc.
+1306 South B Street
+San Mateo, CA 94402
+Tel. (415) 574-8250
+
+PREFACE TO THE THIRD EDITION
+
+
+
+F-PC has been circulated in the Forth community for more than a year now.
+The user response is very positive as people need good tools to do
+productive work in the MS-DOS and IBM- PC/XT/AT environments.  Text files
+are used almost universally.  F-PC fills these needs very nicely, with
+its rather powerful SED text editor, the capability to access all 640K
+bytes of memory, and the smooth interface to MS-DOS and the hardware
+underneath.  We have also seem very large applications built upon F-PC,
+free from the 64K byte limitation.
+
+Although many people had made substantial contributions to F-PC, it is
+still a product of a single person, Tom Zimmer.  Tom is very prolific in
+producing code.  The most interesting thing about him is that he has a
+very fluid and open mind about programming, and very receptive to other
+peoples ideas and techniques.  People ask him questions on the phone,
+complaining about some inadequacies in F-PC, and sending him programs and
+applications.  He would say: "Hmmm. That's very interesting.  Let me
+think about it."  The next day he would have some new features added to
+F-PC, and the version number was automatically incremented.
+
+This is the mindset which allows F-PC to grow and to include many
+utilities useful for Forth programmer in their daily programming
+activity.  An old Chinese proverb says:
+
+The ocean is big because it does not refuse water from small streams;
+Mount Tai is tall because it does not reject dirt and small pebbles.
+
+F-PC thus becomes a great reservoir of tools and utilities that each of
+us can use to build applications and to further our understanding of
+Forth.
+
+On the other had, it is very difficult to document a changing system and
+make the system useful for people near and far.  It was a Herculean
+struggle to hold down F-PC's version auto-incrementer. After I finished
+the User's Manual and the Technical Reference Manual for Version 2.21, I
+was confronted by Version 2.25.  Under great pressure, I agreed to update
+the documents to 2.25, but under one condition:  I would keep the 2.21
+documents in ready reserve.  In case 2.25 got changed again, I would go
+back and supply 2.21 documentation only.  For this reason, I had used
+F-PC 2.21 on all my computers, even after I started distribution F-PC
+2.25 and its documentation to other people.
+
+In the late spring, 1989, Tom was ready to revise F-PC again, although
+our understanding was that no update would be considered before the
+August.  However, there were a few serious bugs which needed to be fixed,
+and many new features Tom just could not wait to install.  In the end, we
+reached the compromise that F-PC was upgraded to Version 2.2501, with 01
+in lower case, with only the bug-fixes.  As for the new features, Tom
+could do whatever he saw fit and distributed to whoever wanted it, but
+not under the name F-PC.  With that, Tom marched right off, changed the
+name to F-TZ, and turned on the version auto-incrementer.
+
+There were many significant improvements in F-TZ, like the browser which
+allows the user to browse source and help files inside the editor, the
+hypetext on-line documentation system, the new system installation
+procedure, better help files on the kernel, improved mouse support, and
+other minor enhancements.  In September, 1989, the F-PC Working Group was
+reconvened in the Silicon Valley FIG Chapter to consider upgrading F-PC.
+The Group accepted F-TZ as the new version of F-PC, and I got the job to
+upgrade the documentation.
+
+October 1989 C. H. Ting
+
+PREFACE TO THE FIRST EDITION:
+
+ A TRADITION OF PUBLIC DOMAIN FORTH
+
+
+
+Forth was invented by Charles Moore in the 1960's as he developed
+specialized tools for various applications.  It was formalized into a
+programming language for telescope automation while Mr. Moore was with
+the National Radio Astronomy Observatory.  As this work was supported by
+public funds, Forth was born as a public domain software package which
+followed telescopes to many different countries.  In 1972 Mr. Moore left
+NRAO to form FORTH, Inc. in order to market Forth systems and services.
+Implementations developed in FORTH, Inc. were proprietary and their usage
+required license from FORTH, Inc.  However, a copy of Forth for PDP-11
+was released to DECUS, the DEC Users Group, which became the only readily
+available public domain Forth for many years.
+
+Forth Interest Group was organized in 1978 to encourage the use of Forth
+on small personal computers, which gradually became available for
+individual users.  One major effort by Forth Interest Group was the
+formation of Forth Implementation Team lead by Bill Ragsdale to build
+figForth and put it in the public domain for general distribution.
+Because figForth was implemented on many microprocessors based on a
+single model and released with complete source listings, it became the de
+facto standard of Forth on personal computers, eclipsing polyForth which
+was by then the main product from FORTH, Inc.
+
+The other major objective of Forth Interest Group was to establish a
+standard definition of Forth as a programming language.  Forth Standards
+Team was organized in 1978.  It took the Forth-77 Standard developed by
+Forth users in Europe and produced Forth-78 Standard.  It was very
+unsatisfactory and was almost immediately reworked into the Forth-79
+Standard which was accepted by Forth Interest Group for promotion.
+However, Forth Interest Group also decided that it would not publish
+implementations and only encouraged Forth vendors to provided
+implementations and support.  The only major public domain Forth
+supporting Forth-79 Standard was MVP-Forth written by Glen Haydon and
+distributed by Mountain View Press.
+
+Forth Standard Team continued the refinement of Forth language and
+published the Forth-83 Standard in 1983.  Again, Forth Interest Group
+supported and promoted it, but did not provided any implementation.
+Henry Laxen and Mike Perry felt that the Standard could not spread
+without a faithful and useful implementation.  They implemented a
+comprehensive model on 8080, 8086, and 68000 processors with fairly
+uniform and transparent interfaces to the CP/M and MS-DOS operating
+systems.  This public domain F83 model found wide acceptance, especially
+among IBM PC users after it was listed in the PC-SIG catalog.
+
+From 1983 to 1988, personal computers have made significant progress in
+memory size and in disk space.  The traditional minimalist's approach in
+the Forth operating system seems to be inadequate to stay abreast with
+the tools and facilities embedded in the current personal computers. It
+is necessary that Forth must communicate with the operating system in
+standard file formats, and it has to address memory outside of the 64K
+byte addressing space.  These capabilities were included in many 68000
+Forth implementations, but not in the PC world due to the segmented
+architecture and the handicapped operating system.  F-PC is a collective
+effort to provide PC users a highly optimized version of public domain
+Forth addressing these problems.  It allows the user a well integrated
+environment to develop and maintain large applications utilizing the
+memory and storage space generally available in a mid-range IBM PC/XT/AT
+and its clones.  It is released to public domain with complete source,
+following the spirit of figForth and F83, so that users will have the
+freedom to tailor it to their specific applications and to build
+commercial products from it.
+
+F-PC is a greatly enhanced version of Forth derived from the F83 model
+for the IBM-PC, XT, or AT developed by Tom Zimmer at Maxtor Corp.  A
+major stepping stone between F-PC and F83 was the F83Y system produced by
+Wil Baden, who adopted J. D. Hooper's separated heads and many other
+features like interpreted conditionals, full featured decompiler, etc.
+Many other people also contributed to it, including Robert L. Smith,
+Charles Curley, and Jerry Modrow, but the major work was done by Tom
+Zimmer.
+
+In order to release this system for public usage, it is necessary to
+provide better and more complete documentation on the system so that a
+Forth programmer can pick it up and use the system productively on his
+own, without having to have access to Tom Zimmer for support and
+consultation.  A F-PC Working Group was organized to serve two very
+specific purposes: to do beta testing on the system to flush out as many
+bugs as possible, and to provide user and system documentation so that
+both application and system Forth programmers can use the system in
+isolated (in the Forth sense) geographic locations.
+
+The F-PC Working Group was very loosely organized in the Silicon Valley
+FIG (SVFIG) Chapter, during the chapter meeting at April 23, 1988.  Many
+Chapter members participated and contributed to this effort.  The Chapter
+also permitted the Working Group to use the morning FORML sessions in May
+and June to discuss and work on F-PC.  Dr. C. H. Ting served as the focus
+of this Group to coordinate the efforts in documentation.  Bug reports,
+suggestions, and recommendation were collected and forwarded to Tom
+Zimmer for consideration.
+
+This Manual is part of the documentation to be made available with the
+F-PC system.  It provides information on how to install F-PC, and the
+most useful utilities for normal programming activity. It also assumes
+that the user is familiar with Forth and DOS, and does not try to include
+introduction materials.  As F-PC retains the look-and-feel of F83, prior
+knowledge on F83 will be extremely helpful.  The background information
+can be obtained from the following sources:
+
+Starting Forth, Leo Brodie, Prentice Hall.
+Programmer's Guide to the IBM-PC, Peter Norton, MicroSoft Press.
+Inside F83, C. H. Ting, Offete Enterprises.
+
+We hope that you will find F-PC valuable as you try to make the best use
+of the resources in your PC or compatible computer.  We would also like
+to know if you succeeded in using it to develop real and interesting
+applications.  The User Contributions section of F-PC will always be open
+to new submissions.  We hope that F-PC will provide a common format for
+users to exchange code, ideas, and applications, the same way F83 has
+been over the last five years.
+
+F-PC has evolved over the last six months.  Tom Zimmer made substantial
+modifications and enhancements to it.  However, due to the pressure
+exerted on him by many users and members in this Working Group, Tom
+reluctantly agreed to freeze F-PC at the current Version 2.25.  It will
+not be modified until late next year so that users can start using it to
+do applications.  Both the User's Manual and the Technical Reference
+Manual were updated to this version.  Having accomplished its mission,
+the F-PC Working Group ceases its existence.  However, technical
+discussions on F- PC and a very extensive tutorial lead by Jack Brown
+have appeared on the Forth Roundtable in the GEnie Network.  F-PC users
+are encouraged to join the Forth Roundtable for information, assistance,
+and possibly bug fixes.
+
+Dr. C. H. Ting
+Documentation Coordinator
+F-PC Working Group
+December, 1988
+San Mateo, California
+
+F-PC USERS MANUAL
+
+
+
+
+CONTENTS
+
+
+F-PC User's Manual                                                  i
+
+Preface to the Third Edition                                        ii
+
+Preface to the First Edition: A Tradition of Public Domain Forth    iii
+
+1.   Introduction to F-PC                                           1
+        1.   How did we get here?                                   1
+        2.   F-PC, what is it all about                             3
+        3.   Features in F-PC 2.25                                  4
+        4.   New features in F-PC 3.5                               5
+
+2.   Install F-PC                                                   6
+        1.   The ZIP files                                          6
+        2.   Install F-PC using INSTALL.EXE                         7
+        3.   Install F-PC without using INSTALL.EXE                 8
+        4.   Configure F-PC                                         9
+        5.   Install F-PC on a dual floppy system                   10
+
+3.   Hypertext Browser                                              12
+        1.   Launch the hypertext browser                           12
+        2.   Navigate F-PC with the browser                         13
+        3.   A sample session                                       14
+        4.   A short tutorial                                       15
+
+4.   Programming Tools                                              18
+        1.   DUMP                                                   18
+        2.   The debugger                                           18
+        3.   VALUES: Constants as variables                         20
+        4.   Help words                                             20
+        5.   Date and time                                          22
+        6.   Comments                                               23
+        7.   Screen control words in F-PC                           23
+        8.   Compilation control words                              25
+        9.   Printing source files in F-PC                          26
+        10. Global search                                           26
+        11. ALIAS                                                   27
+        12. Browsing a large file                                   27
+        13. The NEWZ editor                                         27
+        14. The SZ editor                                           28
+
+5.   SED, the Editor                                                30
+        1.   Invoking SED editor                                    31
+        2.   Using SED                                              32
+        3.   Menu and mouse control                                 33
+        4.   Function keys                                          34
+        5.   Selecting another file to edit                         36
+        6.   Search and replace                                     37
+        7.   Cut, copy and paste                                    37
+        8.   Line and word commands                                 38
+        9.   Margin control                                         39
+        10. Case conversion                                         39
+        11. Line drawing                                            40
+        12. Paragraph sorting                                       40
+        13. Keystroke macros                                        40
+        14. Print a file                                            41
+        15. Other help                                              42
+
+6.   Sequential Files                                               43
+        1.   Sequential files in F-PC                               43
+        2.   Handles                                                43
+        3.   Sequential file word set                               45
+        4.   Conversion between sequential file and block files     49
+        5.   Programming style and sequential files                 50
+
+7.   DOS Interface                                                  51
+        1.   System interrupts and BIOS calls                       51
+        2.   DOS service calls                                      52
+        3.   The DOS shell                                          53
+        4.   BATCH commands                                         54
+        5.   DOS memory map of F-PC                                 54
+        6.   Long memory word set                                   58
+        7.   Memory allocation                                      59
+
+8.   PASM, the F-PC Assembler                                       60
+        1.   Prefix or postfix?                                     60
+        2.   PASM glossary                                          61
+        3.   Syntax comparison                                      63
+        4.   Usage of 8086 machine registers in F-PC                63
+        5.   Addressing modes                                       64
+        6.   Assembly macros in PASM                                66
+        7.   Local label                                            66
+        8.   Inline code                                            67
+        9.   Assembler style                                        69
+        10. Debugging code words                                    70
+
+IX.   Advanced Utilities                                            71
+        1.   Rebuilding the system                                  71
+        2.   Turnkey systems                                        72
+        3.   Macros in F-PC and SED                                 72
+        4.   F-PC preferences                                       72
+        5.   Task chaining                                          74
+        6.   Control structure enhancements                         75
+        7.   Headless words                                         77
+        8.   Save and restore                                       78
+        9.   Line editor                                            79
+
+10.   User Contributions                                            80
+        1.   From Tom Zimmer                                        80
+        2.   From Charles Curley                                    84
+        3.   From Bob Smith                                         85
+                HFLOAT/SFLOAT glossary                              87
+
+Epilogue                                                            91
+        How to Hang F-PC without a Long Rope                        91
+        The kitchen sink                                            92
+        An invitation                                               92
+        Forth Interest Group local chapters                         93
+        Forth on-line resources                                     96
+
+Appendix A.     Glossary of the Forth Vocabulary                    A-1
+        A1.   Introduction                                          A-1
+        A2.   F-PC word glossary by category                        A-2
+        A3.   F-PC alphabetic glossary                              A-12
+
+Appendix B.     Samples and Tutorial Files                          B-1
+        B1.   Memory allocation                                     B-1
+        B2.   User boot process                                     B-2
+        B3.   F-PC keystroke macros                                 B-3
+        B4.   A sample menu file                                    B-6
+        B5.   My startup message                                    B-7
+        B6.   Subscreen scroll                                      B-8
+        B7.   Usage of values                                       B-8
+        B8.   Popup window                                          B-9
+
+Appendix C.   Files in F-PC                                         C-1
+        C1.   Files on the distribution disks                       C-1
+        C2.   Zipped files on Disk 1                                C-2
+        C3.   Zipped files on Disk 2                                C-3
+        C4.   Zipped files on Disk 3                                C-5
+
+Appendix D.     Index                                               D-1
+
+Figures
+        Figure  6.1.    The file handle                             44
+        Figure  7.1.    The memory segments in F-PC                 56
+        Figure  7.2.    Data structure in a colon definition        57
+        Figure  8.1.    Comparison of assembly syntax               62
+        Figure  8.2.    Examples of local labels                    68
+
+
+
+
+
+
+
+F-PC USER'S MANUAL
+
+
+
+
+
+
+
+THIRD EDITION FOR VERSION 3.5
+
+
+
+NOVEMBER 1989
+
+
+
+
+
+Offete Enterprises, Inc.
+
+1306 South B Street
+San Mateo,  CA  94402
+Tel. (415) 574-8250
+

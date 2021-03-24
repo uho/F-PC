@@ -1,0 +1,14 @@
+\ NEEDS.HLP     Conditionally load a file               by Tom Zimmer
+
+?LOADED         ( | NAME --- F1 )
+        Have we already loaded the file specified by NAME? Return
+        a boolean F1 true if we have.
+
+NEEDS           ( | NAME --- )
+        Test the file NAME following, if we have not loaded it, then
+        load it else just go on.
+
+UNWANTED        ( | NAME --- )
+        Test the file NAME following, if we have loaded it complain,
+        else just go on.
+

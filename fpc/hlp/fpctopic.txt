@@ -1,0 +1,1586 @@
+F-PC Topics for discussion                                by: Tom Zimmer
+                                                        Date: 03/29/93
+
+Possible F-PC discussion subject list
+
+
+                Subject                                Page
+
+        -------------------------------------------------------------
+
+        Dot (.) information display words               2
+
+        Color and blink control                         4
+
+        Boxes, windows and menus                        6
+
+        Hypertext: how do I use it                      7
+
+        Debugging: the watch command and others         11
+
+        Directives and aliases                          13
+
+        Time measurment and control                     15
+
+        Display and print redirection                   16
+
+        Pointers, what they are and how to use them     18
+
+        Memory usage and shelling to DOS                21
+
+        Number conversion and base specifying           23
+
+        String processing words                         24
+
+        Files: simple program file handling             26
+
+        LINEEDITOR: an example                          28
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Useful F-PC display words and what they display.        Date: 03/29/93
+
+  F-PC contains a number of words that display various kinds of
+information about things in F-PC.
+
+
+        .BASE           Display the current base in decimal without
+                        changing the current base.
+
+        .COMPSTAT       Display the compilers performance figure since
+                        0COMPILER was executed.
+
+        .COMSPEC        Display the DOS COMMAND.COM specification.  The
+                        locaton where DOS will find COMMAND.COM.
+
+        .CURFILE        Display the currently open file and its size.
+                        See also:  .FILE
+
+        .DATE           Display the date in the currenly selected display
+                        format.  See also:  M/D/Y  Y-M-D  D.M.Y
+
+        .ELAPSED        Display the elapsed time since TIME-RESET was
+                        last performed.
+
+        .ENV            Display the contents of the DOS environment area.
+
+        .FILE           Display the currently open file and its size.
+                        See also:  .CURFILE
+
+        .FILES          Displays a list of the contents of the file
+                        handle stack, showing any files that are open.
+
+        .FPATH          Display F-PC's file search path.  The directories
+                        where F-PC looks for a file when the user tries
+                        to open a file without specifying its path.
+
+        .FPCVER#        Displays a limited F-PC version number. 3 digits.
+                        See also .VERSION
+
+        .FREE           Display the mount of available memory to F-PC.
+
+        .LOADED         Display a list of all file that have been loaded
+                        on this version of F-PC.
+
+        .ME             Display the name of the copy of F-PC currently
+                        running. Can be used with ME@ and ME$ to find out
+                        which directory F-PC or an F-PC application is
+                        running from.
+
+        .MEM            Display F-PC's current memory usage, including
+                        all defined pointers and their usage.
+
+        .PATH           Display the DOS PATH as extracted from the DOS
+                        environment.
+
+        .S              Display the stack contents.  Also try holding
+                        down both left and right shift keys, to see the
+                        stack contents while in any program while waiting
+                        for a key to be pressed.
+
+        .SEQHANDLE      Display the contents of the current SEQHANDLE in
+                        the file stack.
+
+        .TIME           Display the current time, in hours, minutes,
+                        seconds and hundreds.
+
+        .USED           Display the amount of memory in the CODE, LIST
+                        and HEAD segments used in F-PC since !USED was
+                        executed.
+
+        .VALIDATE       Display a validation message to inform the user
+                        whether this copy of F-PC is as released from Tom
+                        Zimmer, or one which another user has
+                        re-compiled since this version of F-PC was
+                        released.
+
+        .VERSION        Display the full five digit compile version of
+                        F-PC.  See also:  .FPCVER#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Color and Blink Control in F-PC                         Date: 03/29/93
+
+Color Control
+
+  As you have no doubt seen, F-PC uses text of various colors to
+highlight information in its various windows and menus.  You applications
+programs can also use these or other color combinations to make your
+programs more attractive to the user.
+
+  The most primitive color control words in F-PC are >FG and >BG.  These
+words take a color number from the stack, and set the forground or
+background color for any further TYPE operations.
+
+  A set of words in F-PC named >ATTRIB1 through >ATTRIB8 are used to
+select one of eight predefined color combinations, making it easier
+to control the colors used in F-PC or an application.  F-PC itself uses
+only the first four color sets, so word >ATTRIB5 through >ATTRIB8
+duplicate color sets one through four.
+
+  The colors sets are define in the file COLOR.SEQ.  An array called
+COLORS holds eight pairs of forground and background color bytes.  Other
+primitives in F-PC extract the byte values from the COLORS array and set
+the forground and background colors to the colors in the array.
+
+  To change the colors that >ATTRIB1 through >ATTRIB8 select, simply
+requires changing the values in the COLORS array.  The words FG! and BG!
+perform this function as follow:
+
+        BLUE 5 BG!  ORANGE 5 FG!
+
+  Here color set five (5) is being set to display as orange on blue.
+Subsequent use of >ATTRIB5 will select this color combination for any
+following TYPE operations.
+
+
+Blink Control
+
+  When colors above seven are selected as the background color for any
+color set, the PC will normally subtract eight from the background color,
+and cause text displayed in that color set to blink.  F-PC includes two
+words to control whether the PC causes a color set containing a color
+above seven in the background to blink, they are BLINKON and BLINKOFF.
+These are global blink control words, and F-PC normally defaults to
+BLINKON.  If you write an application that needs to use one of the bright
+color above seven in the background, then you will need to include the
+word BLINKOFF in your program initialization section.
+
+
+
+
+
+
+
+
+
+Embeded COLOR Commands in Dot Quote Strings
+
+  F-PC also uses an interpreted dot quote (."), that allows embeded
+commands to be placed in dot quote statments.  Colors can be selected
+using "\x", where 'x' is '0' for >NORM, and '1' through '8' for color
+sets >ATTRIB1 through >ATTRIB8.
+
+  The file PERTYPE.SEQ contains the code to perform these functions, and
+details the embeded commands supported.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Boxes, windows and menus                                Date: 03/30/93
+
+Simple Windows in F-PC
+
+  With all the talk about Windows these days, you might wonder what kind
+of window support is built into F-PC and whether you will be able to
+figure out how to use it.  Let me assure you that window (NOT Windows)
+support is built into F-PC, and it is easy to use though limited in
+scope.
+
+  F-PC views a window as an area of the screen, usually surrounded by a
+border of one type or another.  To put a window on the screen, you can
+use the words: BOX and BOX&FILL.  These words work in TEXT mode and take
+a top left row/column position along with a bottom/right row/column
+position.  The box is then drawn and the text cursor is positioned at
+the top left inside the box, ready for you to use TYPE or ." (dot quote)
+to put some text in the box.  BOX&FILL simply prefills the box with
+spaces, so the background information is covered up.
+
+  Example source:
+    ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+    ³ : tst                                                         ³
+    ³      20 10 60 15 BOX&FILL                                     ³
+    ³          ."  This is a test"                                  ³
+    ³      BCR ."  This is on the next line"                        ³
+    ³      BCR ."  This line is too long for the box I have drawn!" ³
+    ³      BCR ."  Press a key to continue" key drop cr cr ;        ³
+    ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+  Example output:
+            ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÜ
+            ³ This is a test                        Û
+            ³ This is on the next line              Û
+            ³ This line is too long for the box I have drawn!
+            ³ Press a key to continue               Û
+            ÀÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÛ
+
+
+  So, to put text in the box, you use TYPE or ." (dot quote).  You DO
+have to be carful not to exceed the width of the box, or your text will
+extend over the right border beyond the box.  To move down and to the
+start of the next line in the box, use the word "BCR" (box CR), and your
+cursor will be positioned down one line and at the left edge of the box.
+
+  Thats just about all there is to it, though you may want to use SAVESCR
+and RESTSCR to save ane restore the screen when unnesting a window.  Also
+to avoid completely redrawing a BOX, you way want to save BLINE (the BCR
+line counter), and redraw using BOX instead of BOX&FILL, to redraw the
+border of the box.
+
+  As I say window support is limited. There is no automatic resizing, or
+scroll bars or any of the other bells and whistles in Windows, but what
+is provided has worked well for me.  I hope it will work for you also.
+
+
+Hypertext, how do I use it                              Date: 03/29/93
+
+Hypertext and F-PC and NEWZ
+
+  The tools for creating hypertext index files are built into NEWZ, so
+NEWZ must be used to create the index files that can be accessed by
+either F-PC or NEWZ. For discussion purposes, the NEWZ editor will be
+used to illustrate how hypertext works in this illustration.
+
+  If you have used the browse capability of F-PC, that is the ability to
+place the cursor on a Forth word and press F9 to see the source for that
+word, then you have used hypertext as F-PC and NEWZ view it.
+
+  There are many different kinds of hypertext, and equally many different
+ways of implementing it and of interconnecting the text that is being
+hypertext-ified.  NEWZ uses one very simple technique to make
+interconnections between diverse locations within the same file or
+between different files.  When a request is made by the user, to "hyper"
+to a new location as specified by the word under the cursor, NEWZ
+searches a file called HYPER.NDX attempting to locate the specified word.
+If the word is located, then the location in the HYPER.NDX file tells
+NEWZ what file and to which line the hyper word is connected.  NEWZ then
+save the current file, line and column, opens the destination file, and
+positions the cursor on the destination line, displaying the new location
+to the user.   Having "hypered" to a new location, the user can "unhyper"
+or "unlink" to the previous location by pressing the F10 key.
+
+  Thus NEWZ relies on a VERY FAST text search mechanism to locate the
+desired target quickly.  Now this technique is fast enough for hypertext
+databases upto a few thousand connections on a reasonably fast machine,
+but will bog down quickly on very large databases of tens or hundreds of
+thousands of link databases.
+
+  The text search mechanism is built into both NEWZ and F-PC, so an F-PC
+application can include a hypertext browser or online help function.  In
+F-PC, a dictinary search is performed before attemptint to perform a
+hypertext search, so some caution must be used in naming hypertext links
+to avoid collisions with normal Forth words.  Alternatively you can make
+a headerless F-PC application, which obviously couldn't find any Forth
+words since no heads are present to interfere with the hypertext search.
+
+
+Creating a Hypertext Index File
+
+  Hypertext as viewed by NEWZ consists of two parts, a source word (or
+link) and a destination word (or link).
+
+Source Words
+
+  The source words appear on the screen in the document being viewed,
+intermixed with other document words.  As such it is useful to have a way
+of highlighting source words so they are obviously different from other
+words the user is reading.  To provide this functionality, NEWZ
+recognizes a special IBM graphics character "ù" (decimal value 249) that
+can preceed a word that you want highlighted in the text when NEWZ is in
+browse mode.  This character can be inserted by pressing Alt-F3 while on
+a word you want to highlight.  The cursor will automatically move to the
+left end of the word and insert the source word marker character.
+
+  Other than providing a way for the editor to recognize which words to
+highlight, the source marker character serves no other purpose.  That is
+NEWZ will actually perform a hypertext search for any word where the
+cursor is located, whether it is preceeded by a source marker character
+or not.  Most words of course won't appear in HYPER.NDX, and as such will
+fail to be found.
+
+  Here are some examples of hypertext-ified source words:
+
+                ùThis ùis ùa ùtest
+
+  If you are viewing this in edit mode, then the above list of words
+appears with a dot preceeding each word, and if you are viewing this in
+browse mode, then the above list of words will be shown in reverse video.
+
+
+Destination Words
+
+  To allow the hypertext search capability to work, we need to create a
+file called HYPER.NDX.  HYPER.NDX contains references to hypertext
+destination words (or links).  The hypertext compiler build into NEWZ is
+configured to search for words starting with the IBM graphics character
+"ø" (decimal value 248).  When the hypertext compiler encounters this
+character, if extracts the word immediately following the character upto
+a space and insertes it into HYPER.NDX along with the line number where
+it was found.  This allows the hypertext search to find a destination and
+link to it.  Hypertext destination words should appear at the left edge
+of the document, followed by at least one space.
+
+  When NEWZ displays a file while in BROWSE mode, it recognizes words
+starting in column one beginning with the destination character, and
+blanks them off of the screen as spaces.  This makes hyper destination
+words invisible when reading the document.
+
+  Here are some examples of hypertext destination words:
+
+øthis           <- this
+øis             <- is
+øa              <- a
+øtest           <- test
+
+
+Compiling HYPER.NDX
+
+  Having created at one or more source words and one or more destination
+words, you will need to run the hypertext compiler to build HYPER.NDX.
+BUT, before we do that, we need to do one more thing.  We need to add a
+file specification to the file NEWZ.CFG to let NEWZ know that we want it
+to include our file in HYPER.NDX.  If we don't do this, then HYPER.NDX
+will not contain any of our hypertext destination words.
+
+  In the partial extract from NEWZ.CFG, notice particularly the line
+starting with "SPECS".  Here *.SEQ has been added to the normal SPECS
+pathlist, to make the hypertext compiler index all .SEQ files in the
+current directory.  So if we are building a hypertext database that
+contains .SEQ files from the current directory, then they will get
+included in HYPER.NDX.  It is also important to note that the path to
+each file indexed is NOT saved in HYPER.NDX, so you must either be in the
+same directory when using the database as when it was compiled, or you
+must include "\YOURDIR" in the PATH statment on the first line below.
+
+ ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ ³ PATH \YOURDIR;\;FPC\NEWZ ; file search path                         ³
+ ³ DEFEXT SRC   ; default file extension if none specified             ³
+ ³ DELIMS " "   ; browse word delimiter max 32chars.                   ³
+ ³ SPECS *.SEQ;*.TXT;\FPC\NEWZ\ZHELP.TXT     ; index compiler specs.   ³
+ ³ *GLOBAL .    ; (disabled) do global index, starting with .(cur) dir ³
+ ³ ....                                                                ³
+ ³ ....                                                                ³
+ ³ TYPE 0 "ø"      ; index compiler command                            ³
+ ³ ....                                                                ³
+ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+  In the line "*GLOBAL . " following SPECS, you can remove the "*" from
+the line and cause the hypertext compile to perform a hypertext compile
+of the current directory (as specified by .), and any directories lower.
+You can slow put an explicit directory name after GLOBAL to cause a
+hypertext compile of all directories from the specified directory and
+lower.
+
+  The next section describes the TYPE command at the bottom of the
+configuration file above, and shows how you can index various types of
+source files.
+
+
+ZHELP Index Compiler Extract
+
+  Three index compiler directives are currently supported, they each
+start with the word "TYPE" followed by a type number and a "string"
+parameter:
+
+    0 "string"    Pick up and index the word IMMEDIATELY following
+                  string. No space delimiter is required. If you
+                  want to space delimit the string, include a space
+                  within the quotes. Examples: ": "  "CONSTANT "
+                  "CODE " etc.
+
+                  This type can pick up words following, as will be
+                  the case with the above examples, or you can pick
+                  up words starting with a character by not
+                  including a space at the end of the string. An
+                  example of this is the graphic symbol above "ø",
+                  which compiles any word starting with this
+                  symbol. That is any hypertext destination link.
+
+
+    1 ":"        Pick up and index the word preceeding this
+                 symbol. That is index all words that end in a ":"
+                 character. Normally used for assembler labels.
+
+    2 "string "  Pick up and index the word at the start of this
+                 line preceeding this string. Again this is
+                 typically used to include references to the
+                 assembler word LABEL as it is used in some
+                 assemblers. here is an example:
+
+                        symbol_name     LABEL
+
+                 Symbol_name will be included in the index file.
+
+  Several of the above index commands can be included one per line
+before the line starting with a ";" character.  The index compiler
+currently supports up to sixteen (16) index compiler commands in the
+above format.
+
+
+What is INDEX.COM
+
+  INDEX.COM is a standalone index compiler compiled with TCOM.  It uses a
+similar configuration file called INDEX.CFG to specify parameters to the
+compiler.  It may be useful to look at INDEX.CFG to see an example of how
+to make the index compiler extract Forth words from source files.
+
+
+Parting Notes on Hypertext
+
+  While the details of hypertext creation may at first seem overwhelming,
+you may find it valuble to spend some time experimenting with the
+possibilities presented here.  I know of people using NEWZ to hyper index
+client description files, and program source files, there are no doubt
+many other possible uses.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Debugging: the watch command and others                 Date: 03/30/93
+
+Debugging an Overview
+
+  In an ideal world, programs written in Forth will be so modular that
+each small piece of code can be debugged fully and interactively without
+any need to resort to a debugger for assistance.
+
+  In the real world however, I have found that as a program evolves and
+grows, it develops data and environmental dependancies that make it
+increasingly difficult to setup all of the proper conditions needed to
+fully test each of the smaller pieces of the application.
+
+  Debuggers therefore seem to be a neccesary part of a programmers tool
+kit, for use in dealing with those difficult problems that envariably
+occur at the worst possible time (after release).
+
+
+DEBUG: a watch function
+
+  F-PC of course includes a debugger, which has evolved as a
+Super-Superset of the original Laxen & Perry F83 debugger.  Recently
+significant modifications have been to the debugger to provide simple
+watch capability.  If you have worked with Non-Forth development systems,
+you may be familiar with the "WATCH VARIABLE" concept.  In other
+languages it is often possible to open a window and tell the debuffer
+that you want ot watch a particular variable, to see when and how it
+changes.  F-PC's watch function provides similar capability, but instead
+of watching only a single variable, it allows you to watch an area of
+memory.  The 'W' command in the debugger accepts a word or address, and
+opens a three line window which is a dump of the address specified.
+
+  Debugger Example Screen with Watch turned on:
+  ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+  ³ : WORDS                                                           ³
+  ³     TOTALWORDS OFF SAVESTATE COLS 2- RMARGIN ! 15 TABSIZE !       ³
+  ³     LMARGIN OFF CR                                                ³
+  ³     ."  ** Press SPACE to pause, or ESC to exit ** " PREWORDS     ³
+  ³     >IN @ #TIB @ <>                                               ³
+  ³     IF  ['] ?INNAME IS ?W.NAME BL WORD W$ OVER C@ 1+ 32 MIN       ³
+  ³         CMOVE BL WORD W$ 32 + OVER C@ 1+ 32 MIN CMOVE ?*.*        ³
+  ³         ?CODE.* ?:.* ?VARIABLE.* ?CONSTANT.* ?DEFERED.*           ³
+  ³         ?VALUE.* ?USER-VARIABLE.* ?USER-DEFERED.* ?TOTAL.*        ³
+  ³         CONTEXTONLY FALSE %!> CONTEXTONLY                         ³
+  ³ Cont, Done, Nest, Quit, Rstk, Unnest, Watch, X-srctgl, Z-slow     ³
+  ³ 0D1C:8294³05 57 4F 44 53 20 4E 2E 53 45 51 20 53³.WORDS ING.SEQ S ³
+  ³ 0D1C:82A4³52 43 3B 3A 5C 46 43 48 4C 50 3B 43 3A³RC;C:\FPC\HLP;C: ³
+  ³ 0D1C:82B4³5C 46 50 5C 54 4F 4C 20 2D 4F 4E 4C D9³\FPC\TOOLS -ONLY ³
+  ³ 45B5 WORDS  nesting Debugger ready. Stack Empty.                  ³
+  ³ 2543  0    TOTALWORDS ?>                                          ³
+  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+  In this example screen, Watch has been opened at HERE.  Since the word
+HERE returns an address, watch watches the address returned by HERE.
+
+  You can also watch other things, for instance you can enter a word to
+watch preceeded by a ' (tick) mark, and watch will display its dump
+starting at the CFA of the word.  This is useful for words that don't
+normally return an address when executed.  You can also tell watch to
+watch an area of memory outside F-PC's CODE space by entering the address
+as "SEGMENT OFFSET", where segment and offset are separated by a space.
+If you want to turn off the watch window, simply tell it to watch the
+literal value -1 (minus one).
+
+  The + (plus) and - (minus) keys can be used to expand or contract the
+watch window lines, to allow monitoring a larger area of memory.  The up
+and down arrows, and page up and page down can be used to scroll through
+memory, above or below the original area of memory being watched.
+
+
+DEBUG: the display base and return stack
+
+  Robert Smith recently added a toggle to the debugger, to switch the
+base for numbers displayed in the debugger from the default base to HEX,
+with the 'H' key.  The 'H' key toggles back and forth between the current
+base and HEX.  Robert also added the ability to display the contents of
+the return stack, using the 'R' command.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Directives and aliases in F-PC                          Date: 03/29/93
+
+Directives and Compilation Control
+
+  Within F-PC and in the applications you write, it is useful to control
+which portions of a program are loaded.  When supporting multiple
+versions, or when simply trying to increase the flexibility of the load
+order of an application, you might want to have the compiler decide
+whether to load a line or file that might either already be loaded, or
+might need to be loaded for this particular program configuration.
+
+  F-PC provides several words to support this process as follows:
+
+        NEEDS   DIRECTIVE   \-   \+   #IF   #ELSE   #THEN
+
+  The word NEEDS followed by a filename, checks to see if the file has
+already been loade, and if it has not, then it loads filename.   This
+prevents needlessly loading multiple copies of a file, but assures that
+needed functions within the file are available.
+
+  The word DIRECTIVE allows the definition of compiler directives that
+control whether the line following is compiled or not.  Here is an
+example:
+
+        TRUE  DIRECTIVE \GRAPHICS
+        FALSE DIRECTIVE \TEXT
+
+  Directives can be treated like values, that is they can be stored into
+with !>.  Here \GRAPHICS is defined as TRUE, so when \GRAPHICS is used in
+a program, any words on the same line are compiled or interpreted.  The
+directive \TEXT is defined as FALSE, so any words on the same line in the
+application source as \TEXT will be treated as comments and ignored.
+
+  A directive can be subsequently modified as follows:
+
+        FALSE !> \GRAPHICS
+        TRUE  !> \TEXT
+
+  The above lines invert the function of the \GRAPHICS and \TEXT
+directives, so that words following \TEXT will be interpreted, and words
+following \GRAPHICS will be treated as comments.
+
+  Sometimes is is useful to determine whether a line is to be interpreted
+based simply on whether a word is already defined or not.  When this need
+occurs you can use  \+  and \-  directives as follows:
+
+        \+ bill         fload billstuf
+        \- george       fload bobstuf
+
+  Here is the word BILL is defined, then the sequence "FLOAD BILLSTUF" is
+perform, and if GEORGE is NOT defined the "FLOAD BOBSTUF" is performed.
+
+  The traditional  #IF  #ELSE  and  #THEN  interpreted conditional are
+also supported, allowing even more ways of controlling how your
+application loads.
+
+
+Aliases and Their Use
+
+  An alias in F-PC is an additional header, created to point to an
+existing definition.  Either name for the definition can then be used to
+compile or execute the definition.  Aliases are used in F-PC in two ways.
+First aliases are used as a way of allowing the user to spell a word more
+than one way, as in  VIEW, BROWSE, LL, V, B and L.  Here VIEW is the
+actual name of the word used to view the source for a dictionary word,
+but the user can also type BROWSE, LL (Locate&List), V, B or L to get the
+same effect.  Each of the succeeding words is defined as an alias of
+VIEW.  Aliases are also used as a way of controlling dictionary searches.
+Specifically in TCOM, many FORTH vocabulary words are aliased to the HOST
+directory, to make them available without requiring that all of the words
+in the FORTH vocabulary be available.
+
+  ALIAS is used as follows:
+
+        ' NOOP ALIAS DO-NOTHING
+
+  Here DO-NOTHING is defined as an alias for NOOP.  Only a header is
+created for an alias, the headers code pointer field is filled with the
+address of the CFA of the word it is being aliased to.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Time measurment and control                             Date: 03/29/93
+
+Delaying tactics
+
+  F-PC contains words that can provide several ways of pausing for a
+period of time, words delaying include:
+
+        MS   TENTHS   SECONDS   MINUTES   HOURS
+
+  MS is calibrated at F-PC startup time, to perform a proper delay on the
+current machine.  It is not extreamly acurate, but should be sufficient
+for most fine timing purposes.  MS does call PAUSE, so if multi-tasking
+is running, it may slow the MS timing down somewhat when other tasks are
+busy running.
+
+  The words TENTHS, SECONDS, MINUTES and HOURS all loop and perform a
+delay based on the PC system clock GETTIME function.  They will be fairly
+precise regardless of the speed of the computer they are running on.
+They each execute PAUSE, and a defered function PAUSE-FUNC, which can be
+used to perform minor background operations while delays are being
+performed.
+
+
+Time Measurment
+
+  F-PC also contains words that allow easy measurment of operations that
+are performed in F-PC, or occur via DOS SHELL operations.  These words
+are as follows:
+
+        TIME-RESET   TIME-ELAPSED   .ELAPSED   TIMER
+
+  TIME-RESET is used to mark the start of one or more operations that
+needs to be timed.  TIME-ELAPSED returns a double number that is the
+elapsed time since TIME-RESET in 100ths of a second resolution.  .ELAPSED
+performs a TIME-ELAPSED and displays the result in Hours, minutes,
+seconds and hundreths.  TIMER performs a TIME-RESET, then interprets the
+following commandline and displays the elapsed time for the commandline.
+
+  It is useful to note that the precision of the timing function is
+limited to units of 18th of a second by the PC system clock interrupt
+rate, even though the resolution is returned and displayed in 100ths of a
+second.
+
+
+Performance Measurment
+
+  Early in the development of F-PC, I added words to make it easy to
+measure the performance of the compiler.  When I made changes to the
+internal architexture of F-PC, I wanted to know how my changes effected
+the compilers performance.  The words  0COMPILER  and  .COMPSTAT  make it
+easy to test the compiler, and evaluate it against other compiler venders
+claims.  F-PC has always done well in these test, and has been hand tuned
+to minimize disk transfers, linereads and word searches.
+
+
+Display and print redirection                           Date: 04/14/93
+
+Display Redirection
+
+  F-PC includes words that can redirect all screen output to the printer,
+or any printed output directly into a file.  To redirect the output of a
+commandline to the printer, use the word:
+
+                PRINT <commandline> <enter>
+
+  Any display output from <commandline> above will be directed to the
+printer instead of to the display.
+
+
+Display to Browser Redirection
+
+  If no printer is available, or if you just want to redirect the output
+of a commandline to a file for detailed browsing, you can use:
+
+                >BROWSE <commandline> <enter>
+
+                        or the alias
+
+                >B <commandline> <enter>
+
+  Any display output from <commandline> will be directed into the file
+BROWSE.PRN instead of to the display or printer.  When the command line
+finishes executing, the F-PC editor will automatically be invoked in
+"browse" mode, on BROWSE.PRN.  The same filename BROWSE.PRN is always
+used, so each successive use of >BROWSE, or >B will cause the previous
+copy of BROWSE.PRN to be overwritten.
+
+
+Printer Redirection
+
+  It is sometimes useful to redirect printer output into a specific file
+while in an application.  Three words are provide to allow control of
+printer redirection, as follows:
+
+  From the Forth commandline:
+
+                PFILE MYFILE.PRN <enter>
+
+  The above will redirect all printer output into MYFILE.PRN.  Any use of
+the word PRINT will be directed to MYFILE.PRN.  To finish printing to
+MYFILE.PRN, and return printing redirectin to the printer, use:
+
+                PCLOSE  or its alias  TOPRINTER
+
+  Any printer output will be directed back to the real printer.
+
+  It is also useful to select the name of the printer file from within a
+program, this is done in F-PC by using:
+
+
+  From within a Forth program:
+
+        : MYPRINTFILE   ( -- )
+                        " APRTFILE.PRN" ">$ $PFILE
+                        ABORT" Failed to create print file" ;
+
+  Any printer output following the execution of the above definition will
+be directed into APRTFILE.PRN.  Again PCLOSE is sued to restore printing
+to the physical printer.
+
+
+Printer Variable
+
+  The vaiable PRINTING when non-zero, causes typed output to go to the
+printer instead of to the display.  The variable PRINTING is turned OFF
+when an error occurs, so error messages will be displayed on the screen
+instead of onto the printer or into the print file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Pointers, what they are and how to use them             Date: 03/29/93
+
+Pointers in F-PC a History
+
+  In early version of F-PC, memoru management was done using the standard
+DOS functions ALLOC and DEALLOC.  These functions in F-PC allow an amount
+of memory in paragraph outside of F-PC to be allocated for use as a
+buffer for various kinds of things that the user might want to save for
+later use within an applications program.  Management worked kind of like
+a stack, each successive use of ALLOC assigned a higher area of memory
+outside of F-PC to the request.  A call to DEALLOC would release the
+allocated space back to DOS, but unless DEALLOCs were performed in the
+reverse order of the ALLOCs, then the DOS memory would become fragmented.
+If fragmentation became excessive, then an ALLOC might fail even though
+there was enough memory available, it was not contiguous, and as such
+couldn't be passed back as a single block to the caller.
+
+  This fragmentation caused problems for F-PC, and applications programs
+and could lead to premature program failure.
+
+  F-PC starting with Version 3.5500 on Feb 06th, 1991, switched to a new
+memory management scheme, based on what I call the POINTER.  A pointer is
+a word that automatically allocates a predefined area of memory above
+F-PC's HEAD segment, but within F-PC when the word is first used by an
+application.  Since the allocation occurs automatically, the user doesn't
+need to include special initialization code in their application to
+allocate needed space, and space for unused pointers doesn't get
+allocated at all even if defined in an application.
+
+  One of the new attributes of pointers in F-PC is that they are movable,
+that is the paragraph address returned by a pointer may change after the
+space for a pointer is already allocated.  The impact of this on your
+program is that you MUST use the pointer name each time you need to
+paragraph address of the buffer, or you may stomp on the wrong memory
+area if the pointers buffer area got moved.
+
+  You might ask why would a pointers buffer need to move, and the answer
+goes back to the problem with ALLOC and fragmentation.  To prevent memory
+from getting fragmented, any pointer buffer that is released with
+UNPOINTER> causes any pointer buffer above it to be moved down to consume
+the released space, and maintain a contiguous free memory above F-PC.
+
+  This did cause some problems early in the adaptation of F-PC to
+pointers.  The editor had to be modified so it wouldn't care if the text
+edit buffer moved during an edit session, which was a challenge to
+accomplish, and other parts of F-PC had to be made pointer friendly, to
+always use the pointer word when obtaining the paragraph address of the
+pointers buffer.
+
+  Programs you have written may need to be converted to use pointers,
+which will centainly cause you some headaches, but will be time well
+spent in reduced memory management problems later on.
+
+
+
+Pointer Usage
+
+  Here is an example of a pointer definition in F-PC:
+
+        12345. POINTER MYSEG
+
+  Note that the number placed on the stack before POINTER is a DOUBLE
+number as indicated by the decimal pointe at the end of the number.
+POINTER aligns the double number to the next higher paragraph boundry
+before saving the amount of memory needed in the structure created for
+MYSEG.  It is useful to note that while a literal number is required at
+the time a pointer is defined, the actual size of the pointer can be
+changed prior to actually using the pointer an allocating the space.
+Words to accomplish this will be discussed shortly.
+
+  Using MYSEG in a definitions mioght occur as follows:
+
+
+        : ERASE-MYSEG   ( -- )
+                        MYSEG 0                 \ segment and offset
+                        SIZEOF@> MYSEG DROP     \ size in bytes < 64k
+                        0 LFILL ;               \ fill with nulls
+
+  Notice that SIZEOF@> was used to obtain the size of the pointer so it
+could be filled with nulls.  SIZEOF@> returns the size of the pointer in
+bytes with a double number, so in this case the high byte is assumed to
+be zero, and only the lower word is used for the subsequent LFILL (long
+fill).
+
+  You might also want to define words to fetch from and store into the
+the pointer, which could be accomplished as follows:
+
+        : MYSEG-C@      ( a1 -- c1 )    MYSEG SWAP C@L ;
+        : MYSEG-C!      ( c1 a1 -- )    MYSEG SWAP C!L ;
+
+  Bytes are shown here, but operations for words, or strings could also
+be easily defined using @L, !L, CMOVEL, or CMOVEL>.
+
+  When the size of a pointer buffer needs to change at runtime before the
+pointer is allocated, you can use the following technique to set the
+pointer size:
+
+        : SIZE!-MYSEG   ( -- )
+                        UNPOINTER> MYSEG
+                        RECORDS BYTE/RECORD UM* SIZEOF!> MYSEG ;
+
+  Notice that UNPOINTER is used to release any memory already in use by
+MYSEG prior to adjusting its size.  This is a prudent action that will
+assure MYSEG really gets adjusted.  Note however that you CANNOT adjust
+the size of a pointer that has already been allocated. It MUST be
+released and reallocated.  Consequently any data in the pointer will be
+lost if it is resized.
+
+
+
+  When a pointers buffer is not needed any longer it is prudent to
+release the unneeded memory as follows:
+
+        : NOMORE-MYSEG  ( -- )
+                        UNPOINTER> MYSEG ;
+
+  This causes the memory allocated to MYSEG to be released back to the
+available memory pool for use by other pointers.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+F-PC Memory usage and shelling to DOS                   Date: 03/29/93
+
+Memory an Overview
+
+  Of all the resources available in a personal computer, Random Access
+Memory (RAM) is perhaps the most valuble.  F-PC recognizes the value of
+RAM and uses it in many diverse ways.  Please spend a few moments
+examining the following table, as it will be the basis for further
+discussion.
+
+Typical .MEM display for F-PC
+
+ line
+    ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+  1 ³ -------- DOS memory usage                                       ³
+  2 ³   1024 bytes at seg 5D6F MACSEG   1744 bytes at seg 5D02 XBSEG  ³
+  3 ³ 239616 bytes at seg 5DAF BASESEG  4272 bytes Unallocated DIRSEG ³
+  4 ³  20000 bytes at seg 5820 SVSEG   23008 bytes Unallocated LABSEG ³
+  5 ³  32000 bytes at seg 5050 INBSEG 275264 bytes at seg D1C  F-PC   ³
+  6 ³ --------                                                        ³
+  7 ³   569648 bytes TOTAL used by F-PC, excluding Unallocated        ³
+  8 ³ --------                                                        ³
+  9 ³    32000 bytes DOS memory Available                             ³
+ 10 ³   601648 bytes DOS memory Total                                 ³
+ 11 ³ -------- Expanded Memory Version 4.0 at Paragraph E000          ³
+ 12 ³  2818048 bytes expanded memory  Available                       ³
+ 13 ³  7667712 bytes expanded memory  Total                           ³
+    ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+  F-PC is a very memory hungry development system.  Line 7 shows F-PC
+using more than 569,000 bytes of DOS memory.  How that 569k is used is
+detailed between lines 1 and 6, eight pointer names MACSEG through F-PC
+identify each of the areas of memory used by F-PC.  You can use VIEW to
+examine each of these pointer, to see what they are used for.  Notice the
+the pointer "F-PC" shows that 275,264 bytes of memory is being used.
+This memory is used for CODE, LIST and HEAD areas, and can be adjusted to
+some extend with the word LISTSET, or TURNKEY.  It reflects the sum of
+the paragraph values as extracted from KERNEL2.SEQ below:
+
+
+  $01000 VALUE #CODESEGS \ # of segments needed for CODE          64k
+  $01800 VALUE #LISTSEGS \ # of segments needed for : definitions 96k
+  $01000 VALUE #HEADSEGS \ # of segments needed for HEADS         64K
+
+
+  These values are of course smaller than 275k, since they are
+representative of only F-PC's KERNEL.COM memory usage.
+
+  Other pointers listed above are generally small, with the exception of
+BASESEG, which reflects the memory usage of the EDITOR.  If you subtract
+239616 from 569648, you will see that F-PC needs about 330k of memory to
+run, though you rill need at least 380k to use the editor on even small
+files.
+
+
+  As you define your own pointers, they will be prepended to the list of
+pointers shown by .MEM, so you can easily see how much memory your
+application is using.  Note that UNEDIT can be used to release the amount
+of memory being used by the editor, to release memory for your
+applications use.
+
+  Line 9 shows the DOS memory that is currently available and not being
+used by F-PC.  The F-PC editor always preserves 32k of DOS memory to
+allow a SHELL to DOS from within the editor, even under the conditions
+that there is no Expanded memory or disk space available to save F-PC
+itself into.
+
+
+Memory Usage when Shelling to DOS
+
+  Line 12 shows the amount of available Expanded Memory.  This memory is
+used by F-PC when shelling out to perform a DOS command.  F-PC actually
+moves all but 8k bytes of itself into expanded memory and releases the
+remaining memory to DOS prior to performing a DOS command.  This feature
+allows very large programs to be run from within F-PC, without running
+out of program memory even though F-PC itself uses almost all of DOS's
+program memory when it is running.
+
+  Of course there may be conditions where there is either no Expanded
+Memory or not enough Expanded Memory available to allow F-PC to save
+itself.  When this happens, you have two choices.  Either your
+application can choose to shell to DOS and use only the very small amount
+of memory available, or you can turn on the switch for disk storage of
+F-PC when shelling to DOS.
+
+  The word SWAPFILE or "SWAPFILE both set the name of the disk swap file
+to use when swapping F-PC to disk, and enable disk swapping with the
+primitive DISKON.  When F-PC needs to perform a DOS command, it will
+first try to swap itself to Expanded Memory, and if that is not
+available, then it will swap to disk, freeing up program memory to
+whatever DOS command you are performing.  While it might seem like it
+would be very slow, swapping about 500k bytes to disk, it is still a
+reasonable wah to provide a flexible facility that will run, but only
+slower on computers that don't have all of the modern resources.  In fact
+swapping to a hard disk on a 286 machine only takes a few seconds, and is
+tolerable on these slower machines.  You can of course set the swapfile
+to reside on a large randisk, speeding up the process to almost that of
+Expanded Memory.
+
+  The converse words DISKOFF and EMMOFF disable F-PC's usage of these
+areas when swapping for DOS shell commands.
+
+
+
+
+
+
+
+
+
+Number conversion and base specifying                   Date: 04/14/93
+
+  F-PC defaults to DECIMAL at cold start.  Any numbers entered in the
+decimal number base are converted from ascii into binary and placed on
+the data stack.
+
+  It is also useful at times to specify the base of a number being
+entered either at the keyboard, or within a program source file.  F-PC
+also supports the specification of the conversion base in several ways
+as long as the current base is DECIMAL!. Here are examples of valid ways
+to specify the conversion base:
+
+        DECIMAL         \ MUST BE IN THE DECIMAL NUMBER BASE FOR THE
+                        \ FOLLOWING EXAMPLES TO WORK !!!!!!!!
+
+        ABCDh           \ convert as HEX to the stack
+        $1234           \ convert as HEX to the stack
+        10001110b       \ convert as BINARY to the stack
+        'D'             \ place the ASCII character D on stack
+        ^G              \ place the character Control-G on the stack
+
+  As you can see, F-PC is fairly flexible about allowing direct base
+specification.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+String processing words                                 Date: 04/14/93
+
+
+  F-PC includes a significant number of words to manipulate strings of
+characters.  The operators are not as easy to use as those in BASIC, but
+they are very powerful:
+
+
+
+SCAN            ( addr len char -- addr' len' )
+                Scan for char through addr for len, returning addr' and
+                len' of char.
+
+SKIP            ( addr len char -- addr' len' )
+                Skip char through addr for len, returning addr' and len'
+                of char+1.
+
+-SCAN           ( addr len char -- addr' len' )
+                Scan for char BACKWARDS starting at addr+len, back
+                through len bytes before addr, returning addr' and len'
+                of char.
+
+-SKIP           ( addr len char -- addr' len' )
+                Skip occurances of char BACKWARDS starting at addr, back
+                through addr-len, returning addr' and len' of char.
+
+SCANW           ( a1 w1 w2 --- a2 w3 )  \ Scan array a1 for word w2.
+                \ a1 = scan start address
+                \ w1 = length to scan (words)
+                \ w2 = word we are looking for
+                \ a2 = address where w2 was found
+                \ w3 = remaining search length (WORDS)
+
+/STRING         ( addr len n -- addr' len' )
+                Index into the string by n.  Returns addr+n and len-n.
+
+PARSE           ( char -- addr len )
+                Scan the input stream until char is encountered.
+
+WORD            ( c1 --- addr )
+                Parse the input stream for char and return a count
+                delimited string at here.  Note there is always a blank
+                following it.
+
+EXPECT          ( adr len --- )
+                Accept text into the buffer at "adr" for "len" bytes.
+
+NEXPECT         ( adr len start -- )
+                Expect (append) to a buffer that may already contain some
+                data.
+
+
+
+
+
+A Simple String Example
+
+  Following is an example of how the string operators can be used to
+parse a string.  In this example, a counted string (a handle) is scanned
+for repeated occurances of the '\' (backslash) character:
+
+
+                : >PATHEND"     ( a1 --- a2 n1 )
+                \ Return address=a2 and count=n1 of filename after path
+                        COUNT
+                        BEGIN   2DUP '\' SCAN ?DUP
+                        WHILE   2SWAP 2DROP 1 /STRING
+                        REPEAT  DROP ;
+
+  Each occurance of '\' is found with " '\' SCAN " and then stripped off
+with " 1 /STRING ", until no more occurances of '\' are found. Whatever
+remains is assumed to be the filename with the path stripped off:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\\ Files: simple program file handling                  Date: 04/14/93
+
+
+  While working with files in F-PC is not very difficult, the details
+have not been well documented.  Here is an example program that processes
+all of the bytes of a file, and expands any tabs found before writing the
+results to a second file:
+
+{
+
+VARIABLE EXSIZE         \ size of tab expansion in spaces
+       8 EXSIZE !       \ set tab size to 8 spaces
+
+VARIABLE EXOUT          \ counter of text on this line
+  HANDLE EXHNDL         \ the expanded text file handle
+
+  CREATE CRLF$ $0D C, $0A C,      \ A crlf character pair
+
+
+: EXPWRITE      ( a1 n1 -- )
+                dup>r exhndl hwrite r> - abort" Write error" ;
+
+
+: EXTAB         ( -- )
+                spcs exsize @ exout @ over mod - expwrite ;
+
+
+: EXPAND_A_LINE ( a1 -- )       \ expand tabs in counted string a1
+                crlf>bl's                       \ convert CRLF to blanks
+                count                           \ count the string
+                begin   2dup 9 scan dup         \ scan for a tab character
+                while   2dup 2>r nip -          \ parse text before a tab
+                        expwrite                \ write it to file
+                        2r> 1 /string           \ strip off tab char
+                        extab                   \ expand to next tab col
+                repeat  nip - -trailing         \ strip trailing blanks
+                expwrite                        \ write remainder of line
+                crlf$ 2 expwrite ;              \ append CRLF to finish line
+
+
+: MAKE_EXFILE   ( -- )          \ make the expanded output file
+                seqhandle exhndl $>handle       \ move input name to output
+                " EXP" ">$ exhndl $>ext         \ change the file extention
+                exhndl hcreate                  \ try to make the output file
+                                                \ and complain if we can't
+                abort" Failed to make the output file" ;
+
+
+
+
+
+
+
+
+
+: EXPAND        ( -<filename>- )        \ expand TABS in filename
+                sequp                   \ step up to the next file handle
+                bl word c@ 0=           \ if no word following
+                if      cr ." File: "   \ then ask for a filename
+                        query           \ and allow it to be entered
+                        bl word c@ 0=   \ MUST have a name!
+                        abort"  No filename given"       \ or error
+                then
+                here $file ?open.error  \ try to open the file, or error
+                make_exfile             \ make the expanded file
+                begin   lineread        \ -- a1, read a line from the file
+                        dup c@
+                while                   \ while there is text to process
+                        expand_a_line   \ expand tabs in the line
+                repeat  drop            \ cleanup the stack
+                seqdown                 \ close the input file
+                exhndl hclose drop ;    \ close the output file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\\ LINEEDITOR: an example                               Date: 04/14/93
+
+  Built within F-PC is a very nice field (or line) editor.  Everytime you
+type a commandline into F-PC you are using the F-PC LINEEDITOR word.
+
+  The LINEEDITOR word is really a general purpose editor, that can be
+used in any of your own applications in place of EXPECT or QUERY.
+LINEEDITOR allows you to specify where on the screen the field or line
+you are editing is to appear, its maximum length upto 80 characters.
+
+  Full word and character operations using keypad or WordStar keys as
+follows:
+
+        Ctrl-A                  Left word
+        Ctrl-S                  Left character
+        Ctrl-D                  Right character
+        Ctrl-F                  Right word
+        Ctrl-G                  Forward delete
+        Ctrl-T                  Word delete
+        Ctrl-Y                  Line delete or clear
+        Left arrow              Left character
+        Ctrl-Left arrow         Left word
+        Right arrow             Right character
+        Ctrl-Right arrow        Right word
+        Home                    Beginning of line
+        End                     End of line
+        ESC                     Discard changes and leave
+        Return/Enter            Save changes and leave
+
+  The parameters needed by LINEEDIT are as follows:
+
+        lineeditor    ( x y a1 n1 --- f1 )
+
+                x = char pos on row,    zero = left edge
+                y = row number,         zero = top line
+                a1 = counted string
+                n1 = edit limit length, maximum value = 80
+                f1 = true for finished edit normally
+                f1 = false for canceled edit
+
+  Here is an example of a command that would edit a line of text in
+SAMPLEBUFFER, with a maximum length of 12 characters, at location
+row 10 column 5 on the screen.
+
+                5 10 samplebuffer 12 lineedit
+
+  Two auto resetting flags can be used to control the behavior of the
+line editor in special ways.
+
+  The STRIPING_BL'S boolean "VALUE" determines whether the line editor
+will strip trailing blanks from an edited string at the completion of
+the edit. this VALUE defaults to TRUE, do strip trailing blanks.
+
+                OFF> STRIPPING_BL'S     will prevent line edit from
+                                        stripping spaces.
+
+  The AUTOCLEAR boolean "VALUE" determines whether the line edit buffer
+will be automatically cleared if the first character you enter on
+starting an edit is a normal text char. This is used to ease the users
+life in the situation where you want to give them the option of re-using
+a string or easily entering a new one without having to delete the old
+string first. This VALUE defaults to FALSE, no autoclear.
+
+                ON> AUTOCLEAR           will cause line edit to
+                                        automatically clear the edit
+                                        string if a letter is the
+                                        first thing entered.
+
+  Here is a program example using LINEEDITOR, load this file and type:
+
+        LETEST
+
+{
+
+CREATE LEBUF    \ a buffer of text to edit with the LINEEDITOR
+                HERE 61 +
+                ," This is an example of a line to edit"
+                HERE SWAP - 0MAX ALLOT
+                \ allocate at least 60 characters plus a count byte
+
+: LETEST        ( -- )          \ line editor test program
+                DARK                       \ clear the screen to start
+                CR                         \ move down a couple of lines
+                                           \ display current contents of buf
+                CR ." LEBUF contains: " LEBUF COUNT TYPE
+                SAVECURSOR SAVESCR         \ save cursor & screen
+                CYAN >BG YELLOW >FG        \ select some colors for window
+                [ HIDDEN ]                 \ the following vars are HIDDEN
+                OFF> STRIPPING_BL'S        \ don't strip trail blanks
+                ON> AUTOCLEAR              \ clear if direct typing
+                4 9 74 11 BOX&FILL         \ box in editor line
+                ."  Line:"                 \ prompt text
+                >ATTRIB1                   \ colors for edit
+                12 10 LEBUF 60 LINEEDITOR  \ -- f1
+                RESTSCR RESTCURSOR         \ restore screen & cursor
+                IF      CR ." Finished editing normally"
+                ELSE    CR ." Edit canceled, no changes made to buffer"
+                THEN                       \ show buffer to user again
+                CR ." LEBUF contains: " LEBUF COUNT TYPE ;
+
+

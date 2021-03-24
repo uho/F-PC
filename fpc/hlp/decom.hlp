@@ -1,0 +1,111 @@
+
+OUT   ( # apf -- ) ( report out of range error )
+   Display an error message if the index is out of range
+   as pointed to by the parameter field.
+MAP  ( # apf -- a ) ( convert subscript # to address a )
+   Map a subscript and a pfa into an actual address.
+
+CASE:   (S n --  ) ( define positional case defining word )
+   A positional case statement.  The number of cases is
+   specified for error checking.  At runtime, the nth word
+   is executed, depending upon the value on the stack.
+
+ASSOCIATIVE:
+   An associative memory word.  It must be followed by a set
+   of values to be looked up.
+   At Runtime, the values stored in the parameter field are
+   searched for a match.  If one if found, the index to that
+   value is returned.  If no match is made, then the number
+   of entries, ie max index + 1 is returned.  This is the
+   inverse of an array.
+
+(SEE)   Forward reference to decompile deferred words
+The following are used only by the decompiler:
+.WORD       (S IP -- IP' )
+   Display the name of a word, and bump the simulated IP by 2.
+.INLINE     (S IP -- IP' )
+   Display a word that contains an inline literal value.
+.BRANCH     (S IP -- IP' )
+   Dispaly a word that contains an inline branch.
+.QUOTE      (S IP -- IP' )
+   Handles the special case of COMPILE xxx.
+.STRING     (S IP -- IP' )
+   Displays a word with an inline string arguement.
+
+DOES?   (S IP -- IP' F )
+   Increments simulated IP and returns true if call dodoes there
+.(;CODE)    (S IP -- IP' )
+   Perhaps continue to decompile a defining word.
+.FINISH     (S IP -- IP' )
+   Display current word and quit.
+
+EXECUTION-CLASS
+   This table lists all of the special cases that must be
+   decompiled differently from ordinary Forth words like DUP
+   and + etc.  At runtime, if the simulated IP points to a
+   word in this group, the corresponding index from this
+   table will be returned, and placed upon the stack.  If
+   there is no match, then the last index + 1 is returned.
+
+.EXECUTION-CLASS
+   This giant case statement handles the special case
+   decompiling needed.  Each entry corresponds to an
+   entry in the previous EXECUTION-CLASS associative
+   table.  The function of each of these words is to
+   decompile the current word that the simulated IP is
+   pointing to, and advance the simulated IP accordingly.
+   If no match in the table, .WORD is used.
+
+.PFA   (S CFA -- )
+   This decompiles a parameter field which contains a list of
+   code fields, as is found in : definitions.
+
+.IMMEDIATE   (S CFA -- )
+   This indicates whether the current word is Immediate or not.
+
+.CONSTANT    (S CFA -- )
+   Decompile a Constant, and prints its value.
+.VARIABLE    (S CFA -- )
+   Decompile a Variable, giving its location and value.
+
+.:           (S CFA -- )
+   Decompile a high level : definition.
+.DOES>       (S CFA -- )
+   Decompile a word defined by a CREATE DOES> word.
+.USER-VARIABLE   (S CFA -- )
+   Decompile a USER variable, giving the offset from the
+   base of the user area and the current value.
+
+.DEFER  Tell the user that this is a deferred word and
+   decompile its current definition.
+.USER-DEFER  Tell the user that this is a USER deferred word and
+   decompile its current definition.
+.OTHER   (S CFA -- )
+   This decompiles words whose category was is not known.  Code
+   words are recognized, as are words defined by defining words.
+   The runtime portion of a word defined by a defining word is
+   decompiled, since the parameter field is determined by the
+   CREATE portion and cannot be deciphered.  If all else fails,
+   the word is listed as UNKNOWN.
+
+DEFINITION-CLASS
+   This categorizes the different classes of words that the
+   decompiler will handle.  For each class, determined by the
+   type of defining word used, the code field is identical.
+   Thus the standard classes are recognized.
+
+.DEFINITION-CLASS
+   These are the routines that handle the decompilation of
+   each class.  The most useful, and of course most common one
+   is .: which decompiles : definitions.  If the class is not
+   recognized, we check to see if it is a CODE word or perhaps
+   defined by a high level CREATE DOES>  word.
+
+((SEE))   (S Cfa -- )
+   Takes an arbitrary code field address and decompiles it
+   based upon its definition class.  Upon completion, it
+   indicates whether or not the word is immediate.
+
+SEE   (S -- )
+   The user interface.  To decompile something type SEE xxx
+

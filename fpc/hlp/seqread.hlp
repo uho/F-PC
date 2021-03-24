@@ -1,0 +1,314 @@
+\ SEQREAD.HLP   Sequential read and load file           by Tom Zimmer
+
+WITHPATH        ( -- f1 )
+        A flag telling F-PC whether it should include the PATH in the file
+        variable created when loading a file.
+
+IBLEN           ( -- n1 )
+        The input buffer length value specifies how much may be read into
+        the input buffer at one time (on a buffer refill). This value is
+        adjusted by BUFSIZE-INIT in BUFSET.SEQ to a size correct for your
+        computers performance at Forth boot time. IBLEN will typically
+        range from about 4k for a 4.7 MHZ 8088 machine up to 27k for a
+        16MHZ 80386 machine. The value of IBLEN is limited even on very
+        fast machines to IBLIMIT located in BUFSET.SEQ. IBLEN will at times
+        get adjusted down to a very small value (256 bytes) when returning
+        from a nested load. This is done to minimize re-reads of the entire
+        load file when you are likely to be only reading a single line from
+        the load file and then going off to load another file. The value
+        IBFULL holds the actual full buffer size when restoring IBLEN at
+        the beginning of each load.
+
+IBFULL          ( -- n1 )
+        The full buffer size value is used to restore IBLEN at the
+        beginning of each file load. See IBLEN for more details.
+
+SCREENCHAR      ( -- n1 )
+        A value used by the editor to indicate the cursor position on the
+        line. This value also gets set by the error handler when a compile
+        error occurs.
+
+DELIMITER       ( -- c1 )
+        Lineread delimiter, normally $0A (linfeed), but can be set to
+        other values when reading records that are delimited by some
+        symbol other than a linefeed.
+
+OBLEN           ( -- n1 )
+        The output buffer length value, specifys how much can be placed in
+        the output buffer by LINEREAD. This value can be adjusted to a
+        smaller value, to force a shorter maximum read of a file. For
+        example if OBLEN is set to 64, you can read Forth block files with
+        LINEREAD, one line at a time.  Be sure to preserve the value of
+        OBLEN so it can be restored to its original value. WARNING setting
+        the value OBLEN to something greater than its original value will
+        cause a system crash. See IBLEN for additional details.
+
+INSTART         ( -- n1 )
+        This value specifys where in the input buffer to start scanning for
+        the next line read by LINEREAD. INSTART will always be in the range
+        zero to IBLEN.  See also IBLEN.
+
+INLENGTH        ( -- n1 )
+        The input text length value specifys how much text ramains in the
+        input buffer. When INLENGTH falls below OBLEN a buffer refill from
+        the file is performed. See also IBLEN.
+
+INBSEG          ( -- n1 )
+        The input buffer segment value contains the physical starting
+        segment in memory of the LINEREAD input buffer. See also IBLEN.
+
+TOTALLINES      ( -- a1 )
+        The total lines VARIABLE holds the total number of lines read with
+        LINEREAD since TOTALLINES was reset to zero. Useful in keeping
+        track of how many lines of code you are working on.
+
+OUTBUF          ( -- a1 )
+        The line output buffer array in CODE space. Holds the lines read by
+        LINEREAD. Returns a1 the address of a counted string of characters.
+        See also IBLEN and OBLEN.
+
+MAXNEST         ( -- n1 )
+        This constant holds the total sum in bytes of the handle control
+        blocks used in the handle stack. Normally set to (7 times B/HCB).
+
+HNDLS           ( -- a1 )
+        An array of handles. Returns the address of the first handle in the
+        handle stack.
+
+FILEPOINTER     ( -- a1 )
+        A double variable holding the byte offset into the current file for
+        the next disk read when filling the input buffer.
+
+LOADING         ( -- a1 )
+        A variable. Holds a flag TRUE if we are we in the process of
+        loading a file?
+
+CONHNDL         ( -- a1 )
+        A system handle pre-initialized to contain the DOS handle number
+        for the CONSOLE output device, handle value 1. Can be re-directed
+        to other places, but normally isn't.
+
+PRNHNDL         ( -- a1 )
+        A system handle pre-initialized to contain the DOS handle number
+        for the PRN print device, handle value 4. This handle can easily
+        be redirected to a file if desired with PFILE and PCLOSE.
+
+(CONSOLE)       ( c1 --- )
+        Write character c1 to the console output device. Normally the
+        display console.
+
+(TYPE)          ( a1 n1 --- )
+        Write the string of characters specified by a1, n1 to the console
+        output device. Normally the display console.
+
+(PRINT)         ( c1 --- )
+        Write the character c1 to the PRN output device. Normally the local
+        printer.
+
+(EXTYPE)        ( seg a1 n1 --- )
+        Write the string of characters specified by a1, n1 in segment seg
+        to the console output device. Normally the display console.
+
+LOADSTAT        ( -- )
+        A defered word that normally contains a function to display the
+        status line at hte top of the screen. This function is called
+        periodically while loading files, to let the user know what is
+        going on.
+
+SEQHANDLE+      ( --- a1 )
+        Returns address a1, the address of the next unused handle above the
+        current handle. Used occasionally when a VERY TERMPORARY handle is
+        needed for filename manipulation.
+
+.SEQHANDLE      ( --- )
+        Display the filename in the current file handle.
+
+CURPOINTER      ( handle --- double-current )
+        Get the double-current file offset pointer of the file open on
+        handle.
+
+SAVEPOINTER     ( --- )
+        Save the current file offset pointer in FILEPOINTER for use later
+        in filling the input buffer.
+
+GET_ALINE       ( --- )
+        Parse a line of text from the input buffer and place it in the
+        output buffer OUTBUF. See also IBLEN and OBLEN.
+
+FILEPOINTER+    ( --- )
+        Increment the current file pointer by the length of the line
+        in outbuf.
+
+FILLBUF         ( -- )
+        Re-fills the input buffer to capacity from the currently open file
+        specified by the handle in the value SEQHANDLE.
+
+?FILLBUFF       ( --- )
+        Re-fill the input buffer by calling FILLBUF if INLENGTH is less
+        than OBLEN.
+
+LINEREAD        ( --- a1 )
+        Read a line from the current file, returning the address a1,
+        the address of the next line. See also IBLEN, OBLEN & GET_ALINE.
+
+(DOERROR)       ( a1 n1 --- )
+        Display the file, line, and offset into the line where an error
+        has occured, then QUIT.
+
+DOERROR         ( a1 n1 -- )
+        A defered word used to handle errors that occur while loading.
+        A1 and n1 specify a message string to be displayed while handling
+        the error.
+
+DEFBASE         ( -- n1 )
+        A value that holds the numeric base to be used when restoring the
+        base when an error occurs. See also HEXBASE, DECIMALBASE & NOBASE.
+
+HEXBASE         ( --- )
+        Set HEX as the default base. When an error occurs, the base will be
+        set to hexdecimal.
+
+DECIMALBASE     ( --- )
+        Set DECIMAL as the default base. When an error occurs, the base
+        will be switched back to DECIMAL.
+
+NOBASE          ( --- )
+        Set NO default base, the base will not be changed when an error
+        occurs.
+
+.BASE           ( --- )
+        Display the current base in decimal.
+
+?BASE_RESTORE   ( f1 --- )
+        Conditionally restore the base to DEFBASE if f1 is TRUE and DEFBASE
+        is not zero.
+
+(?SERROR)       ( a1 n1 f1 --- )
+        If f1 is true, then print message a1, n1 and show the
+        line in the current file where the error occured using DOERROR.
+
+?SEQRANGE       ( --- )
+        Verify the value of seqhandle points to a handle in the HNDLS
+        array, abort if it doesn't.
+
+SEQUP           ( --- )
+        Step up to the next handle in the HNDLS handle stack.
+
+SEQINIT         ( --- )
+        Clear the the handle stack. Set SEQHANDLE to the first handle in
+        HNDLS. Allocate the input buffer and set INBSEG. Initialize CONHNDL
+        and PRNHNDL to their default display and printer devices.
+
+IBRESET         ( --- )
+        Reset the input buffer to empty. The next LINEREAD will force a
+        physical file read from disk. This word emptys the buffer, but does
+        not effect the positon in the file where the read will occur, so if
+        you want to force a read from the start of a file, you need to do
+        use the MOVEPOINTER command in addition to this word.
+
+$HOPEN          ( a1 --- f1 )
+        Open the file specified by the counted string a1. Return
+        boolean f1 false if the open was succesful. Also clears the input
+        buffer to empty using IBRESET.
+
+GETFILE         ( --- <a1> f1 )
+        A defered word that returns a flag true, followed by a1 the address
+        of a file, or returns f1 false alone.  This word provides the
+        interface to the F-PC popup file selection tool.
+
+FILE>TIB        ( a1 --- )
+        Given a counted string a1, put it in the terminal input buffer to
+        be the next word obtained by BL WORD.
+
+GFL             ( --- )
+        test the terminal input buffer to see if there is any "un-gotten"
+        text there. If there is text in TIB, then leave. If there is no
+        more text in TIB, then try to prompt for file using GETFILE, and if
+        a file is returned, put it in TIB.
+
+SEEK            ( d1 --- )
+        Seek (move pointer) to position d1 in the current open file
+        specified in value SEQHANDLE.
+
+LISTVAR         ( --- f1 )
+        List value, if this value is on, then lines of the
+        current load file will be displayed while being loaded.
+
+SHOWLINES       ( --- )
+        Turn on listing of lines while loading.
+
+HIDELINES       ( --- )
+        Turn off listing of lines while loading.
+
+CRLF>BL'S       ( a1 --- a1 )
+        Test the last two characters of the counted string a1, and change
+        them to blanks if they are CRLF (carraige return & linefeed).
+
+SETTIB          ( a1 --- )
+        Set TIB to point to the counted string a1.
+
+.LOADLINE       ( a1 --- a1 )
+        Display the counted string a1, preceeded by a CR and a line number
+        from LOADLINE.
+
+?.LOADLINE      ( a1 --- a1 )
+        If the value LISTVAR is true. then perform .LOADLINE .
+
+LENGTH.CHECK    ( a1 --- a1 f1 )
+        Test the counted string a1 to see if it has a length of zero. also
+        check INLENGTH to see if it is zero. If both are zero, then return
+        f1 as false meaning we are at the end of the file.
+
+FILLTIB         ( --- )
+        read a line from the current open file, and set the terminal input
+        buffer to point to it.
+
+SEQDOWN         ( --- )
+        Step down one handle in the handle stack. closes the current
+        file, and selects the next lower file. Also fills TIB with a line
+        from the file.
+
+CLOSE           ( --- )
+        A pseudonym for SEQDOWN. See also SEQDOWN.
+
+CLOSEALL        ( --- )
+        Close all open file handles in the HNDLS handle stack.
+
+<LOAD>          ( --- )
+        Load the current file starting at the current file offset.
+
+LOADER          ( --- )
+        A defered word that loads the current file. Normally defers to
+        <LOAD>.
+
+>LINE           ( n1 --- )
+        Step to line n1 in the current file such that the next LINEREAD
+        will read line n1.
+
+?LOADED,        ( -- f1 )
+        A value that specifys whether LOADED, will create a variable in the
+        FILES vocabulary for the currently open file. When ?LOADED, is true
+        a variable is created. When ?LOADED, is false, no variable is
+        created, and ?LOADED, is set to true.  This value is used to allof
+        F-PC to load its .CFG configuration file without creating a FILES
+        variable for it.
+
+LOADED,         ( --- )
+        Compile the name of the current file as a variable in the FILES
+        vocabulary. Also links the variable into a list of variables that
+        represent the files that have been loaded. See also ?LOADED,
+
+<FLOAD>         ( --- )
+        Primitive word that loads the current open file.
+
+CHARREAD        ( --- c1 )
+        Read a character c1 from the current open file.
+
+OK              ( --- )
+        Load all of the current file from the beginning.
+
+
+\S              ( n1 --- )
+        Stop loading the current file with the line that contains
+        this word.
+

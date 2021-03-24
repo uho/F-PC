@@ -1,0 +1,32 @@
+\ BLKTOSEQ.HLP  Conversion program, moves .BLK to .SEQ. by Tom Zimmer
+
+cnvhcb          Input file to convert
+outhcb          output file we are converting to.
+
+crlf            line terminator
+
+blockbuf        Block conversion buffer
+
+lastln          Turned on at the end of the conversion. ??
+
+altoff          Offset to shaddow or ALT screen.
+
+convblk         ( n1 --- )
+        Convert one block to a sequence of lines from the block
+        specified by n1.
+
+commentblk      ( n1 --- )
+        Convert the block specified by n1 to a sequence of lines,
+        surrounded by "comment:" and "comment;".
+
+convfile        ( --- )
+        Convert the files already open to sequential. This is a lower
+        level word, that should not be used from the keyboard.
+
+conv            ( --- name )
+        Convert the file specified following CONV to a sequential
+        file. If no name is specified, then CONV will prompt for
+        a name.
+
+
+

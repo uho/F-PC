@@ -1,0 +1,686 @@
+CHAPTER 4.   PROGRAMMING TOOLS
+
+
+
+
+In this chapter we will discussed the most useful utility words which are
+either unique in F-PC or have different behavior than those in F83.  We
+assume that the user is familiar with F83 so that those words adopted
+unmodified from F83 are not presented.  Reference material such as Inside
+F83  and F83 Reference Manual  by C. H. Ting are useful in obtaining an
+overview on F83.  Dr. Ting's companion F-PC Technical Reference Manual is
+is devoted to the internal structure of F- PC.
+
+
+4.1.    DUMP
+
+
+The dump utility gives you a formatted hex dump with the ASCII text
+corresponding to the bytes on the right hand side of the screen.  Data
+and addresses are displayed in hex, with 16 bytes to a line.  Both the
+segment and offset addresses are displayed for easy reference.
+
+DUMP displays memory in the Code Segment, where code, strings, and other
+data are stored. XDUMP displays memory in the List Segment, where colon
+definitions are stored.  YDUMP displays memory in the Head Segment.
+These dump utilities are derived from the generic dump function LDUMP,
+which displays a range of memory from a memory segment whose segment
+address is given on the stack with an offset address and byte count.
+DUMP, XDUMP, and YDUMP set DUMPSEG to the corresponding segment and then
+do LDUMP.
+
+DUMP, XDUMP and YDUMP change DUMPSEG to cs:, es:, and ys:, respectively.
+Their behavior takes a little bit of getting use to, but they allow you
+to navigate through the entire segmented memory space.  XDUMP is unique
+in that it takes a segment pointer and a count as parameters.  It is made
+so that you will able to dump colon definitions beyond the 64K boundary.
+
+        DUMP    ( address  length -- )          Dump Code segment
+        LDUMP   ( segment offset length -- )    Dump any segment
+        XDUMP   ( relative-segment length -- )  Dump List segment
+        YDUMP   ( offset length -- )            Dump Head segment
+
+DU displays 64 bytes in the dump segment and increments the memory
+address by 64 so that you can continue dumping the next 64 bytes with
+another DU.
+
+
+4.2.    THE DEBUGGER
+
+
+The F-PC debugger is very similar to the F83 debugger.  Some features
+have been added to enhance its operation.  The decompiled source for the
+current definition being debugged is displayed while debugging.  A
+typical command sequence might be as follows:
+
+        DEBUG   WORDS <return>
+
+which sets up the debugger so that WORDS will be debugged as soon as it
+is executed.  DEBUG only sets the debugger up to debug a word.  The
+debugging process does not start until the word is executed.  A new
+debugging command DBG is added, which caused the following word to be
+executed and debugged immediately.  The command sequence is:
+
+        DBG <word_name> <return>
+
+It is much easier to use and makes much of the intricate behavior of the
+F83 DEBUG transparent to the user.
+
+Once in the debugger, you will be shown a special debugger display.  The
+decompiled source code is shown in the top half of the screen.  The
+debugging information is shown in the bottom window.  At this point,
+pressing return will cause the word highlighted to be executed, and the
+debugger will print the stack after execution, and step to the next word
+in the list and wait for a command.
+
+Notice the fields in the bottom debugging window.  The number on the left
+is the address in memory where the debugger is currently working.  The
+next field is the word the debugger is about to execute.  The next symbol
+"?>" is a marker pointing to what will be the printed stack contents
+after we press <return>.  The bar of text shown in the middle of screen
+is the command menu:
+
+C-cont, D-done, F-forth, N-nest, Q-quit, S-skipto,  U-unnest, X-source-on/off
+
+These are the commands you can use in the debugger.  Their detailed
+functions are as follows:
+
+        C-cont          Trace continuously until a key is pressed.
+        D-done          Stop debugging and enter the browser.  Press F10
+                        to return.
+        F-forth         Allow entry of Forth command lines until <return>
+                        is pressed on an empty line.
+        N-nest          Nest into the ":" definition we were about to
+                        execute. Only works on ":"   definitions, and
+                        deferred words.
+        Q-quit          Quit the debugger, and unpatch next.
+        S-skipto        Using + or - to skip to the desired word.  Press
+                        <return> to continue debugging from there.
+        U-Unnest        Unnest the current definition to the next higher
+                        level.
+        X-source-on/off Toggle on and off the source code display and
+                        devote the whole screen for debugging.
+
+You will have noticed that the upper portion of the screen is filled with
+the source code of the word you are currently debugging.  This is to make
+it easier to follow the debug process.  You may want to turn off the
+source display, if it interferes the debugging process, by using the X
+command while debugging or used SRCOFF before debugging:
+
+        SRCOFF  Turn off the source display
+        SRCON   Turn on the source display
+
+The default state is SRCON. 
+
+During debugging, only the topmost 4 numbers on the data stack are
+displayed, with the total depth of stack shown in square brackets.  This
+is designed so that all debugging text fits in one line.  As .S is used
+to display the stack contents, its behavior is modified from the .S in
+F83, which displays all items on the data stack.  Sometimes it is
+inconvenient to have the bottom of the stack hidden from you, you can
+change the contents of variable MAX.S to the desired number of stack
+items to be shown.  MAX.S has a default value of 4.
+
+
+4.3.    VALUES: CONSTANTS AS VARIABLES
+
+
+"Constants aren't; variables won't". 
+
+A set of operators has been included for manipulating data values stored
+in the parameter fields in constants and variables.  Constants are faster
+at run time than variables.  You can improve performance in critical
+operations taking advantage of them.  Since variables are more often
+fetched than stored, using a constant to store a variable provides a
+somewhat more readable source by eliminating lots of @'s.  In order to
+preserve the appearance of constants with their values not modifiable,
+F-PC defines a new type of data called VALUE.  VALUE is an alias of
+CONSTANT, with the stated intention that their values are to be changed
+at run-time.
+
+Here is a list of words which manipulate the contents of a value from the
+keyboard or in colon words:
+
+        =: <name>       ( n -- )   Store integer to value. It looks nice.
+        !> <name>       ( n -- )   Store integer into value. Identical to =:
+        @> <name>       ( -- n )   Return contents of a value.
+        +!> <name>      Increment value-name by integer
+        INCR> <name>    Increment value-name by one
+        DECR> <name>    Decrement value-name by one
+        ON> <name>      Store -1 into value-name
+        OFF> <name>     Store 0 into value-name
+
+These operators are written in assembly, so they are very fast.  The name
+following these value operators should be defined with VALUE.  However,
+these operators will work on constants, variables, and even deferred
+words, but you will have to take responsibility of the consequences.
+
+Variable-constants or VALUE's are very useful in passing data among many
+program modules. One module sets the value in a constant or VALUE and
+many other modules can use it.  As VALUE's, constants and variables are
+global in Forth, you have to watch them very carefully in a large
+program.  Changing the value of a constant can be deadly if you are not
+aware of its consequences.  Use this tool with caution.
+
+The constants -1, 0, 1, 2, and 3 defined in F83 are eliminated in F-PC
+because in F-PC literals are much faster than constants.  In-line
+literals are faster than constants and values in F-PC, because (LIT) is
+simply:
+
+        CODE (LIT)   LODSW   ES:   1PUSH   END-CODE
+
+However, excessive use of literal numbers will make code very difficult
+to understand.  It is much preferred to name the constants and values to
+help documenting your intentions.
+
+
+4.4.    HELP WORDS
+
+
+F-PC provides the standard F83 decompiler command SEE.  SEE has been
+modified to display a decompiled source that is in most cases very
+similar to the original source on disk.  This capability does not come
+free.  The price we pay in F-PC is that every word must have a unique
+address in the Code segment, even when the words have identical code,
+such as IF, UNTIL, and WHILE, which all compile the same ?BRANCH.  The
+unique code addresses enable the decompiler to identify and recover the
+proper names to be displayed.  The debugger DEBUG and DBG also uses this
+decompiler to display the definition under examination.
+
+REF is the inverse of SEE.  
+
+        REF <wordname>
+
+searches through all colon words defined in the dictionary and displays
+the names of words which contains <wordname>.  This tool is very useful
+in analyzing where a word is used and how often it is used in any
+application.
+
+The help mechanism in F-PC 3.5 is much more polished and powerful than
+that in F83 and F-PC 2.25, because of the hypertext based browser.
+Whenever help is requested, the editor is invoked and the system is put
+into the browsing mode.  If a word name is given after a HELP word, a
+.HLP text file is opened and the text about the word is display in the
+editor window.  The user can then use the browser to move around looking
+at source code or help text.
+
+The principal help command in F-PC 3.5 is BROWSE.  VIEW is made an alias
+of BROWSE to maintain F83 compatibility.  B and V are also aliases of
+BROWSE for convenience.
+
+        BROWSE <wordname>
+
+opens the .SEQ file in which <wordname> was defined and displays the
+source code of <wordname>.
+
+        HELP <wordname>
+
+opens the companion .HLP file to the .SEQ file in which a word is defined
+and displays the help message in the HLP file associated with <wordname>.
+It assumes that the help file exists; otherwise, an error message will be
+displayed.
+
+Used without a word name, HELP enters the editor's browsing mode and
+displays the root help screen of the hypertext help system to assist you
+start ing the investigation of F-PC.  While you are browsing a file,
+position the cursor on any word and press <return> or F9.  The source
+code of this word will be displayed.  If you want to see the help text
+about a word, press Alt-H.
+
+WORDS behaves identically to that in F83 when used normally to display
+the names of definitions in the context vocabulary.  It is enhanced in
+F-PC such that if the following string is not a valid name in the context
+vocabulary, it will use the string as a substring template and prints the
+names of all definitions in all vocabularies, whose name contains the
+substring. Two substrings can be attached to WORDS.  Many special strings
+can be used after WORDS to show different classes of Forth words. For
+example,  WORDS *.*  causes all words in all vocabularies to be
+displayed.
+
+The behavior of these very useful help words is summarized as follows:
+
+    BROWSE <wordname>   Drop into the browsing mode in editor and display the
+                        source of <wordname>.
+    B                   Shorthand for BROWSE.
+    ED <wordname>       Drop into the editing mode in editor, display the
+                        source of <wordname> and ready for editing.
+    E                   Shorthand for ED.
+    HELP                Drop into the editor and display system help message.
+    HELP <wordname>     Display help message associated with  <wordname>.
+    H                   Shorthand for HELP.
+    REF <wordname>      Display all words which compile ,wordname>.
+    SEE <wordname>      Decompile <wordname>.
+    VIEW <wordname>     Alias of BROWSE.
+    V                   Shorthand for VIEW.
+    WORDS               Display words in the context vocabulary.
+    WORDS xyz           Display all words containing the substring 'xyz'.
+    WORDS xy  ab        Display all words containing both 'xy' and 'ab'.
+    WORDS *.*           Display all words in F-PC.
+    WORDS :.*           Display all colon words.
+    WORDS code.*        Display all code words.
+    WORDS constant.*    Display all constants.
+    WORDS defer.*       Display all deferred words.
+    WORDS total.*       Display number of words.
+    WORDS udefer.*      Display all user deferred words.
+    WORDS uvariable.*   Display all user variables.
+    WORDS value.*       Display all value words.
+    WORDS variable.*    Display all variables.
+
+
+4.5.    DATE AND TIME
+
+ 
+A complete set of time and date manipulation words has been included in
+F-PC.  They call appropriate DOS service functions to provide the
+requested services.  The words for getting and setting the date and time
+are as follows:
+
+        GETDATE        ( -- d1 )        Return d1 a 32 bit binary date
+                                        from the operating system. Bytes
+                                        in d1 are arranged as
+                                        year/month/day/day-of-week.
+        SETDATE        ( d1 -- )        Given the binary date d1, set the
+                                        system clock to that date.
+        GETTIME        ( -- d1 )        Return d1 with bytes arranged in
+                                        the order hr/min/sec/100th- sec
+                                        from the operating system.
+        SETTIME        ( d1 -- )        Given the binary time d1, set the
+                                        system clock to that time.
+        .DATE          ( -- )           Print to the screen the current date, in the
+                                        format MM/DD/YY, where MM is
+                                        month, DD is day, and YY is year.
+                                        Y-M-D sets the format to
+                                        YY-MM-DD, and D.M.Y sets it to
+                                        DD.MM.YY.
+        .TIME           ( -- )          Print to the screen the current
+                                        time, in the format HH:MM:SS.HR,
+                                        where HH is in hours, MM in
+                                        minutes, SS in seconds, and HR
+                                        in hundredths of a second.
+
+A special word set is defined in F-PC for measuring elapsed time for real
+time experiments and for characterization of program performance.
+
+        TIMER <name>    TIMER performs the Forth words following on the
+                        same command line, and when they finish
+                        execution, TIMER prints the elapsed time required
+                        for their execution.
+        TIME-RESET      Reset the accumulated time value in the double
+                        variable STIME to zero, in effect resetting the
+                        current elapsed time to zero.
+        .ELAPSED        Print the time elapsed since the last TIME_RESET.
+
+TIMER-RESET is used at the beginning of a sequence of operations you want
+to time.  The word .ELAPSED is used at the end of the operations to print
+the elapsed time since the last TIME- RESET.
+
+The following words are used to change different fields in the timer: 
+
+        TENTHS          ( tenths_of_a_second -- )
+        SECONDS       ( seconds -- )
+        MINUTES       ( minutes -- )
+        HOURS           ( hours -- )
+
+Time delay words use the DOS time function to obtain very accurate time
+delays.  Background processing continues, as pause is called in the wait
+loop.  Another deferred word, PAUSE-FUNC, is also in the loop, which can
+be re-assigned to perform any function you want done while the delay is
+occurring.
+
+
+4.6.    COMMENTS
+
+
+All comment words in F83, like (, .(, \, \S are preserved and they behave
+identically in F-PC. However, a file in F-PC is similar to a block in F83
+and \S stops the compilation of the rest of the file.  To accommodate
+documentation which spans over many lines, additional comment words are
+defined in F-PC.  Multiple line comment in F-PC starts with COMMENT: and
+terminates at COMMENT; .  It looks like:
+
+                COMMENT:    
+                <text> 
+                <more text>
+                ... 
+                <even more text>
+                COMMENT; 
+ 
+To print multiple line comments during compiling, 
+
+                .COMMENT:       
+                ...
+                ...
+                COMMENT; 
+
+.COMMENT: starts a group of lines that are to be printed to the terminal,
+until a terminating COMMENT; is found.
+
+/* and */ pair can be used to enclose comments similar to the COMMENT:
+and COMMENT; pair. They make the source code look even closer to C code.
+
+Plenty of documentation tools are provided in F-PC.  There is no excuse
+not using them to beautify your program.
+
+
+4.7.    SCREEN CONTROL WORDS IN F-PC
+
+
+F-PC allows you to control the CRT screen to generate very fancy text
+displays.
+
+        FAST                    Select the fast screen output routines
+                                that are very hardware dependent.
+
+The fast mode of screen display is much faster than what BDOS can do, but
+requires very compatible hardware.  As FAST stores characters directly
+into the hardware screen buffer, you have to make sure that a carriage
+return is inserted before a line runs over the 79'th column.  If you want
+line wrap, use:
+
+        SLOW                    Select the SLOW screen output routines.
+
+The BDOS display routines are less hardware dependent than FAST. 
+
+When F-PC is loaded into PC, it asks DOS what kind of video board is in
+the PC and sets the video display mode accordingly.  It also allows you
+to change the attributes of displayed characters very conveniently.
+
+In the monochrome mode, you can select from the following list different
+types of characters to be displayed on the screen:
+
+        >NONE           Normal character display
+        >UL             Underlined
+        >BOLD           Bold
+        >REV            Reversed.  Black character on white background.
+        >BOLDUL         Bold underlined
+        >BOLDBLNK       Bold blinking
+        >REVBLNK        Reversed blinking
+
+Characters EMITed to the screen are not affected by the attribute
+selection.  To show characters with the selected attribute, used FEMIT or
+TYPE.
+
+F-PC also supports color cards.  It asks DOS which card is installed and
+configures the output routines accordingly.  In color mode, F-PC gives
+you the following choices:
+
+        >BUGN           Blue background, green foreground
+        >RDWT           Red background, white foreground
+        >GNWT           Green background, white foreground
+
+There are many other choices of background/foreground combinations.  The
+following word set allows you to specified any combination of foreground
+and background colors:
+
+        >FG     ( n1 -- )       Select foreground
+        >BG     ( n1 -- )       Select background
+
+Words from the COLOR.SEQ file that allow setting the foreground and
+background colors on a color monitor are:
+
+        >ATTRIB1 to >ATTRIB8        ( -- )
+
+They are deferred words to allow selection of the various display
+attributes for the current display board.  They default to the following
+attributes for Monochrome or Color Card:
+
+                        MONOCHROME              COLOR
+        Word                                    bkgrnd  frgrnd
+
+        >ATTRIB1        UNDERLINE               BLUE    GREEN
+        >ATTRIB2        BOLD UNDERLINE  RED     WHITE
+        >ATTRIB3        BOLD                    BLUE    WHITE
+        >ATTRIB4        REVERSE                 RED     WHITE
+
+These values can be changed by changing either COLOR.SEQ, or MONOCROM.SEQ
+and re- generating the system with EXTEND.BAT.
+
+        SAVESCR         ( -- )    Save screen
+        RESTSCR         ( -- )    Restore screen
+        RECOVERSCR      ( -- )    Copy rather than pop the screen stack.
+        RECOVERLINE     ( n -- )  Copy a line from saved screen stack.
+
+These words give you the ability to save the screen contents and later
+restore the screen to its original appearance in a simple way.  SAVESCR
+may be used and nested up to three times before RESTSCR needs to be done.
+That is, three screens can be saved and sequentially restored.
+
+
+4.8.    COMPILATION CONTROL WORDS
+
+
+To load a source file, the most convenient way is to use the command
+FLOAD or its alias INCLUDE:
+
+        FLOAD <file-name> <return>
+        INCLUDE <file-name> <return>
+
+will open the file and compile the source code starting at the beginning.
+After the file is compiled, FLOAD closes the file so that other files can
+be loaded.
+
+If a file is opened by the editor or by the OPEN command, 
+
+        OK <return>
+
+compiles the currently open file, starting at the beginning, and
+continuing through the end of the file or until an error is encountered.
+
+        <line-number> LOAD <return>
+
+Start loading the current file starting at the <line_number> specified.
+If the stack is empty (no line- number specifier), it starts at line 1.
+It loads through the end of the file or until an error or an \S is
+encountered.  OK is defined as 1 LOAD.
+
+The names of all files loaded into the F-PC system are stored in a
+vocabulary FILES.  The word .LOADED displays their names.
+
+The word #IF has been added, which accepts a Boolean flag, and determines
+if the lines following #IF are compiled up until the #ENDIF.  A TRUE flag
+causes the lines to be compiled.  A FALSE flag causes the lines to be
+skipped.
+
+        TRUE #IF
+                .( This message will be printed.)
+        #ENDIF
+
+
+4.9.    PRINTING SOURCE FILES IN F-PC
+
+
+Files can of course be printed while in the editor, but you can also
+print files from a Forth command line as follows:
+
+        OPEN <filename> <return>                \ Open a file
+        LISTING <return>                        \ Print the file
+
+The print format is the same as the default format for the editor.  Every
+page is printed with a header and a footer, suitable for framing.  The
+header is taken from the first line in the file.  You can thus customize
+the header according to your taste by carefully designing the text in the
+first line.  The footer provides the file name, page number, date and
+time.  A command which combines the two commands above is:
+
+        FPRINT <filespec> <return>
+
+It opens the file and performs a LISTING.  Wildcard characters can be
+used in the file specification so that many files are printed with a
+single FPRINT command.
+
+        INDEX <filespec> <return>
+
+behaves similarly to FPRINT.  However, it displays only the first line of
+each file specified and thus produces a nice table of contents for the
+files selected.
+
+Another very useful word is PRINT.  PRINT turns on the printer and
+interprets the commands following it.   All the characters sent to the
+screen are now sent to the printer.
+
+
+4.10.   GLOBAL SEARCH
+
+
+One of the neat additions to F-PC is EDITALL.  EDITALL is used as
+follows:
+
+        EDITALL <string> <filespecs> ... <return>
+
+All files specified are searched for <string>.  If the string is found,
+the editor is entered on that line in the file, ready for you to perform
+an edit or replace on the string.  If you use F8, the replacement is made
+and the next occurrence is found.  Otherwise, only the first occurrence
+of string is located, and repeated Alt-F6 commands can locate additional
+occurrences of string in the file.  Shift-F8 Replace-All can also be used
+while in a file to replace all occurrences of a string with another
+string.  When you are done editing, press ESC to terminate edit, and the
+search will continue through the filespecs specified for additional
+occurrences of string, until all files have been searched through.  This
+has been very valuable in maintaining a system by making global changes
+to all occurrences of a Forth word.
+
+If you want to search a string containing spaces, just type EDITALL
+<return> and you will be prompted for a string to search for.
+
+Another interesting addition to F-PC is:
+
+        FLOOK <name> <filespecs> <return>
+
+It performs similarly to EDITALL in searching for a string through many
+files, but it just displays the line number and the line contents of all
+occurrences found without doing anything to the strings found.  It is
+very useful to print a report on where a particular string occurred in a
+set of files.
+
+
+4.11.   ALIAS
+
+
+In many occasions, there is a need to shorten the name of a word which we
+expect the user to use very often, like BROWSE, HELP, etc.  It is
+wasteful to redefine the function using a short name. ALIAS is a defining
+word which generates a new definition with a head only.  Its
+code-pointer- field points to the code field of an existing word.  It
+does not need its own code field at all. Examples of its uses are:
+
+        '  BROWSE  ALIAS  B
+        '  HELP  ALIAS  H
+
+The code field address returned by ' is then stored in the head of the
+new word, forcing it to perform the function of a word already defined in
+the dictionary.
+
+
+4.12.   BROWSING A LARGE FILE
+
+
+F-PC generally reads an entire file into the editor buffer for editing
+and browsing.  It can handle a file up to about 120K bytes on a 640K byte
+machine.  However, if you have to examine a file larger than what the
+memory can hold, you can read in a part of it and browsing through that
+part. VIEWFROM and its alias VF is included to allow viewing very large
+files from a specified starting line number. It is used in the form:
+
+        OPEN FPCGLOS.TXT                        \ A very large file
+        300 VIEWFROM <return>
+
+The above commands skip the first 300 lines of the file and starts
+reading at line 300. This is useful for examining very large files.  You
+should of course be careful not to switch to editing mode and change such
+a file lest it get written back to the original file on disk. You can use
+Alt-W to write the read portion of the file out to a new file.
+
+
+4.13.   THE NEWZ EDITOR
+
+
+This is Tom Zimmer's new and improved editor. The execution file and its
+documentation files are put in the NEWZ directory, separated from F-PC.
+This NEWZ editor includes some additional features that make it very
+useful when examining someone else's source code for a program you have
+been given. Tom had experienced the pain associated with taking over
+another person's program for maintenance and change.  It can be very
+painful if the program is large and consists of many files. NEWZ can now
+compile an index file of all symbols in your source files. It then
+provides a hypertext browsing environment where you can easily view,
+change, and explore a multitude of source files.  You can nest file
+searches and return to where you were. Locating any symbol in a
+multi-thousand symbol index file on an 80286 machine takes less than one
+second. This version of NEWZ supports Forth type words, and assembly
+symbols. Support for additional languages will be provided shortly on an
+as requested basis. See NEWZ's hypertext help under configuration for
+details of how to setup and build an index file of your source files.
+
+NEWZ includes many new features, here is a brief summary:
+
+1.      Work with up to 20 files at one time. (Only one file is in memory
+        but switching between files with a hard disk is very quick, and
+        requires only a single keystroke.)
+
+2.      Searching is supported within a file, and across multiple files,
+        to help find any file that contains a particular character
+        sequence.
+
+3.      You can set the default file extension to any three characters.
+        The specified extension will be applied to a file when no
+        extension is specified.
+
+4.      Maximum file size is limited by available memory, and will
+        typically be greater than 250k on a 640k machine.
+
+5.      EGA/VGA high resolution text modes are supported, NEWZ will
+        automatically adjust to whatever screen size your display is set
+        for up to 132 columns by 60 lines.
+
+6.      You can create your own hypertext systems for training.
+
+7.      NEWZ is very fast, moving around a document, or from one end to
+        the other, is limited by the repeat rate of your keyboard, not
+        NEWZ's redisplay speed. On a 4.7 MHZ 8088 machine, NEWZ can
+        redisplay more than ten full (80x24) screens per second.
+
+8.      NEWZ automatically recognizes and supports a mouse when a driver
+        is present. The mouse can be used with pulldown menus, cursor
+        positioning, scanning through a document, and text line selection
+        for Cut and Copy operations.
+
+9.      You can specify in the NEWZ.CFG configuration file whether you
+        want backup copies kept of your edits.
+
+The NEWZ editor is shareware. If you find NEWZ useful in your daily work,
+join other satisfied users and register your copy by sending a check for
+$50.00 to the address below.
+
+        Tom Zimmer, 292 Falcato Drive, Milpitas, CA  95035,
+        Tel. (408) 263-8859.
+
+You will receive the next upgrade free, and you will be notified of new
+releases about twice a year. Each upgrade will be about $25.00. Be sure
+to send your NEWZ revision date (displayed in the upper right hand corner
+after you leave NEWZ).
+
+
+4.14.   THE SZ EDITOR
+
+
+This is another one of Tom Zimmer's new and improved editors.  The major
+improvement is its size, only 18K bytes!  It is produced by Tom's new
+target compiler, which is designed to generate tight and secure
+application programs from F-PC source.  It only compiles what is needed
+in the application and discards Forth words which are not used by the
+application.
+
+SZ is very simple to use.  Type:
+
+        SZ  <filename> <return>
+
+and you can edit the file immediately.  Press F1 or ESC pops up and help
+screen showing all the commands available.  It has the general look and
+feel of SED, without the complications.  It is quite sufficient for
+writing programs and research papers.
+
+SZ is a public domain program.  You can distribute it freely.  Contact
+Tom if you need a customized editor, or if you are interested in his
+target compiler.    
+

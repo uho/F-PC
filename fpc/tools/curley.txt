@@ -1,0 +1,36 @@
+CURLEY.TXT      An 8086 disassembler written by Charles Curley.
+
+        DISASSEM.SEQ
+
+          A 8086 disassembler.  This disassembler is patched into
+        SEE, so all you have to do is type:
+
+                SEE <a_code_word> <enter>
+
+          You will see a line of Assembly code.  Continuing to press
+        <enter> after each line shows additional instructions. Press
+        ESC to terminate disassembly.
+
+          You can also disassemble from an address:
+
+                <addr> DISASSEM <enter>
+
+          The disassembler displays Postfix notation ala F83.
+
+        DIS8086.SEQ
+
+          Donation from Bill Muench, is a modified version of
+        Curley's DISASSEM.SEQ above, adjusted to disassemble in
+        PREFIX mode.
+
+          The disassembly can be sent to a file from either of the
+        above files by using PFILE to specify a printfile, then
+        typing:
+
+                PFILE EXIT.SEQ <enter>
+                PRINT SEE EXIT <enter>
+                PCLOSE <enter>
+
+          To disassemble EXIT to the file EXIT.SEQ.
+
+

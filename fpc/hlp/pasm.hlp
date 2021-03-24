@@ -1,0 +1,122 @@
+                Assembler documentation for PASM.SEQ
+
+  Overview
+
+          PASM.SEQ is an assembler which is based on an assembler
+        published in DDJ, February 1982 by Ray Duncan. That assembler
+        was subsequently modified by Robert L. Smith to repair bugs, and
+        support the Prefix assembler notation. I (Tom Zimmer) have made
+        additional modifications to allow switching syntaxes, and to
+        increase compatibility in POSTFIX mode with the F83 assembler.
+
+
+  PREFIX or POSTFIX ?
+
+          PASM supports dual syntaxes. The words PREFIX and POSTFIX
+        switch between the two supported modes. The POSTFIX mode
+        is VERY similar to F83's CPU8086 assembler. PREFIX mode which is
+        the default mode, allows a syntax which is much closed to MASM.
+
+
+  Macros in PASM
+
+          Another area of interest is macros, here is the definition of
+        the NEXT macro:
+
+                : NEXT  >PRE    JMP >NEXT A;    PRE> ;
+
+          The macro itself is simply the sequence JMP >NEXT. The
+        surrounding words are used for support. Since PASM supports both
+        Sufix as well as Prefix notation, It is not know on entry to a
+        macro what mode is selected. The words >PRE and PRE> select
+        Prefix, and restore the previous mode so macros will always be
+        in Prefix notation. The A; after >NEXT, forces the assembly of
+        the JMP instruction before the mode switch.
+
+
+  Why Dual Syntax
+
+          The assembler supports Prefix syntax, in an attempt to provide
+        a syntax which is more readable to programmers of other
+        languages. It supports Postfix syntax to prevent alienating the
+        established base of F83 users.
+
+          The prefix notation is I think more readable, and certainly
+        will be more familiar to programmers of other languages. Please
+        consider writting any new assembly code you need in the Prefix
+        mode.
+
+
+  Syntax Comparison
+
+
+        PREFIX                  POSTFIX                 MASM
+
+        AAA                     AAA                     AAA
+        ADC AX, SI              SI AX ADC               ADC AX,SI
+        ADC DX, 0 [SI]          0 [SI] DX ADC           ADC DX,0[SI]
+        ADC 2 [BX+SI], DI       DI 2 [BX+SI] ADC        ADC 2[BX][SI],DI
+        ADC MEM BX              BX MEM #) ADC           ADC MEM,BX
+        ADC AL, # 5             5 # AL ADC              ADC AL,5
+        AND AX, BX              BX AX AND               AND AX,BX
+        AND CX, MEM             CX MEM #) AND           AND CX,MEM
+        AND DL, # 3             3 # DL AND              AND DL,3
+        CALL NAME               NAME #) CALL            CALL NAME
+        CALL FAR [] NAME        FAR [] NAME #) CALL     ?????
+        CMP DX, BX              BX DX CMP               CMP DX,BX
+        CMP 2 [BP], SI          SI 2 [BP] CMP           CMP [BP+2],SI
+        DEC BP                  BP DEC                  DEC BP
+        DEC MEM                 MEM DEC                 DEC MEM
+        DEC 3 [SI]              3 [SI] DEC              DEC 3[SI]
+        DIV CL                  CL DIV                  DIV CL
+        DIV MEM                 MEM DIV                 DIV MEM
+        IN PORT# WORD           WORD PORT# IN           IN AX,PORT#
+        IN PORT#                PORT# IN                IN AL,PORT#
+        IN AX, DX               DX AX IN                IN AX,DX
+        INC MEM                 BYTE MEM INC            INC MEM BYTE
+        INC MEM WORD            MEM #) INC              INC MEM WORD
+        INT 16                  16 INT                  INT 16
+        JA NAME                 NAME JA                 JA NAME
+        JNBE NAME               NAME #) JNBE            JNBE NAME
+        JMP NAME                NAME #) JMP             JMP
+        LODSW                   AX LODS                 LODS WORD
+        LODSB                   AL LODS                 LODS BYTE
+        LOOP NAME               NAME #) LOOP            LOOP NAME
+        MOV AX, BX              BX AX MOV               MOV AX,BX
+        MOV AH, AL              AL AH MOV               MOV AH,AL
+        MOV BP, 0 [BX]          0 [BX] BP MOV           MOV BP,0[BX]
+        MOV ES: BP, SI          ES: BP SI MOV           MOV ES:BP,SI
+        MOVSW                   AX MOVS                 MOVS WORD
+        POP DX                  DX POP                  POP DX
+        POPF                    POPF                    POPF
+        PUSH SI                 SI PUSH                 PUSH SI
+        REP                     REP                     REP
+        RET                     RET                     RET
+        ROL AX, # 1             AX ROL                  ROL AX,1
+        ROL AX, CL              AX CL ROL               ROL AX,CL
+        SHL AX, # 1             AX SHL                  SHL AX,1
+        XCHG AX, BP             BP AX XCHG              XCHG AX,BP
+        XOR CX, DX              DX, CX XOR              XOR CX,DX
+
+  Word Help documentation
+
+CODE            ( | name --- )
+        Define "name" as a new code definition. Assembly language
+        follows, terminated by END-CODE.
+
+END-CODE        ( --- )
+        Terminates CODE definitions.
+
+INLINE          ( --- )
+        Starts an assembly language sequence in the middle of a : (colon)
+        definition. Assembly code instructions follow until the sequence
+        is terminated by END-INLINE. The sequence of assembly instructions
+        normally includes NEXT, 1PUSH, or 2PUSH just prior to the word
+        END-INLINE.
+
+END-INLINE      ( --- )
+        Terminates a sequence of assembly instructions started with
+        INLINE in the middle of a : (colon) definition. Compilation of
+        the : (colon) definition resumes after END-INLINE is encountered
+
+

@@ -1,0 +1,519 @@
+B-1
+
+
+APPENDIX B:  SAMPLES AND TUTORIALS
+
+
+
+
+F-PC is such a monstrous system that most Forth users would feel lost
+facing it the first time.  To make a new user feel more at home with it
+and help him overcome the initial shock, Tom Zimmer prepared a set of
+tutorial examples illustrating many unique and interesting features in
+F-PC. These examples are collected in the EXAMPLES.ARC file.  You will
+also find many good tutorial materials in the user contributed files.
+However, these user contributed files are more application oriented and
+do assume that you are familiar with the F-PC system.
+
+
+B1.   MEMORY ALLOCATION
+
+
+SALLOC.SEQ contains an example of how to use the memory allocation and
+deallocation words. This example allocates space at F-PC cold start time
+by placing the word MY-INIT into the deferred word chain called
+INITSTUFF.  You do not have to allocate your memory at this time, but it
+will prevent your memory allocation from interfering with the editor's
+usage of memory.  It is fairly easy using allocation and deallocation to
+cause memory to get fragmented to the point where almost any ALLOC will
+fail.
+
+
+hidden clearmem forth           \ make sure the editor is not using memory
+
+16000 constant bytes_needed     \ Size of the array I need in bytes.
+
+0 value myseg                   \ a place to put my base segment pointer.
+
+: alloc-myseg   ( --- )         \ allocate the space I need
+        myseg ?exit             \ don't allocate again if already done
+        bytes_needed paragraph  \ adjust needed to # of paragraphs
+        alloc                   \ allocate the space test for error in alloc
+        8 = abort" Not enough memory forMYSEG"
+        nip                     \ discard largest block available
+        !> myseg ;              \ asign start of array into MYSEG
+
+alloc-myseg                     \ really allocate the space now so we can
+                                \ experiment
+
+: my-init       ( --- )
+                defers initstuff \ inserted into INITSTUFF chain
+                off> myseg
+                alloc-myseg ;
+
+\ ' my-init is init-stuff       \ un-comment this line to cause
+                                \ initialization to be done at cold boot
+
+If you need to deallocate the space that you have allocated, you can use
+DEALLOC to release the space back to DOS.
+
+: release-myseg ( -- )
+        myseg dealloc abort" failed to deallocate MYSEG" ;
+
+The other operation you can perform on an allocated memory segment is to
+resize it to a new size. This is done with SETBLOCK.
+
+: resize-myseg  ( n1 -- )       \ adjust myseg to new size n1 in bytes
+        myseg swap paragraph setblock
+        abort" Failed to resize MYSEG" ;
+
+To put something into the array MYSEG, I might do something like the
+following.
+
+: string-save   ( | <string> -- )       \ accept a <string> to save
+        ?cs: 0 word dup>r               \ moving FROM here
+        myseg 0                         \ TO the beginning of MYSEG
+        r> c@ 1+ CMOVEL ;               \ move the data with CMOVE LONG
+
+And you can then display the text from MYSEG.
+
+: type-string   ( -- )
+        myseg 0                         \ FROM myseg
+        2dup c@L >r                     \ fetch the count
+        ?cs: here                       \ TO here
+        r> 1+ CMOVEL                    \ move data to HERE
+        here count type ;               \ display it
+
+
+B2.   USER BOOT PROCESS
+
+
+SBOOT.SEQ contains an example of how to make F-PC perform your own
+function in place of starting F-PC and just running Forth.  Before
+describing how to modify F-PC, let us first look at the things F-PC does
+at BOOT time so you can have a better understanding of the startup
+process.
+
+At BOOT time F-PC proceeds through the following sequence:
+
+: COLD
+{deferred}      SETSEG
+                        Setup Segments
+                        Verify DOS > 2
+                        Adjust memory allocation
+                        Seg cursor position
+{deferred}      VMODE.SET
+                        test Video mode
+                        Adjust display attributes
+{deferred}      >COLOR
+                        or
+{deferred}      >MONO
+                        Set the Video segment
+{deferred}      INITSTUFF
+\ Various initializations, performed in a chain through this
+\ Deferred word. Things like:
+                        MACROS
+                        EDITOR
+                        SAVE SCREEN
+                        READ BUFFER SIZE
+                        FILE SYSTEM
+                        DIRECTORY BUFFER etc.
+{deferred}      BOOT
+                        HELLO
+                        Initialize TIB
+                        Initialize VOCABULARY to FORTH
+{deferred}      DEFAULT
+                        HDEFAULT
+                        Move command line to TIB
+                        OPEN a file if available
+{deferred}      .HELLO
+                        Display signon message
+{deferred}      .CURFILE
+                        Display current file
+{deferred}      INTERPRET
+                        Process command line
+                QUIT ;
+
+As you can see from the above sequence, there are several places you can
+modify what F-PC does at boot time. A substantial portion of the above
+process must be done, and so we want to be careful to tie in at the right
+point.  In general eveything before BOOT must be done for F-PC to operate
+properly. If we tie in at BOOT though we will have to do some additional
+initialization to specifically much of the stuff done by HELLO.  If we
+tie in at DEFAULT, we usually still want the DOS command line to be moved
+to TIB, and probably still want a file to be opened, so my normal choice
+would be to use DEFERS to link into DEFAULT without eliminating the
+function that is already there.  This will then turn DEFAULT into a
+DEFERred chain.  If we want in addition to have our own sign-on message,
+we can replace the functions in .HELLO and/or .CURFILE although a user
+application need not return from the chained DEFAULT, and as such .HELLO
+will never get performed.  Here then without further delay is MYDEFAULT.
+
+: mydefault     ( -- )
+        defers default          \ link into default as additional
+                                \ stuff to be done.
+
+\ Your program stuff goes here. 
+\ *****************************
+
+        cr ." This is my program "
+        cr ." Press a key to terminate "
+        key drop                \ wait for a key before leaving
+        cr
+
+\ This ends your program, so leave. 
+\ *************************
+
+        bye ;                   \ got it so leave
+
+' mydefault is default
+
+FSAVE MYBOOT.EXE                \ Now save the system back to disk with the
+                                \ name MYBOOT.EXE.
+
+
+B3.  F-PC KEYSTROKE MACROS
+
+
+SMACRO.SEQ contains an example of how to use macros in the F-PC editor to
+reduce the keystrokes required to perform a given task.  The first
+example is a real one.  We want to shorten the glossary entries.  A
+typical entry is shown below for +! :
+
++!              ( n1 a1 -- )
+                FORTH           KERNEL1
+        Increment the value at a1 by n1.  This is equivalent
+        to the following:   DUP @ ROT + SWAP ! but
+        much faster.
+
+Since all of the words in the glossary are in the  FORTH  vocabulary, we
+can delete the word FORTH .  Furthermore,  the second line containing the
+source file name can be joint with the first line, and  a little more
+editing can also be done at the same time.  The desired new entry would
+be:
+
++!              ( n1 a1 -- )            KERNEL1
+        Increment the value at a1 by n1.  This is equivalent
+        to the following:   DUP @ ROT + SWAP ! but
+        much faster.
+
+The glossary is a very large file, and the manual editing required to
+correct this would have been prohibitive, so a macro is created to join
+the second line with the first line and remove the Vocabulary from each
+entry when a single MACRO key is pressed.
+
+Here then is the key sequence that will make a macro to join the first
+and second lines of the second type glossary entry and remove the
+vocabulary from the entry.  The macro will then go to the next paragraph
+which starts the next entry.
+
+This macro is always executed when the cursor in on the first line of a
+glossary entry at the leftmost column, and we are in INSERT mode.
+
+        Alt-M           Start a MACRO
+        Alt-1           We are starting the macro for Alt-1
+        INS             Select OVERWRITE mode
+        TAB             Move to first TAB position
+        Ctrl-T          Remove spaces before stack picture
+        TAB             Move to 2nd TAB
+        TAB             Move to 3rd TAB
+        TAB             Move to 4th TAB
+        INS             Go back into INSERT mode
+        DEL             Delete the last char in the line forcing a join line. Cursor is now on
+                        the word FORTH
+        Ctrl-T          Delete the Vocabulary
+        HOME            Move back to beginning of line
+        Alt-G_N         Goto Next paragraph
+        Alt-M           Complete macro
+
+Macros are performed as they are created, so you must be on a glossary
+entry that needs to be modified while you are in the process of making
+the macro.
+
+In the following section I have included several copies of the +!
+glossary entry.  Try making the macro described above while you are on
+the first entry, then press Alt-1 to try the macro on each successive
+entry.
+
+Macros can be saved with Alt-M_S, and loaded again with Alt-M_L.  You can
+view the currently defined macros with Alt-M_V, but they will look very
+funny since they are mostly graphics characters.
+
+
+----------------------  Try some macros here --------------------
+
++!              ( n1 a1 -- )
+                FORTH           KERNEL1
+        Increment the value at a1 by n1.  This is equivalent
+        to the following:   DUP @ ROT + SWAP ! but
+        much faster.
+
++!              ( n1 a1 -- )
+                FORTH           KERNEL1
+        Increment the value at a1 by n1.  This is equivalent
+        to the following:   DUP @ ROT + SWAP ! but
+        much faster.
+
++!              ( n1 a1 -- )
+                FORTH           KERNEL1
+        Increment the value at a1 by n1.  This is equivalent
+        to the following:   DUP @ ROT + SWAP ! but
+        much faster.
+
++!              ( n1 a1 -- )
+                FORTH           KERNEL1
+        Increment the value at a1 by n1.  This is equivalent
+        to the following:   DUP @ ROT + SWAP ! but
+        much faster.
+
++!              ( n1 a1 -- )
+                FORTH           KERNEL1
+        Increment the value at a1 by n1.  This is equivalent
+        to the following:   DUP @ ROT + SWAP ! but
+        much faster.
+
++!              ( n1 a1 -- )
+                FORTH           KERNEL1
+        Increment the value at a1 by n1.  This is equivalent
+        to the following:   DUP @ ROT + SWAP ! but
+        much faster.
+
+HRENAME ( handle1 handle2 -- return-code )
+                FORTH           HANDLES
+        Change the name of the file specified in handle1 to the name
+        specified in handle2. Can be used to move a file from one
+        directory to another on the same drive. Returns 18 if the
+        rename was good, not zero.
+
+HRENAME ( handle1 handle2 -- return-code )
+                FORTH           HANDLES
+        Change the name of the file specified in handle1 to the name
+        specified in handle2. Can be used to move a file from one
+        directory to another on the same drive. Returns 18 if the
+        rename was good, not zero.
+
+As you can see, having performed the macro on one of the last two
+glossary entries for HRENAME, a macro will not always work as you expect.
+If the information being manipulated does not follow the rules, you can
+get quite unexpected results.  Use caution with macro, they can be
+wonderful time savers, but it is difficult to make a macro that will
+always work.
+
+This is only the start for macros.  Experiment with some junk text to see
+what other neat things they can do.  When you leave this file you
+probably DO NOT want to save your changes.
+
+Press  Alt-F10  to leave SED without saving any changes.
+
+cr .( Use LISTING to print this file and then try editing it. )
+
+
+B4.  A SAMPLE MENU FILE
+
+
+SMENU.SEQ is an example of menu usage.  You can make a copy of this file
+and edit it to suit your need.  Deferred routine to handle all keys the
+menu handler doesn't understand.  It can be used to insert any unknown
+key pressed in an editor if you want, or it can just throw the keys away
+as is done here. The character the menu driver didn't understand is on
+the stack when AOTHER is called.
+
+The word AMENU is then called whenever a menu operation is to be
+performed.  In an editing application, use ESC to enable this menu.  To
+do this you look for the user to press the ESC key while typing in text.
+If ESC key is pressed, then execute RMENU rather than inserting the next
+key pressed.
+
+
+only forth also definitions hidden also
+
+\ Install the functions into these deferred words you want performed when
+\ a menu item is selected.
+
+defer item1
+defer item2
+defer item3
+defer item4
+defer item5
+defer item6
+defer item7
+defer item8
+defer item9
+
+0 value amsave                  \ a place to save the previous menu column
+0 value amline                  \ Menu starting line and column on screen
+0 value amcolumn
+
+newmenu menu1$
+        menuline"  A item1            Alt-1 " item1
+        menuline"  B item2            Alt-2 " item2
+        menuline" --------------------------" noop
+        menuline"  C item3                     " item3
+        menuline"  D item4            Alt-4 " item4
+        menuline" --------------------------" noop
+        menuline"  Quit item5           F10 " item5
+endmenu
+
+newmenu menu2$
+        menuline"  E item6            Alt-6 " item6
+        menuline"  F item7            Alt-7 " item7
+        menuline" --------------------------" noop
+        menuline"  G item8               F8 " item8
+        menuline" --------------------------" noop
+        menuline"  H item9               F9 " item9
+endmenu
+
+newmenubar amenubar 
+                +," A menu1 "   \ the menu bar contains only two items
+                +," B menu2 "
+endmenu
+
+create amenulist menu1$ ,       \ and two lists of functions
+                menu2$ ,
+
+\ initialize the default condition of the menu bar
+
+amenubar   =: menubar
+amenulist  =: menulist
+' amline   is mline
+' amcolumn is mcolumn
+' drop     is doother
+
+defer aother            ' drop is aother
+
+: amenu ( -- )                  \ the sample menu driver
+        amsave =: mcol
+        savemenu
+        amenubar     =: menubar
+        amenulist    =: menulist
+        ['] amline   is mline
+        ['] amcolumn is mcolumn
+        ['] aother   is doother
+        menu
+        restmenu
+        mcol =: amsave ;
+
+
+B5.  MY STARTUP MESSAGE
+
+
+SMESSAGE.SEQ contains an example of how to change the sign-on message to
+display a user defined message in place of the default system message.
+
+: myhello       ( -- )
+        ." Hello!"  ;           \ here is the message
+
+' myhello is .hello             \ install new hello function into .HELLO
+
+\ We will also disable the displaying of the current file at boot time
+
+' noop is .curfile
+
+
+B6.   SUBSCREEN SCROLLING
+
+
+SSCROLL.SEQ contains an example of how to make the screen scroll only a
+limited set of lines. The file contains three user words as follows:
+
+        SUB-SET ( n1 -- )       \ set the line where scrolling starts
+        SUB-ON                  \ start sub screen scrolling
+        SUB-OFF                 \ stop sub screen scrolling
+
+Following is the code to implement sub-screen scrolling:
+
+0 value sub-line
+
+: sub-scroll    ( -- )          \ scroll only a portion of the screen
+        #line @ sub-line <
+        if      crlf            \ scroll only a portion
+        else    0 sub-line 1 max rows 1- min at -line
+                0 rows 1- at    \ move to last line of screen
+        then    ;
+
+\ ******************* User words start here *******************
+
+: sub-set       ( n1 -- )       \ set the starting sub screen scroll line
+        1 max 23 min !> sub-line ;
+
+: sub-on        ( -- )          \ Turn on sub screen scrolling
+        ['] sub-scroll is cr ;
+
+: sub-off       ( -- )          \ Turn off sub screen scrolling
+        ['] crlf is cr ;
+
+
+B7.   USAGE OF VALUES
+
+
+SVALUES.SEQ contains an example of how an existing program can be
+modified to use a VALUE word in place of a VARIABLE to enhance program
+readability and performance.  You must be aware that VALUEs are not
+portable.  It will make your programs more difficult to move to another
+Forth system.
+
+Observe the use of the word COUNTER in the following program segments.
+
+\ Program segment using a VARIABLE named COUNTER
+
+create vowels ," aeiouAEIOU"
+variable counter
+
+: vcount        ( | <string> -- )       \ get count of vowels in <string>
+        counter off
+        0 word  drop
+        vowels count bounds
+        ?do             here count
+                begin   i c@ scan dup
+                while   1 counter +!
+                        1 -1 d+
+                repeat  2drop
+        loop
+        cr ." Found "
+        counter @ . ." vowels" ;
+
+\ Program segment using a VALUE named COUNTER
+
+create vowels ," aeiouAEIOU"
+0 value counter
+
+: vvcount       ( | <string> -- )       \ get count of vowels in <string>
+        off> counter
+        0 word drop
+        vowels count bounds
+        ?do      here count
+                begin   i c@ scan dup
+                while   incr> counter
+                        1 -1 d+
+                repeat  2drop
+        loop
+        cr ." Found "
+        counter . ." vowels" ;
+
+
+B8.  POPUP WINDOW
+
+
+SWINDOW.SEQ contains an example on how to make a popup window.  While it
+may seem complicated at first, we are really doing only a few simple
+things.  We save the screen positon, turn off the cursor, and save the
+screen before drawing the box and writing into it. After the user views
+the box and presses a key, we restore the things we saved.  It is
+actually pretty simple.
+
+: popup ( -- )
+        #out @ #line @ 2>r      \ save cursor position for later
+        cursor-off              \ remove cursor from screen
+        savescr                 \ preserve current screen contents
+        15 05 60 09 box&fill    \ DRAW THE BOX on the screen
+                                \ PUT SOME TEXT IN IT
+        ."        This is a sample POPUP window" bcr
+                                \ following line in reverse video
+        >rev ."    Screen attributes can be used as well    "
+        >norm bcr
+        ."  Press a key to restore the previous screen"
+        key drop                \ wait for user to press a key
+        restscr                 \ restore previous screen
+        cursor-on               \ turn cursor back on
+        2r> at ;                \ restore cursor position
+

@@ -1,0 +1,346 @@
+NEWZ.TXT                The NEW Zimmers Editor              02/22/90
+
+  Welcome to the "NEW IMPROVED" Zimmer's editor/environment. The
+NEWZ.ZIP file contains the following files:
+
+        NEWZ.EXE        The Full featured version of Zimmer's editor.
+        NEWZ.CFG        A configuration file for NEWZ.EXE.
+        NEWZ.TXT        This documentation file.
+        ZHELP.TXT       The hypertext help system.
+        HYPER.NDX       The hypertext index file for ZHELP.TXT.
+        SZ.COM          A small version of Zimmers editor (25k).
+        ZZ.COM          An environment manager.
+        ZZ.CFG          A document that sets up ZZ.
+        INDEX.COM       A stand alone version of the index compiler.
+        INDEX.CFG       The configuration file for INDEX.COM
+
+Getting started
+
+  The NEWZ.CFG file needs to be either in the directory where you are
+editing, or in the ROOT directory of the current drive.  NEWZ.CFG is a
+text file that sets the editors options, and tells NEWZ where to find
+its files.  The default contents of NEWZ.CFG specify that NEWZ's files
+are in the directory "\FPC\NEWZ".  You can edit NEWZ.CFG if you have
+installed NEWZ in some other directory.  NEWZ must access NEWZ.CFG,
+HYPER.NDX, and ZHELP.TXT for the online hypertext help system to work.
+
+  Several changes have occured since the last NEWZ release, converting
+NEWZ into an environment for whatever compiler you are using.  You can
+of course still use NEWZ like you did before, as a normal text editor.
+
+What Does It Mean?
+
+  Many of you have probably seen versions of the Turbo Pascal compiler
+over the years. It is a good compiler, but what impressed many people
+was the ability to perform the "EDIT, COMPILE, DEBUG" cycle from within
+the compiler. Turbo Pascal provides an integrated environment for
+program development.  This is an idea that was really pioneered by
+Basic, you can do whatever you need to do without leaving Basic.
+Compilers of course provide their own set of problems when it comes to
+interactivity. They are mostly command line driven, with many options to
+be typed with each command. MAKE utilities automate this to a large
+degree, but still don't shorten the actual development cycle while
+working on an individual module of a program. This is where ZZ and NEWZ
+come in to connect together your the Edit, Compile, Debug and Make
+process into an environment that invokes each major operation with a
+single keystroke.
+
+
+                    ÚÄ ^F1 ÄÄÄ> Edit <current_file>.MSG file
+                    ³
+                    ÃÄ ^F2 ÄÄ-> Execute <current_file>.COM or .EXE
+                    ³
+                    ÃÄ ^F4 ÄÄÄ> Edit ZZ.CFG file
+                    ³
+                    ÃÄ ^F5 ÄÄÄ> Compiler
+                    ³
+        ZZ/NEWZ ÄÄÄÄÅÄ ^F7 ÄÄÄ> Debugger
+                    ³
+                    ÃÄ ^F8 ÄÄÄ> Build "C" HYPER.NDX file
+                    ³
+                    ÃÄ ^F9 ÄÄÄ> Linker
+                    ³
+                    ÀÄ ^F10 ÄÄ> Make
+
+
+
+
+  ZZ consumes only about 12k of you valuble program memory, and retains
+no memory when you leave the environment.
+
+
+  In addition, this version of the NEWZ editor includes features that
+make it very useful when working with multiple source file programs.
+NEWZ can now compile an index file of all symbols in your source files.
+It then provides a hypertext browsing environment where you can easily
+view, change, and explore a multitude of source files with full nest and
+return to where you were. Locating any symbol in a multi-thousand symbol
+index file on an 80286 machine takes less than one second. This version
+of NEWZ supports Forth type symbols, and assembly symbols. Support for
+"C" is also provided by the program CTAGS.EXE. See NEWZ's hypertext help
+under configuration for details of how to setup and build an index file
+of your source files.
+
+Additional Features
+
+  NEWZ includes many features, here is a brief summary:
+
+        1. Work with up to 20 files at one time. (Only one file is in
+        memory but switching between files with a hard disk is very
+        quick, and requires only a single keystroke.)
+
+        2. Pull down menus and pop up dialog boxes are supported for
+        ease of use, along with "POWER" Control and Alt sequences for
+        experienced users.
+
+        3. Hypertext help is provided to ease the learning process.
+
+        4. Searching is supported within a file, and across multiple
+        files, to help find any file that contains a particular
+        character sequence.
+
+        5. You can "Shell" out to DOS to perform any needed commands,
+        and you can easily repeat a particular DOS command with a two
+        key sequence. This allows NEWZ to be your shell when performing
+        repeated compiles.
+
+        6. DOS commands can be typed into documents, and performed with
+        a single keystroke. "Alt-F2"   "<dir;pause>"
+
+        7. Keystroke Macros are provided, to ease those operations that
+        need to be repeated. A repeat function allows a macro to be
+        performed a specified number of times.
+
+        8. A search path is supported, allowing NEWZ to find a file you
+        specify across directory boundries without having to type in the
+        actual path at file open time.
+
+        9. You can set the default file extension to any three
+        characters. The specified extension will be applied to a file
+        when no extension is specified.
+
+        10. Full margin control is provided, with paragraph reformat.
+        Word wrap can be turned on or off, or set to a default value.
+
+        11. Maximum file size is limited by available memory, and will
+        typically be greater than 250k on a 640k machine.
+
+        12. Full Cut/Copy/Paste is supported within and between files.
+
+        13. Line drawing allows documents that will be printed on IBM
+        compatible printers to box sections of text, and use graphic
+        characters and bullets to hilight sections.
+
+        14. Paragraph line sorting is provided to allow simple document
+        databases to be created. Sorting is performed on the current
+        column down to the next blank line.
+
+        15. EGA/VGA high resolution text modes are supported, NEWZ will
+        automatically adjust to whatever screen size your display is set
+        for up to 132 columns by 60 lines.
+
+        16. Search and replace including global replace are provided.
+
+        17. You can create your own hypertext systems for training.
+
+        18. SPEED! NEWZ is very fast, moving around a document, or from
+        one end to the other, is limited by the repeat rate of your
+        keyboard, not NEWZ's redisplay speed. On a 4.7 MHZ 8088 machine,
+        NEWZ can redisplay more than ten full (80x24) screens per
+        second.
+
+        19. Both COLOR and MONOCROME are supported automatically with no
+        installation required for your hardware.
+
+        20. NEWZ automatically reconizes and supports a mouse when a
+        driver is present. The mouse can be used with pulldown menus,
+        cursor positoning, scanning through a document, and text line
+        selection for Cut and Copy operations.
+
+        21. You can specify in the NEWZ.CFG configuration file whether
+        you want backup copies kept of your edits.
+
+        22. ZZ turns NEWZ into a compiler environment/director.
+
+        23. "Alt-O S" toggle between expanding TABs and showing them as
+        a character.
+
+        24. LASERJET and PROPRINT are supported printer drivers now with
+        an option in the NEWZ.CFG file.
+
+        25. TABSIZE n1, and TABX ON|OFF allow setting the tab size in
+        the configuration file, as well as specifying whether tabs
+        should be expanded when editing. The default is EXPAND TABS.
+
+        26. "Ctrl-\" displays the current memory usage in the computer.
+
+        27. Modified F-PC so that all programs (including the Z editor)
+        will now flush themselves to Expanded memory if there is enough
+        available when shelling out to do a DOS command. This frees up
+        all except about 8000 bytes of program space for any other
+        thing you might want to do while shelled to DOS.
+
+        28. New parameters in NEWZ.CFG, "SWAPEMM ON|OFF" to control
+        whether the editor will try to use expanded memory when
+        shelling to DOS, and "SWAPFILE <filename>" that will allow the
+        editor to try to swap itself to a file when shelling out to
+        DOS. The file specified can be on any drive, but will be very
+        slow unless it is on a RAMDRIVE.  SWAPEMM defaults to ON, and
+        SWAPFILE defaults to disabled.
+
+        29. Added the TCOMed version of INDEX to the NEWZ .ZIP file.
+        This allows you to index a bunch of files automatically,
+        without having to startup the NEWZ editor and manually using
+        the build index function in the file menu.
+
+        30. Made the scan files function (Alt-F4) use the default file
+        extension rather than always starting with "*.TXT".
+
+        31. Added "EMBEDED ON|OFF" to the NEWZ.CFG configuration file,
+        to control whether the editor will recognize embeded printer
+        control codes like:  %B %U  %1 %2.  The default is ON.
+        Also added a marker to the upper left corner of the screen,
+        toat will display a 'c' for a file being edited, that has been
+        changed, and a 'u' for a file which has had its changed updated
+        to the disk file .$$$ with Ctrl-U. As always, final changes are
+        not saved to a file unless the file is closed with F10, or a
+        Alt-F1 is performed to rotate to another file.
+
+        32. Fixed a bug where if you did an Alt-W (write to) with more
+        than one file open, then it didn't read the other file in when
+        you dropped back a file.
+
+        33. Fixed the search case conversion, so it really works. You
+        can now do a case insensitive search on things like brackets or
+        braces, and it won't think they are the same character. Also
+        fixed a bug that was causing the search to search from the line
+        count byte rather than the first character in the line.
+
+        34. Added Alt-9 to automatically insert the standard Forth stack
+        picture framework "( -- ) \ ", requested by Jack Irwin.
+
+        35. Added a configuration file parameter to allow controlling
+        how much time will pass without touching the keyboard, before
+        an autosave is performed.  Used in the form "AUTOSAVE 60" where
+        60 is in seconds.  I recommend setting autosave to a fairly
+        small number to assure maximum data integrity.  Under the
+        conditions whrere autosave is set to zero, autosave will happen
+        1 second after you stop pressing keys.
+
+        36. Added a configuration file parameter, to allow controlling
+        whether the editor should save the File Stack on exiting when the
+        /CMD options is being used.  Works in the form "STACK OFF" or
+        "STACK ON" in the configuration file.  Also modified the editor
+        to accept a the filename of the message file after the /CMD
+        option.  If a path is not given for the .MSG file, then the
+        editor will use the path of the source file passed.
+
+        37. 05/17/93 14:51 tjz Added simple split windowing.  When more
+        than one file is open, you can split the screen into two parts
+        with "Alt-S S".  Also appears under the Advanced menu.  The
+        split point defaults to half a screen, but can be adjusted using
+        "Alt-S W" (window adjust).  Automatically switches back to full
+        window when only one file is open.
+
+        38. 10/21/93 18:36 tjz Added block support.  Use the BLOCKFILE
+        ON or OFF command in NEWZ.CFG or use /TEXT or /SCR on the
+        commandline to override the default configuration.  Split screen
+        support probably won't work properly with block files.
+
+        39. 10/29/93 14:15 tjz Added suport to Alt-F4 for multiple file
+        specs in the files to search line. Also added a check to a
+        change in the state of capslock, which will force a re-search if
+        capslock has changed since the last search even if the search
+        string of file specs haven't.  Also various changes to block
+        support for improved operation on block files.
+
+        40. 01/06/94 10:49 tjz Sometime earlier, I fixed a reported bug
+        in the multiple file search mechanism (Alt-F4), that wasn't
+        allowing a return to the proper file item in the file list of a
+        group of found strings.  Reported by Jerry Modrow.
+
+        41. 01/06/94 15:42 tjz Sometime earlier, Added the HILIGHT
+        command to NEWZ.CFG, when followed by a series of wordds, the
+        words will be shown in reverse video on the screen.  Multiple
+        lines of "HILIGHT <word> <word> etc.." can appear in NEWZ.cfg.
+        A maximum of 240 characters of hilight words is allowed in the
+        total of all HILIGHT lists.
+
+        42. 01/07/94 13:51 tjz Added a fifth color, to allow customizing
+        the color of the hilighted words.  Also added HILIGHTOFF to the
+        configuration word set, to allow spcifying a set of words to be
+        hilighted, but to cause hilighting to default to be turned off.
+        You must press Alt-K to toggle on the word hilighting if this word
+        is included in the configuration file.
+
+        43. 01/12/94 16:24 tjz Extended the BLOCKFILE directive to accept
+        either ON, OFF or a number in the range 10 to 254.  This allows
+        editing non CR delimited files with fixed length lines of upto
+        254 characters per line.  the "/BLK" commandline directive will
+        also accept a number following to specify the size of the fixed
+        length lines.
+
+        44. 03/01/94 16:45 tjz Mike Mayo suggested a mouse auto scroll
+        method somewhat different than what is already installed.  He
+        suggests that it would be nice to scroll the screen with the
+        mouse when the mouse is located at the middle of the screen by
+        holding down the SHIFT key, them moving the mouse up or down to
+        scroll up or down, with a speed propotional to the distance away
+        from the middle of the screen.  I have implemented this, and it
+        seems to work well.  Just hold down the shift key before pressing
+        the left mouse button to get into this speed scrolling mode while
+        the mouse is held down.
+
+        45. 03/02/94 17:26 tjz (**ENHANCED BLOCKFILE**)
+        Modified ZINDEX.SEQ to allow specifying "BLOCKFILE columns rows"
+        in the NEWZ.CFG to specify a screen file that is not a standard
+        64x16 screen.
+
+        46. 03/03/94 12:25 tjz Also added support for the mouse to select
+        the active window when in split window mode by just ckicking in
+        the non-active window to make it active.
+
+        47. 03/03/94 12:37 tjz Added the "BROWSE ON" or "BROWSE OFF"
+        option to NEWZ.CFG, to allow defaulting the editor to browse mode
+        instead of edit mode.
+
+        48. 03/09/94 17:21 tjz Found and fixed a bug in the Alt-F4
+        (multiple file search). It would not detect that it had been
+        interrupted when no filew were found, and try to display the same
+        list of files again when none had been found displaying garbage.
+        FIXED.
+
+        49. 03/09/94 17:26 tjz Removed INDEX.* from NEWZ.ZIP, and added
+        HYPER.COM and HYPER.CFG to NEWZ.ZIP.  These are replacements for
+        the old INDEX program, that perform an equivelant function, but
+        also can search indexes, and view perform simple views of file
+        entry sources contained in indexes.
+
+        50. 03/21/94 10:25 tjz Added code to ZSED.SEQ to detect the files
+        with the specific extentions .SCR and .BLK as screen files, and
+        files with the extentions .TXT and .SEQ as normal text files.
+        This over-rides the BLOCKFILE specification in NEWZ.CFG.  You can
+        however still override this by using the /BLK or /TXT commandline
+        directives.
+
+Shareware
+
+  The NEWZ editor is shareware. If you find NEWZ useful in your daily
+work, join other satisfied users and register your copy by sending a
+check for $60.00 to the address below.  Be sure to specify the NEWZ
+editor in your letter, and include a return address.  You will receive
+the latest copy of NEWZ.  If you also want the source for NEWZ, include
+an additional $60.00 ($120.00 total), and specify that in your letter.
+The F-PC Forth development system on which NEWZ is built will be
+included with the latest source for NEWZ.
+
+  Register TODAY by sending your check to the following address.
+
+                                Tom Zimmer
+                                292 Falcato Drive
+                                Milpitas, Ca. 95035
+                                U.S.A.
+
+                                        Home (408) 263-8859
+                                        Work (408) 954-6946
+

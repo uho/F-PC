@@ -1,0 +1,12 @@
+\ DEFAULT       Open file specified from command line.  by Tom Zimmer
+
+DOS-LINE        The address of where the DOS command line resides.
+
+DOS>TIB         ( --- )
+        Move the DOS command line to the Terminal Input Buffer.
+
+HDEFAULT        ( -- )
+        Open a file specified on the comand line at startup.
+
+
+

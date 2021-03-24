@@ -1,0 +1,97 @@
+\ EDITSET.HLP   Set the editor key assignments          by Tom Zimmer
+
+ctlset          ( n1 | function --- )
+        Set a new function into the control key table, as specified
+        by control key n1.
+
+fnset           ( n1 | function --- )
+        Set a new function into the function key table, as specified
+        by function key value n1.
+
+----------------------------------------------------------------------
+
+        Following is a list of functions available, these may be used
+        as you want in modifying the editor.
+
+                Function Descriptions
+
+tscrn           Move to top of screen.
+bscrn           Move to bottom of screen.
+dnln            Move down a line
+upln            Move up   a line
+lchr            Move left  a character
+rchr            Move right a character
+lwrd            Move left  a word
+rwrd            Move right a word
+pdn             Move down one screen full
+pup             Move up   one screen full
+shoml           Move to the beginning of the current line.
+sendl           Move to the end       of the current line.
+shom            Move to the beginning of the file.
+send            Move to the end       of the file.
+
+fdel            Delete current character under cursor
+bdel            Delete character before cursor
+wdel            Delete word forward starting at cursor
+ldel            Delete all of current edit line
+excutx          Delete all marked lines of text, MARK sets start.
+                  Cuts all lines to the file TEMP.SEQ
+                  Prompts for a filename if SHIFT is held down.
+
+shelp           Display the first of two help screens.
+
+pmenux          Enter print menu.
+
+exportx         Copy the portion of the current file starting at the
+                  last MARK, until the cursor line to the file TEMP.SEQ.
+                  Prompts for a filename if Shift is held down.
+importx         Insert the file TEMP.SEQ at the cursor, or allow
+                  selection of a file if Shift is held down.
+sgetl           Get a line from MARK to current cursor position.
+
+stab            Insert spaces up to next tab setting
+sbtab           Move back to previous tab position.
+tabxp           Expand tabs in entire file to spaces.
+
+^cc             Insert the value of any key following this command.
+
+joinln          Join this line and next line.
+spltln          Split current line at cursor into two lines
+
+kerr            Key error, beeps
+
+sloon           Search for name with prompt for text.
+slooa           Search again for same text.
+sloob           Search backwards for last text searched for.
+
+srepn           Replace searched text with prompt for text.
+srepa           Replace again with same text.
+repall          Replace all occurances of found text with replace text,
+                  no prompting.
+
+nln             Return, go down to next line.
+
+sclup           Scroll the screen up,   leaving cursor on same screen line.
+scldn           Scroll the screen down, leaving cursor on same screen line.
+
+lmset           Set left margin to current cursor position.
+lmset           Set the left margin to current cursor position
+tabset          Set the tab increment to multiples of the current column.
+smrk            Set the MARK for copy lines, or export.
+
+updt            Save changes to disk and continue editing
+sesc            Terminate edit and save changes unless Shift is being held
+                  down, then terminate edit without saving changes.
+squt            Terminate the edit, and discard all changes.
+
+itgl            Toggle between insert and overwrite mode
+
+wudel           Undelete the most recent word deleted.
+                  repeatable up to 256 bytes.
+lundel          Undelete the last line deleted, upto 50 lines.
+
+wr->fl          Write all of current file to a new file which will
+                be prompted for.
+
+
+

@@ -1,0 +1,43 @@
+\ TOPEDIT.SEQ   Memory edit.                            By Tom Zimmer
+
+  Memory edit, allows reentering the editor without having to re-read
+the edit file from disk. This results in a much faster turn around time
+for development.  Changes made during an edit will still be saved at
+the end of each edit session.
+
+memfile         ( --- handle )
+        Return the handle address of the current file in editor memory.
+
+?readfile       ( --- )
+        Load the currently open file into the editor if it is not already
+        loaded. Initialize the editor.
+
+cold-edinit     ( --- )
+        Initialize the editor to no file open. Done at cold start time.
+
+<ed>            ( --- )
+        Re-Enter the editor on the current file at the most recent
+        edit line. Reads the file into memory if needed.
+
+ed              ( --- )
+        Enter the editor on the most recent edit line. See also EDITOR
+
+edit            ( n1 --- )
+        Enter the editor on the current file at line n1. See also EDITOR
+
+fix             ( t1 --- )
+        Open the source file for the word t1, and enter the editor
+        on the first line of its definition. See also EDITOR
+
+sed             ( | filename --- )
+        Start the editor on the filename specified, or if no name
+        is specified, then prompt for a file. Will create a file
+        if it does not already exist. See also EDITOR
+
+listing         ( --- )
+        Print a formatted listing of the file currently open.  The
+        printing is done using the editor, so there must be enough
+        memory to load the editor.
+
+
+

@@ -1,0 +1,80 @@
+\ EQUCOLON.HLP          Help file for VALUEs
+
+%@>             ( --- n1 )
+        Fetch BODY field of following definition.
+        ** May NOT be used on the command line **
+
+%!>            ( n1 -- )
+        Primitive used by the following definitions, gets compiled into
+        colon definition, and stores value on the stack into the following
+        defs body field.
+        ** May NOT be used on the command line **
+
+%U@>            ( --- N1 )
+        Fetch the DATA field of a USER definition in USER space.
+        ** May NOT be used on the command line **
+
+%U!>            ( N1 --- )
+        Store into the DATA field of a USER definition in USER space.
+        ** May NOT be used on the command line **
+
+%INCR>          ( --- )
+        Increment the BODY field of the following definition by one.
+        ** May NOT be used on the command line **
+
+%DECR>          ( --- )
+        Decrement the BODY field of the following definition by one.
+        ** May NOT be used on the command line **
+
+%OFF>           ( --- )
+        Clear to zero the BODY field of following definition.
+        ** May NOT be used on the command line **
+
+%ON>            ( --- )
+        Set to -1 the BODY field of following definition.
+        ** May NOT be used on the command line **
+
+?NOUSER         ( a1 --- a1 )
+        Test a1 to verify it is not a USER definition, if it is, abort.
+
+?USER           ( a1 --- a1 f1 )
+        Test a1, is it a user word, return TRUE if it is else FALSE.
+
+@>              ( | <name> --- n1 )
+        Fetch the BODY or USER contents of the following definiton.
+        See also !>
+
+!>              ( n1 | <name> -- )
+        Store into the BODY or USER field of the following definition.
+        Used to assign values into the body of <name>, like VARIABLEs or
+        VALUEs. May be used on the command line. Typical usage is as
+        follows:        34 VALUE MYVAL          \ create a VALUE
+        : CHANGE_MYVAL  ( --- )                 \ define a word to
+                        23 !> MYVAL ;           \ change MYVAL
+
+        The word " =: " is an alias for " !> ".
+
++!>             ( n1 | <name> --- )
+        Increment the BODY or USER field of <name> by n1. See also !>
+        Typically used to modify a VALUE or VARIABLE.
+
+INCR>          ( | <name> -- )
+        Increment the body of <name> by one, used to modify the following
+        VALUE or VARIABLE.
+
+DECR>          ( | <name> -- )
+        Decrement the body of <name> by one, used to modify the following
+        VALUE or VARIABLE.
+
+ON>             <name> ( --- )
+        Turn on the VALUE or VARIABLE <name> following. Somewhat faster
+        than <name> ON.
+
+OFF>            <name> ( --- )
+        Turn off the VALUE or VARIABLE <name> following. Somewhat faster
+        than <name> OFF.
+
+&>              ( t1 --- a1 )
+        Return the BODY address a1 of word t1, a VALUE.
+
+

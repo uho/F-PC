@@ -1,0 +1,366 @@
+APPENDIX C.  FILES IN F-PC 3.5
+
+
+
+C1.   FILES ON THE DISTRIBUTION DISKS
+
+
+DISK 1
+
+
+README           1040   9-21-89   5:47p
+INSTALL  TXT     8110   9-21-89   5:48p
+FLOPPY   TXT     1886   9-21-89   5:48p
+INSTALL  EXE    35824   9-21-89   5:58p
+PKUNZIP  EXE    21440   7-21-89   1:01a
+FPC      ZIP   165775   9-26-89  10:55a
+SAMPLES  ZIP     9269   5-18-89   5:56p
+NEWZ     ZIP    68463   9-26-89  11:02a
+
+
+DISK 2
+
+
+FPCSRC   ZIP   222539   9-26-89  10:55a
+SMITH    ZIP    70683   9-21-89   5:42p
+
+
+DISK 3
+
+
+FPCDOC   ZIP   148038   9-21-89   5:42p
+FPCHLP   ZIP    83794   9-21-89   5:42p
+CURLEY   ZIP    13544   5-18-89   5:53p
+ZIMMER   ZIP    43062   9-26-89  10:55a
+
+
+DISK 4
+
+
+PKZIP    EXE    31342   7-21-89   1:01a
+PKZ101   EXE   131517   7-21-89   1:01a
+
+
+
+
+C2.	ZIPPED FILES ON DISK 1
+
+
+FPC.ZIP
+
+ Length  Method   Size  Ratio   Date    Time   CRC-32  Attr  Name
+ ------  ------   ----- -----   ----    ----   ------  ----  ----
+     27  Stored      27   0%  09-21-89  17:00  dd28043c --w  EXTEND.BAT
+     28  Stored      28   0%  09-21-89  17:00  b33a5d37 --w  EXTENDH.BAT
+     43  Stored      43   0%  09-21-89  17:00  ec0dacca --w  FMETA.BAT
+   1447  Implode    987  32%  09-21-89  17:09  81dcf52f --w  HYPER.NDX
+  31727  Implode  19795  38%  09-26-89  09:40  69614e40 --w  KERNEL.COM
+     28  Stored      28   0%  09-21-89  17:00  862a383e --w  MAKINDEX.BAT
+     71  Shrunk      69   3%  09-21-89  17:00  1fc32623 --w  PFMETA.BAT
+  25040  Implode   8077  68%  09-21-89  16:55  c9d668cc --w  FPCHELP.TXT
+   9596  Implode   4115  58%  09-21-89  16:55  b6c3351c --w  FPCINTRO.TXT
+  45554  Implode  17320  62%  09-26-89  10:54  f17a823a --w  FPCNOTES.TXT
+   8576  Implode   3184  63%  09-21-89  16:55  b3536d81 --w  FPCPREFS.TXT
+   8042  Implode   3070  62%  09-21-89  16:56  240b1ff8 --w  FPCUTILS.TXT
+  24023  Implode   7518  69%  09-21-89  16:56  b37a3d5a --w  FPCWORDS.TXT
+ 152288  Implode  97578  36%  09-26-89  10:52  4b1abe57 --w  F-PC.EXE
+   5599  Implode   2450  57%  09-21-89  16:54  33329cbd --w  F-PCBUGS.TXT
+ ------          ------  ---                                 -------
+ 312089          164289  48%                                      15
+
+SAMPLES.ZIP
+
+ Length  Method   Size  Ratio   Date    Time   CRC-32  Attr  Name
+ ------  ------   ----- -----   ----    ----   ------  ----  ----
+   3008  Implode   1325  56%  12-01-88  15:03  2106d85f --w  SALLOC.SEQ
+    409  Implode    267  35%  11-30-88  14:46  e84a3175 --w  SAMPLES.TXT
+   4001  Implode   1579  61%  12-01-88  10:23  b96f335f --w  SBOOT.SEQ
+   5656  Implode   1868  67%  12-01-88  15:15  bec0e7f0 --w  SMACRO.SEQ
+   3020  Implode   1174  62%  11-30-88  13:32  3cfa1697 --w  SMENU.SEQ
+    498  Implode    361  28%  12-01-88  09:32  13848fcb --w  SMESSAGE.SEQ
+   1195  Implode    489  60%  11-30-88  14:32  89050619 --w  SSCROLL.SEQ
+   1564  Implode    623  61%  12-01-88  13:35  af16ed7f --w  SVALUES.SEQ
+   1295  Implode    689  47%  11-30-88  14:41  d3e1e188 --w  SWINDOW.SEQ
+ ------          ------  ---                                 -------
+  20646            8375  60%                                       9
+
+NEWZ.ZIP
+
+ Length  Method   Size  Ratio   Date    Time   CRC-32  Attr  Name
+ ----    ------   ----- -----   ----    ----   ------  ----  ----
+  94480  Implode  55601  42%  09-26-89  10:39  4c13c987 --w  NEWZ.EXE
+   5358  Implode   2561  53%  08-11-89  17:15  e34c4201 --w  NEWZ.TXT
+    797  Implode    495  38%  09-05-89  22:53  54b25212 --w  NEWZ.CFG
+  29095  Implode   9014  70%  08-17-89  17:10  ff51a18a --w  ZHELP.TXT
+    335  Implode    306   9%  08-15-89  15:48  328548fc --w  HYPER.NDX
+ ------          ------  ---                                 -------
+ 130065           67977  48%                                       5
+
+
+C3.	ZIPPED FILES ON DISK 2
+
+
+FPCSRC.ZIP
+
+ Length  Method   Size  Ratio   Date    Time   CRC-32  Attr  Name
+ ------  ------   ----- -----   ----    ----   ------  ----  ----
+   4006  Implode   1416  65%  09-21-89  16:56  0684268d --w  BEHEAD.SEQ
+   4136  Implode   1494  64%  05-26-89  15:31  aa2e848b --w  BOXTEXT.SEQ
+   1831  Implode    934  49%  09-21-89  16:57  4e3cf808 --w  BRACES.SEQ
+   3592  Implode   1387  62%  07-08-89  21:02  6cf17ac7 --w  BROWSEPR.SEQ
+   1435  Implode    695  52%  06-07-89  09:32  3cbb4f61 --w  BUFSET.SEQ
+    958  Implode    394  59%  09-26-89  09:33  065ed14d --w  CASE.SEQ
+   2111  Implode    898  58%  09-21-89  16:57  19a3fe57 --w  COLOR.SEQ
+   3775  Implode   1389  64%  09-21-89  16:57  a77f4dc7 --w  COLORIZE.SEQ
+   4109  Implode   1172  72%  07-03-89  18:12  20c9ad15 --w  COMMENT.SEQ
+   1985  Implode    975  51%  09-21-89  16:57  18f19402 --w  DBGFIX.SEQ
+  13439  Implode   3696  73%  09-26-89  09:35  dc43f91e --w  DEBUG.SEQ
+  12322  Implode   3622  71%  09-26-89  09:32  af7fa592 --w  DECOM.SEQ
+   1116  Implode    627  44%  07-03-89  18:13  1e4af2b0 --w  DEFAULT.SEQ
+   1404  Implode    685  52%  07-03-89  18:05  92cdac9f --w  DEFERS.SEQ
+   2161  Implode   1015  54%  07-03-89  18:06  53140bc9 --w  DUMP.SEQ
+    991  Implode    505  50%  05-26-89  14:38  f77f15b5 --w  EDITERR.SEQ
+  14306  Implode   4116  72%  08-15-89  09:27  0a451cdc --w  EDITSET.SEQ
+   8013  Implode   2605  68%  08-17-89  14:56  61fc01dd --w  EDITSTUF.SEQ
+   3878  Implode   1152  71%  09-19-88  15:13  6074c162 --w  ENVIRON.SEQ
+   5448  Implode   1233  78%  07-03-89  21:14  54f9e6f2 --w  EQUCOLON.SEQ
+   6562  Implode   2224  67%  02-22-89  17:49  7e46b621 --w  EXEC.SEQ
+   1096  Implode    465  58%  05-26-89  15:19  92c26063 --w  FILSTAT.SEQ
+    176  Shrunk     128  28%  02-10-88  16:01  76400b00 --w  FL.SEQ
+   5864  Implode   1957  67%  09-22-89  09:39  8e586f8a --w  FPATH.SEQ
+   9287  Implode   2494  74%  09-21-89  16:57  9c2d93e4 --w  FWORDS.SEQ
+  10136  Implode   2795  73%  09-21-89  16:57  74fe854a --w  HANDLES.SEQ
+   2121  Implode   1012  53%  09-26-89  09:44  04804a85 --w  HELLO.SEQ
+   1349  Implode    517  62%  07-21-89  15:55  957f4271 --w  HELPLINK.SEQ
+   1812  Implode    647  65%  07-05-89  21:54  04cf9f62 --w  HTYPE.SEQ
+   2062  Implode    750  64%  09-21-89  16:53  e4efba46 --w  HYPER.SEQ
+   4790  Implode   1340  73%  09-07-89  22:23  30a4b8fb --w  IBMCURSR.SEQ
+   2072  Implode    833  60%  04-29-89  20:37  89957ae9 --w  INDEX.SEQ
+  46097  Implode   9931  79%  09-26-89  09:33  2b0bebd8 --w  KERNEL1.SEQ
+  42499  Implode  10885  75%  07-06-89  21:22  e9530208 --w  KERNEL2.SEQ
+  25558  Implode   6751  74%  08-19-89  17:48  61e7f7fe --w  KERNEL3.SEQ
+  21149  Implode   6725  69%  09-21-89  16:57  84e8da90 --w  KERNEL4.SEQ
+    611  Implode    308  50%  10-07-88  17:22  d23386c0 --w  LARGEST.SEQ
+  16757  Implode   4273  75%  07-11-89  22:27  8185c1b9 --w  LEDIT.SEQ
+   4740  Implode   1637  66%  11-26-88  11:34  2ce7ed3f --w  LOADEXE.SEQ
+   9310  Implode   2586  73%  09-21-89  16:58  74e1815d --w  MACROS.SEQ
+  14450  Implode   3643  75%  09-21-89  16:58  2e1fa118 --w  MENUS.SEQ
+  22512  Implode   6533  71%  09-21-89  16:58  b18dc7db --w  META86.SEQ
+   2856  Implode    914  68%  09-07-89  22:24  ffe90052 --w  MONOCROM.SEQ
+   8937  Implode   2634  71%  09-26-89  09:36  fc0c0c11 --w  MOUSE.SEQ
+  15462  Implode   3229  80%  09-26-89  09:37  3f028df3 --w  MOUSEY.SEQ
+   6008  Implode   2390  61%  09-21-89  16:58  5a59910c --w  MULTASK.SEQ
+   1604  Implode    666  59%  11-11-88  11:12  ea6722da --w  NEEDS.SEQ
+   1521  Implode    662  57%  05-24-89  20:04  5ec5d362 --w  NEWFILE.SEQ
+   2708  Implode    832  70%  11-03-88  18:23  a289f790 --w  PARSORT.SEQ
+  33435  Implode   9635  72%  09-26-89  09:39  a8311234 --w  PASM.SEQ
+   1890  Implode    647  66%  07-03-89  17:30  0d8dd5e3 --w  PATHSET.SEQ
+   1858  Implode    767  59%  07-06-89  13:40  d273cdf8 --w  PRINT.SEQ
+  16082  Implode   4754  71%  09-21-89  16:58  0d01c7b8 --w  PRINTING.SEQ
+   1672  Implode    669  60%  07-03-89  17:30  ee5b7600 --w  PROPRINT.SEQ
+   3520  Implode   1044  71%  07-03-89  17:31  11589beb --w  PRTCTRL.SEQ
+   1953  Implode    828  58%  09-21-89  16:58  33558f16 --w  QVIDEO.SEQ
+   3015  Implode   1369  55%  09-21-89  16:58  05feaecb --w  REF.SEQ
+   7042  Implode   2830  60%  07-03-89  18:10  65c5a68b --w  SAVEEXE.SEQ
+   4906  Implode   1156  77%  06-16-89  11:25  be8ec0f1 --w  SAVEREST.SEQ
+   3376  Implode   1156  66%  09-21-89  16:59  948c37c6 --w  SAVESCR.SEQ
+   1701  Implode    732  57%  09-19-88  16:58  dc73c3fe --w  SAVESYS.SEQ
+   1857  Implode    660  65%  09-13-89  20:36  79acf631 --w  SCAN.SEQ
+   1864  Implode    971  48%  07-13-89  09:39  c37e78b1 --w  SEARCH.SEQ
+   1464  Implode    632  57%  07-06-89  17:51  3d1e5f77 --w  SEDAPND.SEQ
+   5138  Implode   1299  75%  07-03-89  17:31  3d3f06ed --w  SEDCASE.SEQ
+   4219  Implode   1638  62%  09-26-89  09:40  0c1c86a9 --w  SEDCHARS.SEQ
+   6403  Implode   1598  76%  04-13-89  15:11  07df687a --w  SEDCODE.SEQ
+   4631  Implode   1544  67%  07-03-89  17:32  81906b6c --w  SEDDRAW.SEQ
+   7671  Implode   2513  68%  08-15-89  09:25  5697b0f1 --w  SEDIT2.SEQ
+  73664  Implode  16921  78%  09-26-89  09:40  d4d6834b --w  SEDITOR.SEQ
+   6639  Implode   1977  71%  07-03-89  17:32  79b867c1 --w  SEDITWP.SEQ
+   2555  Implode    901  65%  07-03-89  17:32  619c2602 --w  SEDJUST.SEQ
+   9035  Implode   2735  70%  07-20-89  16:29  331f13ca --w  SEDMENU.SEQ
+   3715  Implode   1088  71%  07-03-89  17:32  30391ee5 --w  SEDPAGE.SEQ
+   3544  Implode   1209  66%  07-08-89  21:08  82833d29 --w  SEDSHELL.SEQ
+   1824  Implode    669  64%  03-29-89  20:11  36420a8b --w  SEDSORT.SEQ
+  17471  Implode   3762  79%  08-25-89  10:20  357ebf25 --w  SEDWHELP.SEQ
+   3913  Implode    970  76%  05-24-89  17:44  37ac0160 --w  SEDWIND.SEQ
+  18377  Implode   5283  72%  07-05-89  21:10  547cf714 --w  SEQREAD.SEQ
+   2822  Implode    971  66%  04-18-89  19:23  a615c03a --w  SIZES.SEQ
+   2357  Implode    906  62%  07-11-89  22:12  c4540cc8 --w  STATUS.SEQ
+   2645  Implode    917  66%  09-21-89  16:59  1953fc4e --w  TIMER.SEQ
+   2348  Implode    882  63%  07-08-89  20:49  c2788241 --w  TIMESTUF.SEQ
+  10598  Implode   2518  77%  07-21-89  14:42  597b2827 --w  TOPEDIT.SEQ
+   7185  Implode   2504  66%  09-07-89  16:17  51c86f86 --w  UTILS.SEQ
+   3118  Implode   1090  66%  07-05-89  20:55  77b9779d --w  VIDEO.SEQ
+   6861  Implode   1480  79%  07-05-89  22:18  055bf63f --w  VIDEO2.SEQ
+   1699  Implode    740  57%  05-26-89  10:44  ea7ae136 --w  VIEW.SEQ
+   1105  Implode    496  56%  02-29-88  14:06  efeebccd --w  VOCABS.SEQ
+  16613  Implode   4702  72%  09-05-89  22:44  e03f80d3 --w  WFL.SEQ
+   2689  Implode   1081  60%  07-15-89  15:20  b942adc1 --w  WINSTACK.SEQ
+   5802  Implode   1656  72%  07-03-89  18:15  248c7619 --w  WORDS.SEQ
+   4037  Implode   1464  64%  07-11-89  22:24  5f4ffc3f --w  XEXPECT.SEQ
+   1518  Implode    665  57%  09-21-89  16:59  5a6e7e1e --w  SOUND.SEQ
+   3940  Implode   1479  63%  07-10-89  13:14  6bd92d89 --w  PERTYPE.SEQ
+   6172  Implode   1594  75%  06-08-89  09:55  eeca1829 --w  SEDCOPY.SEQ
+   7959  Implode   3105  61%  09-26-89  10:51  bbea9899 --w  F-PC.SEQ
+   8018  Implode   3083  62%  09-21-89  16:59  9adab532 --w  F-PCH.SEQ
+ ------          ------  ---                                 -------
+ 733042          213061  71%                                      98
+
+SMITH.ZIP
+
+ Length  Method   Size  Ratio   Date    Time   CRC-32  Attr  Name
+ ------  ------   ----- -----   ----    ----   ------  ----  ----
+   3195  Implode    951  71%  07-27-88  06:33  5320ccd0 --w  COMPLEX.HLP
+   3138  Implode   1216  62%  11-08-88  11:02  f69e2c2d --w  COMPLEX.SEQ
+   6096  Implode   2325  62%  01-03-87  20:31  b9b49acf --w  DMULDIV.SEQ
+   1967  Implode    444  78%  09-08-88  11:16  748250c6 --w  FPMATH.SEQ
+  23777  Implode   5658  77%  08-06-88  01:29  85d0b8a5 --w  HFLOAT.HLP
+  37391  Implode   8651  77%  01-29-89  15:28  fe639613 --w  HFLOAT.SEQ
+   6813  Implode   2535  63%  05-26-89  23:56  0c9e1b5e --w  SFBUGS.FIX
+   3576  Implode   1778  51%  11-02-88  16:37  da14965e --w  SFLOAT.HLP
+    220  Shrunk     167  25%  05-20-89  16:25  28e37f12 --w  SFLOAT.SEQ
+  15464  Implode   6209  60%  07-16-88  07:05  3727b495 --w  SFLOAT.TXT
+  10786  Implode   2486  77%  11-02-88  16:38  0f0fca4a --w  SFLOAT1.HLP
+  43910  Implode   9856  78%  09-21-89  17:30  16f7b500 --w  SFLOAT1.SEQ
+   6707  Implode   2169  68%  08-02-88  05:54  e0b5e2d7 --w  SFLOAT2.HLP
+  38170  Implode   9058  77%  09-22-88  10:44  30a311c1 --w  SFLOAT2.SEQ
+  16298  Implode   4674  72%  11-02-88  16:34  539b0d18 --w  SFLOAT3.HLP
+  40908  Implode  10238  75%  08-25-89  10:19  2f8ff464 --w  SFLOAT3.SEQ
+    989  Implode    598  40%  06-24-88  11:03  dc199fd1 --w  SMITH.TXT
+ ------          ------  ---                                 -------
+ 259405           69013  74%                                      17
+
+
+C4.	ZIPPED FILES ON DISK 3
+
+
+FPCDOC.ZIP
+
+ Length  Method   Size  Ratio   Date    Time   CRC-32  Attr  Name
+ ------  ------   ----- -----   ----    ----   ------  ----  ----
+     72  Shrunk      69   5%  09-21-89  17:25  c9704c0c --w  APPENDXA.TXT
+  19681  Implode   6575  67%  09-21-89  17:25  21918aba --w  APPENDXB.TXT
+     91  Shrunk      80  13%  12-09-88  15:53  d61693bd --w  APPENDXC.TXT
+    247  Shrunk     204  18%  12-09-88  15:55  8c92ee01 --w  APPENDXD.TXT
+  18077  Implode   6525  64%  09-21-89  17:26  4d25262e --w  CHAPTER0.TXT
+  23750  Implode   9433  61%  09-21-89  17:26  ca476f19 --w  CHAPTER1.TXT
+   6334  Implode   3099  52%  09-21-89  17:26  94509982 --w  CHAPTER2.TXT
+  21721  Implode   8159  63%  09-21-89  17:26  23f3e450 --w  CHAPTER3.TXT
+  33128  Implode  11963  64%  09-21-89  17:26  cb1c6b81 --w  CHAPTER4.TXT
+  18255  Implode   6754  64%  09-21-89  17:27  f492d024 --w  CHAPTER5.TXT
+   8683  Implode   3560  60%  09-21-89  17:27  dfcde81e --w  CHAPTER6.TXT
+  10035  Implode   4397  57%  09-21-89  17:27  06896164 --w  CHAPTER7.TXT
+  23160  Implode   8803  62%  09-21-89  17:27  6d446a48 --w  CHAPTER8.TXT
+  18768  Implode   7016  63%  09-21-89  17:27  6660ce1e --w  CHAPTER9.TXT
+  27197  Implode  11615  58%  09-21-89  17:28  c4642cab --w  CHAPTR10.TXT
+   4289  Implode   2378  45%  09-21-89  17:27  af191799 --w  CHAPTR11.TXT
+   5299  Implode   2206  59%  09-21-89  17:27  272a7835 --w  F-PCADJ.TXT
+ 174405  Implode  53382  70%  09-21-89  17:27  fedecb4d --w  F-PCGLOS.TXT
+ ------          ------  ---                                 -------
+ 413192          146218  65%                                      18
+
+FPCHLP.ZIP
+
+ Length  Method   Size  Ratio   Date    Time   CRC-32  Attr  Name
+ ------  ------   ----- -----   ----    ----   ------  ----  ----
+    973  Implode    533  46%  12-24-87  11:46  49b5d288 --w  BLKTOSEQ.HLP
+   1532  Implode    695  55%  07-05-88  15:26  012ba7c4 --w  BOOKMARK.HLP
+   1322  Implode    604  55%  05-17-89  10:44  4004d0fb --w  CASE.HLP
+   1255  Implode    492  61%  12-21-87  15:49  1235f3f1 --w  COLOR.HLP
+   1680  Implode    692  59%  01-11-88  13:33  edd84d9f --w  COMMENT.HLP
+    948  Implode    589  38%  09-21-89  17:28  3c29f4e8 --w  DBGFIX.HLP
+   4543  Implode   1863  59%  04-03-88  16:26  f247e3af --w  DEBUG.HLP
+   4498  Implode   1936  57%  04-06-89  12:13  488aa8c6 --w  DECOM.HLP
+    327  Implode    230  30%  12-17-87  20:03  786214e8 --w  DEFAULT.HLP
+   1560  Implode    723  54%  06-20-88  17:49  541b40c7 --w  DEFERS.HLP
+   1502  Implode    737  51%  08-11-89  10:01  13eb3587 --w  DUMP.HLP
+   3931  Implode   1526  62%  12-18-87  15:48  fea7827a --w  EDITSET.HLP
+   2335  Implode   1038  56%  08-01-88  17:46  0668edd2 --w  EDITSTUF.HLP
+   2589  Implode    982  63%  07-14-88  14:21  d4217d8e --w  ENVIRON.HLP
+   2948  Implode    905  70%  07-06-89  09:26  0ab69604 --w  EQUCOLON.HLP
+   3237  Implode   1311  60%  01-11-88  13:34  4e4ed109 --w  EXEC.HLP
+    243  Shrunk     188  23%  12-21-87  12:54  da4607b7 --w  FILSTAT.HLP
+   1147  Implode    596  49%  12-21-87  13:05  7d0b77e6 --w  FL.HLP
+   2110  Implode    922  57%  07-05-88  15:32  4e99c9fb --w  FWORDS.HLP
+   6202  Implode   2214  65%  09-21-89  17:28  2a0e65ef --w  HANDLES.HLP
+    623  Implode    371  41%  01-11-88  13:34  4ad5c1d5 --w  HELLO.HLP
+   1373  Implode    635  54%  12-22-87  11:07  296f848a --w  IBMCURSR.HLP
+    630  Implode    416  34%  08-11-88  11:12  d383cfb8 --w  INSTALL.HLP
+  24945  Implode   7206  72%  07-06-89  09:21  3160a798 --w  KERNEL1.HLP
+  22111  Implode   6699  70%  07-06-89  09:24  bcf5adfe --w  KERNEL2.HLP
+  20672  Implode   6600  69%  06-02-89  21:19  85229c70 --w  KERNEL3.HLP
+   8375  Implode   3065  64%  09-21-89  17:28  a9a53af4 --w  KERNEL4.HLP
+   2357  Implode   1118  53%  09-21-89  17:28  64f4fa2f --w  MACROS.HLP
+   1253  Implode    581  54%  01-11-88  13:34  f2d25bb1 --w  MCOMPILE.HLP
+    722  Implode    281  62%  01-11-88  13:34  7698554e --w  MONOCROM.HLP
+   1056  Implode    672  37%  12-19-87  18:21  edb41f2a --w  MULTASK.HLP
+    484  Implode    280  43%  07-19-88  12:35  5650b6df --w  NEEDS.HLP
+   5889  Implode   2033  66%  06-14-88  13:01  b430733e --w  PASM.HLP
+   1508  Implode    700  54%  01-11-88  13:34  f9f269bc --w  PATHSET.HLP
+   7536  Implode   2462  68%  01-11-88  13:35  ba23c991 --w  PRINTING.HLP
+    860  Implode    488  44%  01-11-88  13:35  410f47bc --w  QVIDEO.HLP
+   1389  Implode    767  45%  01-11-88  13:35  032cd103 --w  SAVEEXE.HLP
+   2127  Implode    712  67%  05-10-89  15:34  4170492c --w  SAVEREST.HLP
+    647  Implode    354  46%  12-22-87  15:10  3c6fb01a --w  SAVESCR.HLP
+    952  Implode    529  45%  01-11-88  13:35  e417f29d --w  SAVESYS.HLP
+    291  Shrunk     212  28%  06-21-88  18:06  083e4c98 --w  SEARCH.HLP
+    981  Implode    547  45%  01-11-88  13:35  828738fa --w  SEDCODE.HLP
+  29159  Implode   8644  71%  01-11-88  13:35  3844e07e --w  SEDITOR.HLP
+  12821  Implode   4322  67%  09-21-89  17:28  502800f7 --w  SEQREAD.HLP
+    514  Implode    262  50%  01-11-88  13:35  af8b8803 --w  STATUS.HLP
+   1887  Implode    737  61%  09-21-89  17:28  79f72ced --w  TIMER.HLP
+    661  Implode    348  48%  06-28-88  16:22  254d3519 --w  TIMESTUF.HLP
+   1614  Implode    751  54%  01-17-88  17:10  9d16fb41 --w  TOPEDIT.HLP
+   2561  Implode   1323  49%  12-23-87  16:50  ca00a3a3 --w  UTILS.HLP
+   2304  Implode    973  58%  01-23-88  17:38  2fdd6166 --w  VIDEO.HLP
+   2413  Implode    940  62%  09-21-89  17:29  f5b0f0a3 --w  VIEW.HLP
+   1761  Implode    636  64%  01-11-88  13:35  b231ca2d --w  VOCABS.HLP
+   3837  Implode   1406  64%  01-11-88  12:38  8fd63b2f --w  WFL.HLP
+   1947  Implode    843  57%  10-27-88  14:22  325670bf --w  WORDS.HLP
+   3078  Implode   1179  62%  05-26-89  09:32  b7ee9601 --w  PERTYPE.HLP
+    779  Implode    498  37%  07-06-89  10:15  203cff4d --w  VIDEO2.HLP
+ ------          ------  ---                                 -------
+ 216999           78366  64%                                      56
+
+CURLEY.ZIP
+
+ Length  Method   Size  Ratio   Date    Time   CRC-32  Attr  Name
+ ------  ------   ----- -----   ----    ----   ------  ----  ----
+   1092  Implode    575  48%  10-24-88  10:45  b678ef42 --w  CURLEY.TXT
+  14884  Implode   5489  64%  04-19-89  16:23  319aea74 --w  DIS8086.SEQ
+  16329  Implode   5422  67%  09-20-88  14:01  46064e01 --w  DISASSEM.SEQ
+   4920  Implode   1650  67%  12-11-87  13:53  8d83f89c --w  FDIS.SEQ
+ ------          ------  ---                                 -------
+  37225           13136  65%                                       4
+
+ZIMMER.ZIP
+
+ Length  Method   Size  Ratio   Date    Time   CRC-32  Attr  Name
+ ------  ------   ----- -----   ----    ----   ------  ----  ----
+   3608  Implode   1280  65%  12-06-88  13:34  fe8fa865 --w  AUTOFOR.SEQ
+    527  Implode    362  32%  11-07-88  15:26  b655a0a9 --w  AUTOLOAD.SEQ
+   3359  Implode   1151  66%  12-13-87  17:44  b9e2a593 --w  BLKTOSEQ.SEQ
+   9586  Implode   2662  73%  12-01-88  17:21  2eeb1957 --w  BLOCK.SEQ
+   1683  Implode    725  57%  09-20-88  16:15  0bf63f32 --w  CODEHIGH.SEQ
+    934  Implode    512  46%  12-04-87  12:06  9d262ced --w  COMMAND.SEQ
+   2381  Implode    716  70%  07-21-88  13:41  878731ae --w  CONSTANT.SEQ
+   2231  Implode    999  56%  07-18-88  16:10  666245a8 --w  DOSIO.SEQ
+   1761  Implode    781  56%  09-22-88  16:16  1e15cd9e --w  EVAL.SEQ
+   7354  Implode   2135  71%  06-06-89  10:27  e24ce9a2 --w  EXPANDED.SEQ
+    981  Implode    459  54%  09-19-88  15:14  bc0d9591 --w  FOode   1004  56% Q
+   2722  Implode   1278  54%  07-21-88  09:46  ae29f17e --w  HANOI.SEQ
+   3278  Implode   1182  64%  05-24-88  10:41  6eaaaa95 --w  LOCALS.SEQ
+   8006  Implode   3078  62%  05-22-88  22:13  eb7ebfe9 --w  MONITOR.SEQ
+   1119  Implode    603  47%  09-13-88  17:54  6eda7071 --w  NEWCOM.SEQ
+   5803  Implode   1955  67%  09-01-88  14:03  8ac63891 --w  OBJECT.SEQ
+   1796  Implode    629  65%  09-12-88  17:13  8e6187d7 --w  SCROLL.SEQ
+   1432  Implode    584  60%  09-19-88  16:57  bee91046 --w  SEQTOBLK.SEQ
+  27960  Implode   6741  76%  09-26-89  10:42  2ea07128 --w  SPREAD.SEQ
+   1928  Implode    895  54%  09-19-88  16:57  4843a655 --w  WINDEX.SEQ
+  13457  Implode   4268  69%  09-26-89  10:43  4b071c33 --w  WINDOW.SEQ
+   2661  Implode    920  66%  02-08-88  16:04  e09000f6 --w  WYSE50.SEQ
+   6704  Implode   2689  60%  06-06-89  10:58  ef431df2 --w  ZIMMER.TXT
+   3347  Implode   1326  61%  06-06-89  17:39  61c7d0ce --w  EMMHEADS.SEQ
+   3980  Implode   1580  61%  06-06-89  09:55  97715589 --w  EMMEXMPL.SEQ
+ ------          ------  ---                                 -------
+ 120866           40514  67%                                      26
+

@@ -1,0 +1,11 @@
+SAMPLES.TXT     This archive contains some F-PC example files
+
+  There are examples in this archive to show how some of the more
+interesting features of F-PC are used among them are:
+
+           Feature                File
+        -----------------------------------
+        POPUP windows           SWINDOW.SEQ
+        PULL DOWN menus         SMENU.SEQ
+        Sub screen scrolling    SSCROLL.SEQ
+

@@ -1,0 +1,339 @@
+CHAPTER 3.  HYPERTEXT BROWSER
+
+
+
+
+On-line documentation was originally used by Forth, Inc. to allow its
+users a fast access to the source and documentation of all the compiled
+code.  The command LOCATE and its abbreviation LL (VIEW in F83) looks up
+a word in the dictionary and find the block from which the word is
+compiled and displays the text in this block.  The command "A" alternates
+between the source block and its corresponding shadow block, which
+contains comments and documentation on the compiled word.  This technique
+was also used in F83 to provide access to multiple files of source and
+help texts.
+
+F-PC 2.25 inherited the VIEW mechanism from F83 to display the source
+code.  Instead of combining the source code and shadow documentation in a
+single file, F-PC put the documentation in separated .HLP files.  Hence a
+new word HELP was defined to access the help files.
+
+George Hawkins developed a browsing utility which allows a user to browse
+words freely in the editor.  The user moves the editing cursor over a
+word, with a single key stroke the proper source file is opened and the
+source code of this word is displayed in the editor window.  With this
+capability in the editor, the user can lookup any word in F-PC quickly
+which greatly helps the programming process.
+
+Tom Zimmer was duely impressed with the browser.  He extended the
+browsing mechanism to include not only the source code but also arbitrary
+documentation.  He ended up with a powerful hypertext-like on-line
+documentation system, which is the main attraction of F-PC 3.5.  Tom also
+spent much efforts in building a substantial amount of tutorial and
+documentational materials on the hypertext system to help a new user to
+get acquainted with F-PC.
+
+
+3.1.    LAUNCH THE HYPERTEXT BROWSER
+
+
+The best way to learn F-PC is to use it.  If you have F-PC installed
+according to the procedure outlined in  Chapter 2, change your current
+directory to C:FPC and type "F" to execute the F.EXE your saved.  A
+sign-on screen appears on the screen and F-PC comes to life.
+
+On the top of your screen is a status line.  The two leftmost fields show
+you the number of free bytes in the Code space, and that in the List
+space.  The third item tells you how many items are on the data stack.
+Normally the data stack is empty, and it shows the "Stack Empty" message.
+The fourth item is the drive/directory/filename field.  It shows your
+current directory.  If a file is opened, the file name appears after the
+directory path.  The rightmost field show the current time, which is
+obtained from the DOS clock.
+
+Under the current time is a picture of the vocabulary stack.  The topmost
+item is the current vocabulary to which new definitions are linked.  The
+next is the context vocabulary stack, which shows the vocabulary search
+order.  Most often the current and the top context vocabulary are FORTH,
+and the ROOT vocabulary is at the bottom of the vocabulary stack.
+
+The status line shows you the most vital information about F-PC.  It is
+updated whenever you hit a key on the keyboard.  Keep an eye on it
+occasionally as you work.
+
+The text in the sign-on screen suggests that you use F1 and ESC keys to
+get more information about F-PC.  Pushing F1 launches the browser and
+displays the root screen of the hypertext help system.  A file
+FPCHELP.TXT is opened, the SED text editor is invoked, and you are put in
+the browsing mode to examine the features of F-PC.
+
+Pushing ESC key causes a menu bar to appear under the status line.
+Pushing <return> or <down- arrow> pulls down a menu.  Use the up and down
+keys to select a menu item, followed by <return> to execute the
+selection.  You can create a new file for editing, or open an old file,
+spawn a DOS shell, quit F-PC, or launch the hypertext browser.
+
+Use either method to launch the browser and start experimenting F-PC.
+You are in the browsing mode of the SED editor, looking at the beginning
+of the FPCHELP.TXT file.  The text is enclosed in a double-line border,
+which indicates that you are in the browsing mode.  If you are in the
+editing mode, the border is drawn using single-lines.
+
+A status line is at the top of the display.  This line contains various
+pieces of information about the file being browsed or edited, including
+the word BROWSE at the left hand side. When you are in the editor, the
+word BROWSE will change to INSERT, or OVERWRITE indicating the
+appropriate edit mode.
+
+The bottom line displays the name of the file being viewed, and a couple
+of helpful hints. HELP=F1, and MENU=ESC. F1 will link you into another
+copy of the hypertext help system where you can get help on the various
+editor functions.
+
+You can press F1 now if you want to, and press F10 to come back here.
+
+Pressing the ESC key will cause a menu bar to be displayed. Having
+pressed ESC, you can press the first letter of a menu name, or use the
+keypad arrow keys to move around on the menubar. Pressing Enter while a
+menu item is selected will cause the specified operation to be performed.
+Pressing ESC again while the menubar is visible, will make it go away.
+
+Use Down Arrow or the PgDn key on the keypad to advance through the
+FPCHELP.TXT file, and the Up Arrow or PgUp key to backup toward the
+beginning of a file. Press F10 when you want to unlink to the previous
+browser.
+
+
+3.2.    NAVIGATE F-PC WITH THE BROWSER
+
+
+To browse F-PC is very easy.  You move the cursor around using the arrow
+keys and the PgUp/PgDn keys.  After you position the cursor on a word
+that you are interested, push <return> or F9 key, and the browser will
+try to find more information about that word.  If the word is a Forth
+command, the browser will open the corresponding source file and display
+the source code of this command.  If the word is displayed in reversed
+video, indicating that it contains a link, pressing <return> or F9 will
+lead you to the text linked to this word.  You can also use the TAB key
+to jump from the current cursor location to the next hypertext link.  The
+shift-TAB key moves the cursor to the link immediately above the cursor.
+
+<Return> and F9 keys allow you to search deeper and deeper into the
+hypertext system.  F10 allows you to back out to the last link you
+pointed to.  Keep on pressing F10 will eventually lead you back to the
+root help screen.
+
+F-PC hypertext help system present you with 8 major topics:
+
+        Hypertext               How to use the hypertext system
+        Hyper-System            How to build your own hypertext system.
+        Get-Started             Introduction to F-PC.
+        SED-Help                Editor help and documentation.
+        Forth-Help              Help on Forth words in F-PC.
+        F-PC-Utils              Documentation on F-PC utilities.
+        Preferences             Select options in F-PC.
+        Whats-new               Update and bug-fixes.
+
+Each of these topics starts a tree of tutorial or documentation.  It is a
+very interesting system to explore interactively.  Since F-PC is such a
+huge system and no one can possible remember all the words and the
+command key sequences, this hypertext system makes all these pertinent
+information available at your fingertip.
+
+
+3.3.   A SAMPLE SESSION 
+
+
+Once F-PC has been installed on your computer, you can start it up by
+typing "F-PC <return>" or "F" from the keyboard.  This will display a
+sign-on message about the version number, available memory, etc.  Type
+HELLO will display this sign-on screen any time.
+
+To open a file, type the following:   
+
+        OPEN   BANNER <return>
+
+The file BANNER.SEQ will be opened.  We can load it with: 
+
+        1   LOAD <return>
+
+This prints a nice demo message.  This demo came from the F83X system
+written by Wil Baden.
+
+We can edit the source for BANNER by typing: 
+
+        ED <return>
+
+You will now be in the editor, viewing the first 23 lines of BANNER.SEQ.
+You can page down through the file with the PgDn key on the keypad, and
+back up with the PgUp key.  For now, page down to the bottom of the file
+with PgDn, and there you see the definition of the word DEMO, which
+prints out our demonstration banner.
+
+Now let's create a new file and put a new DEMO definition with your own
+banner message in it. Leave the editor by typing Alt-F10 ESC.  You will
+now be back in Forth without saving any changes you may have accidentally
+made to BANNER.SEQ.
+
+To create the new file, type the following: 
+
+        NEWFILE   MYBANNER <return>
+
+F-PC will start the editor, and try to open the file MYBANNER.  If it is
+present, F-PC will open it. If it is not, then F-PC will automatically
+create a new file called MYBANNER.SEQ and place you in the editor in that
+file, prepared to accept text.
+
+Type in the following definition, using the <return> key to add new lines
+to the file as needed. The arrow keys can be used to move around, but you
+will not be allowed to move below the mass of the reversed colored blank
+characters, as they represent the end of the current file.
+
+        :   MYBANNER      ( --- )
+                        " HELLO"   BANNER
+                        " FROM"   BANNER
+                        " YOURNAME"   BANNER   ;
+
+Note that YOURNAME must be no longer than 11 characters. 
+
+Now that you have typed in or edited the above definition into the file
+MYBANNER.SEQ, leave the editor while saving the text you have entered, by
+pressing F10 ESC.
+
+Let's compile the program.  Type: 
+
+        FLOAD   MYBANNER <return>
+
+The file MYBANNER.SEQ is opened, and loaded.  If you entered the program
+as shown, then all should be well, and Forth should come back with the
+"ok" message.  You could have also compiled the program by typing 1 LOAD
+<return>, since the file was already open.
+
+Now that MYBANNER is compiled, type its name to make it do its stuff: 
+
+        MYBANNER <return>
+
+You should have seen your name scroll up on the screen.  If you didn't,
+try editing the source file and correcting your typing error.
+
+At this point, you can VIEW the source for MYBANNER by typing: 
+  VIEW MYBANNER <return>
+
+F-PC will locate the source for your MYBANNER word, and display the
+source code starting at the line where MYBANNER was started.  A shorter
+word for VIEW called V is provided to save typing.
+
+After all these work, you are ready to quit.  Type:
+
+        BYE <return>
+
+and you will return to DOS, which displays the familiar C> prompt.
+
+
+3.4.    A SHORT TUTORIAL
+
+
+The browser is a great tool to explore F-PC.  You can jump from place to
+place, looking at documentation and code at will.  However, to program in
+F-PC, you need a set of basic tool words which allows you to compile
+words in files, examine the dictionary, and test the code.  As the editor
+will be covered in detail later, we will give you a short tutorial on
+these tool words.  You are assumed to know Forth from other Forth
+textbooks and manuals, and we will not try to teach you Forth.  However,
+Dr. Jack Brown runs an on-line tutorial on the North Coast Forth BBS,
+(604) 434-5886.  The tutorial materials are also available from GEnie,
+(800) 638-9636.  Dr. Brown had agreed to upgrade the tutorial based on
+F-PC 2.25 to 3.5 and will shortly make it available in print.
+
+Following is a list of words that you have to know very well to be able to use F-PC effectively:
+
+ To open an existing file:                      OPEN <filename>
+ To edit a file already open:                   ED
+ To leave the browser:                          F10      or ESC F E
+ To leave the editor and save changes:          F10      or ESC F E
+ To leave the editor and discard changes:       Alt-F10  or ESC F Q
+ To create and edit a new file:                 NEWFILE <newfilename>
+ To load a file:                                FLOAD <filename>
+ To load a file already open:                   OK  or  1 LOAD
+ To view/browse a words source:                 VIEW <word>
+                                                BROWSE <word>
+        Some short cuts to view and browse:     V  <word>  or   B <word>
+ To edit source of a word:                      ED <word>  or   E <word>
+ To see all words containing a string:          WORDS <substring>
+        WORDS can be followed by two substrings:WORDS <substring> <substring>
+ To de-compile a dictionary word to the screen: SEE <word>
+ To find all occurrences of a string in a file: FLOOK <string> <filspec>
+
+
+Some specific examples are given in the following.
+ 
+        WORDS H <return>                \ Display all words in dictionary containing "H".
+
+ --[ FORTH ]--                          \ F-PC displays these words
+         OPEN            $HOPEN         HOPEN
+
+        VIEW  HOPEN <return>            \ Enter the browser displaying the source code for
+                                        \ HOPEN.  Press F10 to leave the browser.
+
+        ED <return>
+
+After performing the above command sequence, ED will enter the editor on
+the source for HOPEN. This is like the browser but you have to be careful
+not to make any changes.  Press Alt- F10 to leave the editor and not
+saving changes.
+
+                FLOAD SWINDOW <return>
+
+If the file SWINDOW is present on your disk, it will be compiled.  You
+can now type "POPUP" to see a sample popup window. You may get an error
+message if the file SWINDOW.SEQ is not present on your disk.
+  OPEN SWINDOW.SEQ ED <return>
+
+This command will open the file SWINDOW, and enter the editor. The
+extension .SEQ is used automatically if no extension is specified.
+  OK <return>
+
+Will compile the currently open file. This is the same as FLOAD but works
+on the most recently edited or viewed file.
+  SEE HEX <return>
+
+ F-PC displays: 
+
+        : HEX           16 BASE ! ;
+
+Allows you to see the source for a colon definition without having the
+source file available on disk.
+
+Here are some additional words you can use to manipulate files.
+
+        <n1>  LOAD                      \ Start loading file at <n1>.
+            LISTING                     \ Print out the current file.
+            NEWFILE <newfile>           \ Create the file <newfile> if it
+                                        \ does not already exist, and edit it.
+            INDEX                       \ Display first line of all .SEQ
+                                        \ files in current directory.
+
+The above examples should be enough to get you at least started in
+exploring F-PC.  If you are the type of person who likes to read
+everything before experimenting, then continue on and you will find out
+how to print the documentation included with F-PC.
+
+There is a considerable amount of documentation provided on disk to
+assist you in discovering F- PC.  Actually it is provided on disk because
+many of you won't have this F-PC Users Manual available to help you get
+started. We of course recommend you get the F-PC Users Manual, it was
+generated on a Macintosh, and laser printed. It is a good reference, with
+a good glossary, and is available from Offete Enterprises for $20.00
+dollars plus postage.
+
+If you insist on making printouts of all of documentation files, here is
+a command to print a text file in the current directory:
+
+        FPRINT <filename.TXT> <return>
+
+Be sure your printer is ready for printing. If you are going to print all
+the documentation, have at least several hundred sheets of paper
+available to complete the job.  The F-PCGLOS.TXT file is too large to
+print from F-PC, use the demo Z editor provided.  Z is on the fourth F-PC
+distribution diskette.
+

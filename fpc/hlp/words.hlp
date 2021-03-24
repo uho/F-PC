@@ -1,0 +1,48 @@
+\ WORDS.HLP     The WORDS definition       Enhancements by Tom Zimmer
+
+VYET   \ DID WE PRINT VOCABULARY YET
+VADDR  \ VOCABULARY NAME ADDRESS
+
+.VYET           ( --- )
+        Print the name of the vocabulary if we have not printed it yet.
+
+INWFLG          Display a subset of words matching flag.
+ALLFLAG         Display all words flag.
+CODEWRDS        Display only CODE words flag.
+TOTALWORDS      Accumulator for the total number of names.
+
+W.NAME          ( NFA --- )
+        Print name of word NFA. Test to see if conditions are correct,
+        like CODE, or ALL, or WITHIN, and print name.
+
+.VOCWORDS       ( A1 --- )
+        Display the words matching, from a vocabulary.
+
+WORDS           ( | <text> <text> -- )
+        Display words that match text. <text> is optional, if ommited
+        then the CONTEXT vocabulary will be displayed.  Two space
+        delimited <text> strings may follow, and only words
+        containing both <text> strings will be printed:
+
+        WORDS > @ <enter>       display all words containing both @
+                                and >.
+
+        WORDS X Y <enter>       display all owrds containing both X
+                                and Y.
+
+        WORDS DUP <enter>       Display all words containing DUP.
+
+        Several specific values for <text> can be included on the
+        command line, as follows:
+
+        WORDS *.*               display all words of all vocs.
+        WORDS CODE.*            display all CODE words.
+        WORDS :.*               display all : definitions.
+        WORDS CONSTANT.*        display all constants.
+        WORDS VARIABLE.*        display all variables.
+        WORDS UVARIABLE.*       display all user variables.
+        WORDS DEFER.*           display all defered words.
+        WORDS UDEFER.*          display all user defered words.
+        WORDS TOTAL.*           display the total count of words only.
+
+

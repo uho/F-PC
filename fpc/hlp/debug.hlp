@@ -1,0 +1,121 @@
+\ DEBUG.HLP     A high level debugger      Enhancements by Tom Zimmer
+
+\ The debugger is designed to let the user single step the
+\ execution of a high level definition.  To invoke the
+\ debugger, type DEBUG XXX where XXX is the name of the
+\ word you wish to trace.  When XXX executes, you will get
+\ a single step trace showing you the word within XXX that
+\ is about to execute, and the contents of the parameter
+\ stack. This debugger works by patching the NEXT routine,
+\ so it is highly machine and implementation dependent.
+
+'DEBUG  Code field for high level trace
+<IP     Lower limit of IP
+IP>     Upper limit of IP
+CNT     How many times thru debug next
+
+UNBUG           ( -- )
+        Remove the debug point currently in place.
+
+DSTK            ( --- a1 )
+        A 100 byte deep stack used for nesting Colon definitions.
+
+SLOWLY          ( --- a1 )
+        Are we slowly stepping through the definition one step
+        at a time.
+
+DCNT            ( --- a1 )
+        The depth of the nesting stack.
+
+SFLG            ( --- a1 )
+        Slow flag ??
+
+'DOCOL          ( --- a1 )
+        Address of DoColon.
+
+'UDEFER         ( --- a1 )
+        Address of DoUser.
+
+'DEFER          ( --- a1 )
+        Address of DoDefer.
+
+D.ID            ( -- )
+        The debugger ID.
+
+(DBG)           ( CFA -- )
+        Sets up a Colon definition for debugging. Sets various
+        parameters.
+
+DSTK0           ( --- )
+        Reset the Colon definition nest stack.
+
+>DS             ( n1 --- )
+        Push value n1 onto the DST stack.
+
+DS>             ( --- n1 )
+        Pop a value off of the DST stack.
+
+>DSTK           ( A1 --- )
+        Conditionally nest into definition a1, if the definition
+        is a Colon def, a User def, or a Defered word.
+
+?DST>           ( A1- F1 )
+        Conditionally un-nest the current definition, and pop up to
+        the previous level.
+
+GET-COMMAND     ( --- c1 )
+        Get a key from the keyboard, and process it. Can allow
+        entry of Forth commands, it the F key is pressed.
+
+TRACE           ( Ip --- )
+        Perform one step through the debugger, get a comment from
+        the user, and process it. May allow entry of Forth commands,
+        Nesting, Un-nesting, Quitting, ect. See DEBUG for further
+        information.
+
+ADEBUG          ( A1 --- )
+        Set the CFA=a1 as the current word to be debugged.
+
+DEBUG           ( | name --- )
+        Look up the word following DEBUG, and make it the next word
+        to be debugged.
+
+         The commands are available while debugging, as follows;
+
+       C-cont          Continuous, scrolls through words as they
+                       are executed, stop by pressing <return>.
+       F-forth         Allow entry of Forth commands, until a <return>
+                       is pressed on an empty command line.
+                       P.S. don't make any typing errors or you will
+                       fall out of the debugger.
+       Q-quit          Quit the debugger, and unpatch the debug word.
+                       Returns to Forth.
+       N-nest          Nest into the current definition the debugger
+                       is sitting on, if it is a ":" definition, else
+                       issue an error message but don't abort.
+       U-unnest        Unnest from the current word being debugged, the
+                       debugger will re-enter when the word finishes
+                       executing, and pops up one level to the word that
+                       called it. You cannot Unnest without Nesting.
+       Z-zip           Zip through definitions, like C-cont, but only
+                       zips through code definitions, still pauses on
+                       ":" definitions.
+       X-source OFF    Turn OFF the display of source text at the top
+                       of the screen. The words SRCOFF and SRCON will
+                       also do this.
+
+#DEBUG          ( n1 | name --- )
+        Set the name as the current word to be debugged, with value
+        n1 as the number of times next should be executed before
+        debugging starts. Yes I know this is obscure, but it can
+        be useful at times.
+
+DEBUG>          ( --- )
+        Set the debugger to start working immediately on the following
+        word when it is encountered in the current colon definition.
+
+DBG             ( | name --- )
+        Start debugging the word following DBG immediately.
+        See also DEBUG.
+
+

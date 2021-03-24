@@ -1,0 +1,528 @@
+CHAPTER 9.   ADVANCED UTILITIES
+
+
+
+
+
+9.1.    REBUILDING THE SYSTEM
+
+
+If you need to change a parameter or function in the F-PC system, you
+will need to re-compile F- PC and/or KERNEL.  This is simply done with
+the provided batch files as follows:
+
+        C> FMETA <enter>        Re-compiles KERNEL.COM
+        C> EXTEND <enter>       Re-extends to create F-PC.EXE
+
+Either of these may be performed from the keyboard while in DOS.  FMETA
+invokes F-PC, loads the meta compiler, and recompiles the kernel.  The
+resulting new kernel is stored back as KERNEL.COM.  Utilities and
+applications are then compiled on the top of KERNEL by EXTEND to generate
+a new F-PC system.
+
+To extend the F-PC system with your application, edit the F-PC.SEQ file
+to include FLOAD instructions to load your application files.  You may
+want to change the name of the EXE file finally saved.  This can be done
+by editing the filename after the SAVE-EXE statement in F- PC.SEQ file.
+
+Meta compilation the the darkest art in Forth.  Do not be fooled by the
+above simple discussions to think that meta compilation can be practiced
+easily.  You have to understand F-PC completely to made modifications in
+the kernel files to rebuild a Forth to your own liking.  Only Tom Zimmer
+is entrusted to make modification to F-PC.  Nevertheless, you have all
+the source code and the tools to roll your own Forth in F-PC.
+
+
+9.2.    TURNKEY SYSTEMS
+
+
+The word TURNKEY and some associated words are included in the file
+SAVESYS.SEQ. TURNKEY is used as follows:
+
+        ' MYAPPL IS DEFAULT TURNKEY MYAPP <enter>
+
+After completing an application compile, the word MYAPPL is defined to be
+performed by the program name MYAPP.COM.  TUNRKEY automatically sets up
+the proper memory management to allocate 64k for your program, but does
+not save the heads.  Minimum initialization is performed.  A file
+specified on the command line will be opened, and you can use BL WORD to
+pick up additional parameters from the command line.  You will of course
+not be able to interpret, since heads are not saved, and your application
+will need to handle all errors and return to DOS when the program
+completes.
+
+Before attempting to build an application, you will need to make a copy
+of F-PC.SEQ, for customization.  Many of the later files in F-PC.SEQ are
+utilities, and will not be needed in your application. Start by writing
+your program and compiling it on F-PC.EXE.  Work in this environment
+until you are sure your program works.  Now insert your program filename
+into the copy of F-PC.SEQ you made, about half way down, and try to
+compile the copy of F-PC.SEQ.  If it compiles then you can move your
+application file lower, until you have determined what utilities are
+needed by your application. Strip out all files above your application
+file, and load the file SAVESYS.SEQ.  Use TURNKEY as previously described
+to make an executable .EXE file.
+
+TURNKEY allow you to customize F-PC to build an independent application,
+which may not allow the user to see the internal of the application.  If
+you are not so protective, a more convenient way to generate an
+application is to use FSAVE, which saves the core image of F-PC after you
+have loaded your application.  F-PC is included inside your application
+and the user have access to the entire system.  This is a useful tool as
+you can make a snapshot of your current system, save it to the disk, and
+have it available the next time you resume your work.  The commands are:
+
+        FSAVE  MYSYSTEM <return>
+
+A file MYSYSTEM.EXE is saved in your current directory which contains
+everything you compiled so far.  Next time when you execute MYSYSTEM
+under DOS, your current system will be loaded and F-PC will be at your
+service.
+
+
+9.3.    MACROS IN F-PC AND SED
+
+
+A file called MACROS.SEQ is provided,.  This file implements keyboard
+macros in Forth at the level of KEY.  These macros can therefore be used
+in the editor also.  The macros are used as follows: (the sequence
+"Alt-M" means hold down the "Alternate" key and press the "M" key.)
+
+        Alt-M           Start defining a macro.
+        Alt-1           We are defining the Alt-1 macro.
+
+Enter any keys you want in the macro, up to 128 keys. 
+
+        Alt-M           Complete the definition of the Alt-1 macro.
+
+Any keys available on the keyboard except Alt-m, and Alt-1 to Alt-5 can
+be included within a macro.  To execute a macro, simply type its key
+name:
+
+        Alt-1           Execute the macro key sequence for the Alt-1 key.
+
+Currently macros may be only 127 characters in length, although this can
+be changed by modifying the constant MAXMAC and recompiling the system.
+See the example in Appendix B-3.
+
+
+9.4.    F-PC PREFERENCES
+
+
+While F-PC may seem like a nebulous glob of stuff, some things about it
+can be adjusted fairly simply.  The install process, for example, allows
+you to tell F-PC where its source file will be located, whether you want
+to have backup copies made of your edited files, and what you want to
+call your installed version of F-PC.  There are however a number of other
+things you might like to adjust to your personal way of doing things.
+Here is a list:
+
+The status line display may be turned on/off.
+
+        STATON          Enable status line display at top of screen.
+        STATOFF         Disable status line display.
+
+The decompile display during debugging may be turned on/off.
+
+        SRCON           Source display enabled during debug.
+        SRCOFF          Source display disabled during debug.
+
+The default file extension for the system and the file specification
+string for the popup window file selector may be changed.
+
+        DEFEXT          Default file extension string.
+        HIDDEN DIRSPEC$ Directory specification for popup window.
+
+The format of date printing can be adjusted to one of the three supported
+formats, or you can add your own.
+
+        M/D/Y           Month/Day/Year (default format)
+        Y-M-D           Year-Month-Day
+        D.M.Y           Day.Month.Year
+
+You can manually turn editor backups on or off without going through the
+install process.
+
+        BACKUPOFF       Disables the editor from making backup files.
+        BACKUPON        Enables the keeping of editor backup files.
+
+F-PC will automatically save any changes you made to a file you are
+editing, if you stop touching the keyboard for 10 minutes.
+
+        AUTOSAVEON      Turn on auto save.
+        AUTOSAVEOFF     Stop auto save.
+        AUTOSAVE-MINUTES  Value of minutes to wait before saving.
+                        Default is 10.
+
+Screen display output can be switched between DOS and Direct Video output
+for all screen text display.
+
+        FAST            Direct video screen write for all displayed text.
+        SLOW            Use DOS for all screen display.
+
+F-PC defaults to automatically entering the editor when an error is
+encountered during a file load. You can control this with the following
+words.
+
+        AUTOEDITON      Automatically enter editor on load error.
+        AUTOEDITOFF     Don't enter editor on load error.
+
+When an error occurs, the base for number conversions will be change back
+to DECIMAL.  This feature can be turn off so that the base is not affect
+by errors.
+
+        DECIMALBASE     Change to DECIMAL after an error.
+        HEXBASE         Change to HEX after an error.
+        NOBASE          Do not change base on error.
+        DEFBASE         A value to restore base.  0 for NOBASE, 10 for
+                        DECIMAL and 16 for HEXBASE.  User can choose his
+                        default base here.
+
+If you are using a CGA (Color Graphics Adapter) type of video display
+board, you will probably want to use BLANKON to reduce the amount of snow
+or sparkle on your screen.  This word causes the screen to be blanked
+while text is being written to the display to reduce this effect. These
+words have no effect on monochrome display adapters. Use BLANKOFF for an
+EGA or VGA adapter.
+
+        BLANKON         Enable screen blanking during text output.
+        BLANKOFF        Disable screen blanking during text output.
+
+Most green or amber monochrome monitors display light characters on a
+dark background.  If you have a color monitor or true white on black
+monitor you may want to reverse foreground and background, giving a page
+white look with dark characters on a white background.  I have found this
+to be more comfortable for my own use.  You might also try the
+BLACK-ON-WHITE mode with an Liquid Crystal or Florescent display.
+
+        WHITE-ON-BLACK          Normal, light chars on dark background.
+        BLACK-ON-WHITE          Invert the screen to dark on light.
+
+With a color monitor, F-PC can display different classes of words in
+different color.  It is a very interesting demonstration to impress
+novice programmers when executing WORDS, SEE, or DBG.  It is probably not
+very useful in normal programming because you cannot see very well words
+in blue and light grey.
+
+        COLORIZEON      Turn on colors in word list.
+        COLORIZOFF      Go back to work
+
+The number of screen F-PC will save on its screen stack if adjustable
+within the range 1 to 14. SVSIZE bytes (~4000) are allocated for each
+screen stacked. F-PC needs SVMAX to be at least three (3) for all of the
+existing utilities to function properly.
+
+SVMAX is a "VALUE" that can be changed with "=:". You will only need to
+do this if you write a program that needs to stack screens more than the
+default number of screen deep.
+
+        5 =: SVMAX      \ increase number of buffers to 5
+        FSAVE F <enter> \ resave the system
+        BYE             \ leave after changing and saving
+        F <enter>       \ now the screen stack is 5 deep.
+
+Your preferences can be edited into the configuration file F-PC.CFG.
+This file is executed by F- PC immediately after it is loaded into
+memory.  Only a few of the preferences were included into the
+configuration file during the installation/configuration process, and
+most preferences were set to default choices.  In the hypertext root
+screen, a link item 'Preferences' is available for you to see all the
+possible choices on-line.
+
+
+9.5.    TASK CHAINING
+
+
+Tom Zimmer developed a very powerful technique by which more functions
+can be added to a word as the needs grow.  He called it background task
+chaining.  The idea is to use a DEFERred word as a basis.  Some time
+later this deferred word is resolved to do one task.  We can add some
+more tasks to this word by defining a new word and compiling the contents
+of the deferred word into the new word with other functions.  The
+deferred word is then re-vectored to the new definition.  When the
+deferred word is executed, new functions are added to the old task.  This
+task chain can thus be extended to your heart's desire.  The words
+involved in task chaining are:
+
+        DEFER  <name>
+
+to define a deferred word whose function can be changed by re-vectoring,
+and
+
+        DEFERS  <name>
+
+an immediate compiler word which compiles the contents of the next
+deferred word in a colon definition.  It allows many functions to be
+added to the deferred word.
+
+
+In F-PC, KEY is a user deferred word.  We have to use DEFERS to extend
+its function. BGSTUFF is a regular deferred word to extend functions like
+the status line display.  BYESTUFF is used to extend the cleaning up task
+before F-PC exits to DOS.  Let's use BGSTUFF as an example:
+
+        DEFER BGSTUFF
+        ' NOOP IS BGSTUFF
+        : (KEY?)
+                DEFERS BGSTUFF
+                { the words to do (KEY?) }
+                ;
+
+        ' (KEY?) IS BGSTUFF             \ BGSTUFF = (KEY?)
+        : TIME
+                DEFERS BGSTUFF
+                #OUT @   #LINE @        \ save cursor position
+                64 0 AT .TIME           \ print time at upper-right corner
+                AT                      \ restore cursor
+                ;
+        ' TIME IS BGSTUFF               \ BGSTUFF = (KEY?) + .TIME
+
+This technique allows you to dynamically change the behavior of a
+deferred word while keeping most of its old functionality.  As the system
+grows, it is easier to add new functions to an existing word than to
+define new words and mess up the existing environment.
+
+
+9.6.    CONTROL STRUCTURE ENHANCEMENTS
+
+
+Bill Muench contributed a modified set of control structures.  The
+changes are very very minor, but result in a significant increase in
+versatility.  The change is effectively to move a 2SWAP from the
+beginning of REPEAT and put it at the end of UNTIL.  Some additional
+words have also been added to take advantage of the increased
+versatility.  The changes have been added to the system, the meta
+compiler, and the assembler.
+
+Some possible combinations of the structures are shown in the following
+cases.  However, the possible combinations are only limited by your
+imagination.
+
+WHILE can be used to exit a DO...LOOP conditionally.  The WHILE structure
+can be nested.
+
+        DO ...
+                WHILE ...
+                        WHILE ...
+        LOOP ...
+                        ELSE UNDO ...   \ drop or use index and limit
+                        THEN ...
+                ELSE UNDO ...           \ drop or use index and limit
+                THEN
+
+A normal BEGIN..WHILE..REPEAT loop behaves like it always did:
+
+        BEGIN ...
+        WHILE ...                       \ normal structure
+        REPEAT
+
+CONTINUE allows a conditional branch back to BEGIN:
+
+        BEGIN ...
+                IF ...
+                CONTINUE ...            \ now branch back to begin
+        UNTIL                           \ otherwise, conditionally branch
+
+
+WHILE can also leave a BEGIN..UNTIL loop conditionally.
+
+        BEGIN ...
+                WHILE ...               \ multiple exit tests
+        UNTIL ...
+                ELSE ...                \ and possibly different action
+                THEN
+
+WHILE can also be nested in a BEGIN..UNTIL loop.
+
+        BEGIN ...
+                WHILE ...               \ multiple exit tests
+                        WHILE ...       \ multiple exit tests
+        UNTIL ...
+                        ELSE ..         \ and possibly different action
+                        THEN ...
+                ELSE ...                \ and possibly different action
+                THEN
+
+AFT..THEN structure can be nested inside BEGIN..WHILE..REPEAT loop.  The
+clause inside AFT..THEN is executed only once in the first looping.
+
+        BEGIN ...
+                AFT ...                 \ executed only once
+                THEN ..                 \ ignored afterwards
+        WHILE ...
+        REPEAT
+
+The FOR...NEXT structure was proposed by Chuck Moore in the cmForth for
+the Novix NC4000 Forth chip.  FOR takes a count from the data stack and
+pushes it onto the return stack.  NEXT decrements the count on the return
+stack.  If the count becomes zero after being decremented, the loop is
+terminated; otherwise, the loop is repeated.
+
+The FOR...NEXT loop can also use WHILE to exit conditionally:
+
+        FOR ...
+                WHILE ...               \ in effect an immediate ?leave
+        NEXT ...
+                ELSE ... R> ( DROP )    \ drop or use the loop index
+                THEN
+
+AFT..THEN structure can also be nested in a FOR..NEXT loop.
+
+        FOR ...
+                AFT ...                 \ this is only executed the first
+                                        \ time through the loop
+                THEN ...                \ this is executed every time
+        NEXT
+
+Another way to exclude the n=0 case and also have the loop execute n
+times, but is longer and slower specifically on a FORTH machine like the
+NC4000 or Harris RTX.
+
+        ( n ) ?DUP IF 1- FOR ... NEXT ... THEN
+
+BREAK allows the construction of a case structure in a colon definition:
+
+        ... IF ... BREAK                \ case like structure
+        ... IF ... BREAK                \ break compiles an exit
+        ... IF ... EXIT THEN            \ same as break
+
+
+9.7.    HEADLESS WORDS
+
+
+This is a neat utility from George T. Hawkins to allow the extraction and
+removal of the unwanted heads in the Forth system and any application you
+may write in F-PC.
+
+Any words to be later beheaded are identified with a "HEADERLESS"
+keyword.  This is followed by the colon definitions or code words
+themselves.  You re-establish standard words (i.e., words with headers)
+with the keyword "HEADERS".
+
+When you have finished your use/referencing of headerless words, you then
+use the keyword: "BEHEAD".  This will completely remove the definition of
+any headerless words from the directory.
+
+Once headerless words are BEHEADed they are lost forever; i.e., their
+code and list space is not lost - but they are unknown so far as the
+dictionary is concerned.  Note that you cannot ever reference a
+HEADERLESS word once it is BEHEADed.  So the logic to using HEADERLESS
+words is as follows:
+
+        ONLY FORTH ALSO EDITOR ALSO HIDDEN \ set up search order as needed
+        HEADERLESS
+        ...                                \ put headerless words here
+        HEADERS
+        ...                                \ put words which reference
+                                           \ the previous group of
+                                           \ headerless words here
+        EDITOR DEFINITIONS                 \ switch to EDITOR vocabulary
+                                           \ but don't change order.
+                \ repeat above sequence of:
+                HEADERLESS              \ Turn off heads in editor vocabulary
+                        ... <words> ...
+                HEADERS                 \ Turn heads back on
+                        ... <words> ...
+        HIDDEN DEFINITIONS              \ switch to HIDDEN vocabulary but don't
+                                        \ change order.
+                \ as desired
+        BEHEAD
+
+Although the use of headerless words can save you head space, their main
+advantage is in the software engineering they provide.  That is, the
+definitions/names are *completely lost* not just stashed away in some
+obscure vocabulary.  (If you attempt to "see" or "debug" headerless words
+through regular words you get a garbage ID.)
+
+In general you should set up your {HEADERLESS/HEADERS}/ BEHEAD
+definitions as described above, but precede it with a single "HWORDS-".
+HWORDS- will cause HEADERLESS, HEADERS, and BEHEAD to be treated as
+noops.  Once you've finished debugging and are ready to go to production,
+then change "HWORDS-" to "HWORDS+".  This will give the HEADERLESS,
+HEADERS, and BEHEAD words their standard meaning.  If you ever need to
+debug the code again, and want to see the names, then change HWORDS+ to
+HWORDS-.
+
+As can be seen in the above example, you should setup your vocabulary
+search order prior to starting a sequence of definitions in which some
+words will be headerless.  After setting the search order, you can still
+select different vocabularies in which you place definitions, but you
+MUST NOT change the search order, that is you MUST NOT use "ONLY" or
+"ALSO".  Also the current vocabulary should not be changed while in
+HEADERLESS mode.
+
+
+9.8.    SAVE AND RESTORE
+
+
+At times one needs to change various global attributes of the Forth
+system while preserving their value to be later restored. An example of
+this might be changing CAPS to ON, while saving its current value to
+restore later.  Here is a typical code segment to save CAPS, turn it on,
+and restore it at later in a definition:
+
+        : DEF1  ( --- )
+                CAPS @ >R CAPS ON               \ Save CAPS and turn ON
+                ...
+                use SEARCH for something ...
+                ...
+                R> CAPS !                               \ restore CAPS
+                ;
+
+While this is an acceptable way to save and restore a variable, it is
+difficult to read, and not particularly efficient in terms of
+performance.  A new mechanism has been introduced which enhances
+readability, and improves performance at the same time.  Here is an
+example of SAVE!> and RESTORE>:
+
+        : DEF1  ( --- )
+                TRUE SAVE!> CAPS                \ save and set CAPS
+                ...
+                use SEARCH for something ...
+                ...
+                RESTORE> CAPS                   \ restore CAPS
+                ;
+
+These words allow a VARIABLE or VALUE to be saved for later, and set to a
+new value for temporary use.  Another word included in the set allows
+saving a VARIABLE or VALUE without changing it, for later restoration:
+
+        : DEF1  ( --- )
+                SAVE> CAPS                      \ save CAPS
+                ...
+                do something that may change CAPS...
+                ...
+                RESTORE> CAPS                   \ restore CAPS
+                ;
+
+The only problem with these words is they cannot be use with user
+variables, as they are fairly dumb and fast.  They simply work with the
+contents of the body of the definition following.
+
+
+9.9     LINE EDITOR
+
+
+F-PC provides a very nice general purpose line editor for use in your
+application programs.  It allows you to request a line of input from the
+user, while allows him to edit the text before pressing <return> to send
+it to the program.  The word to invoke it is LINEEDITOR.  Its usage is as
+follows:
+
+        20  8  MYBUF   22 LINEEDITOR  ( -- f )
+
+In this example, the text buffer will start at column 20 of row 8.
+Editing will be performed on the counted string in MYBUF, and the maximum
+length allowed is 22 characters.  The line editor is terminated by either
+<return> or ESC key.  If the ESC key is pressed than a false boolean flag
+is returned; otherwise, a true flag is returned.  A mouse can be used to
+position the cursor within the edit line.
+
+If the editing is completed with <return>, then the edit string is placed
+back into MYBUF.  If the editing is terminated with ESC, then MYBUF will
+contain the original string unmodified by any edit operations performed
+during the editing session.
+
+During editing, you can use the Right arrow, Left arrow, Home, End, and
+Delete keys to position the cursor to edit the string.
+

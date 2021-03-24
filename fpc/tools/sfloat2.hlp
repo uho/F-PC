@@ -1,0 +1,158 @@
+\ SFLOAT2    Second part of Software Floating-Point Package.
+\
+\               (c) Copyright 1988 by Robert L. Smith
+\                       2300 St Francis Dr.
+\                       Palo Alto, CA 94303
+\                          (415)856-9321
+\
+\       Permission is granted to use this package or its derivatives for
+\       private use.  For permission to use it in programs or packages
+\       sold for profit, please contact the author.
+\
+
+
+FCONSTANT   ( F: r -- )    \ When creating an FCONSTANT         \ FVG Required
+            ( F: -- r )  \ When using a created FCONSTANT.
+        Create a floating point constant.
+
+FVARIABLE   ( -- )      \ At creation time.     \ FVG Required
+            ( -- addr ) \ At run time.
+        Create a floating point variable.
+
+PI          ( F: -- r1 )                \ FVG Optional Transcendental
+        Push a floating point number with a value approximately equal to
+        pi.
+
+FLN2        ( F: -- r1 )
+        Push a floating point number with a value approximately equal to
+        the natural logarthm of 2.
+
+F0.0        ( F: -- r1 )
+        Push a floating point number with a value equal to 0.
+
+F1.0        ( F: -- r1 )
+        Push a floating point number with a value equal to 1.
+
+FLOG10E     ( F: -- r1 )
+        Push a floating point number with a value approximately equal to
+        the logarthm base 10 of e .
+
+F10.0    ( F: -- r1 )
+        Push a floating point number with a value equal to 10.
+
+FINFINITY  ( F: -- r1 )
+        Push the floating point number representing the largest
+        representable number onto the floating point stack.
+
+F1.0+   ( F: r1 -- r2 )
+        Add 1 to the top floating point number.
+
+F@   ( F: -- r ; addr -- )              \ FVG Required
+        Fetch the floating point number at the specified address and push
+        it onto the floating point stack.  Drop the address from the
+        parameter stack.
+
+F!   ( F: r -- ; addr -- )              \ FVG Required
+        Store the floating point number at the top of the floating point
+        stack in the area specified by the address at the top of the
+        parameter stack.  Drop the address from the parameter stack and
+        drop the top element from the floating point stack.
+
+F,   ( F: r -- )
+        Allot space at HERE and store the floating point number.
+        Similiar to  ,  .
+
+1/F     ( F: r1 -- r2 )
+        Take the reciprical of the floating point argument.
+
+FLOAT     ( F: -- r ; dbl -- )          \ FVG Required
+        Convert the double number at the top of the parameter stack to a
+        floating point number which is then pushed onto the floating point
+        stack.  As with all double numbers, the location of the decimal
+        point is effectively ignored.
+
+IFLOAT   ( F: -- r ; n -- )
+        Convert the single number at the top of the parameter stack to a
+        floating point number which is then pushed onto the floating point
+        stack.
+
+DINTABS   ( F: r -- ; -- dbl flag )
+        Take the absolute value of the floating point number at
+        the top of the floating point stack and convert it to its double
+        integer value pushed onto the parameter stack.  The conversion
+        uses truncation, not rounding.  A flag is also pushed onto the
+        parameter stack indicating the success of the conversion.  If the
+        conversion succeeds, and the sign bit of the double number is not
+        set, a zero flag is returned.  If the conversion succeeds but is
+        sufficiently large that the sign bit of the double number is set,
+        the flag has all bits set EXCEPT the sign bit.  If the conversion
+        fails because the exponent is too large, the double number is
+        set to zero, and the flag is the unbiased exponent with the
+        most significant bit set.  Thus, one may use a 0< test on the
+        flag to insure that the conversion was successful.
+
+FIX     ( F: r -- ; -- d )              \ FVG Required
+        Convert a floating point number to the nearest signed double
+        integer equivalent, removing the real number from the floating
+        point stack and leaving the double integer result on the Forth
+        parameter stack.  When the real number lies exactly halfway
+        between two integers, the result is the nearest EVEN number.
+        Underflow gives a zero result.  An error condition results if
+        the resulting number is too large to be represented as an
+        UNSIGNED double number.  If more error control is desired, you
+        may create your own version using DINTABS.
+
+INT    ( F: r -- ; -- d )               \ FVG Required.
+        Convert a signed floating point number to its truncated double
+        integer value.  If the conversion did not succeed, report an error.
+
+TINTA   ( F: r -- ; -- lo mid hi )
+        Convert absolute value of a floating number to triple precision
+        integer.  If the conversion did not succeed, report an error.
+
+FINT   ( F: r1 -- r2 )
+        Replace a floating point number with another floating point number
+        representing the integer part of the first.
+
+RENORM                          \ HIDDEN
+        A code level subroutine to normalize the number in (CX,AX,BX,DX).
+
+F**+N   ( F: r1 -- r2 ; n -- )  \ HIDDEN
+        Raise the floating point number to the integral power specified by
+        the positive value on the top of the parameter stack.
+
+F**N    ( F: r1 -- r2 ; n -- )
+        Raise the floating point number to the integral power specified by
+        the number on top of the parameter stack.
+
+D2**N   ( n -- d )
+        Create a double integer equal to 2 raised to the n-th power.  This
+        is a 1 shifted left by n positions.
+
+
+F/PREM    ( F: r1 r2 -- urrem urquot )
+        Divide r1 by r2 to yield an unnormalized quotient and remainder.
+        If possible, the quotient is an integer, and the remainder is
+        exact.  The results are not rounded.  Used in trigonometric
+        functions.
+
+LOGTAB1   ( -- addr )           \ HIDDEN
+        Table of logarithms for argument > 1
+
+LOGTAB2   ( -- addr )           \ HIDDEN
+        Table of logarithms for argument < 1
+
+FLN+                            \ HIDDEN
+        Label for code routine for logarithm for fractional part treated
+        as if 1.0 <= X < 1.5625.
+
+FLN     ( F: r1 -- r2 )         \ FVG Required
+        Natural logarithm function.   Time: 1260 usec.
+
+FLOG    ( F: r1 -- r2 )         \ FBG Required
+        Logarithm of base 10.
+
+F/LN2   ( F: r -- r/ln2 )
+        Divide the floating point number by the natural logarithm of 2.
+
+

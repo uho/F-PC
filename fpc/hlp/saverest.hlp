@@ -1,0 +1,61 @@
+\ SAVEREST.HLP  Save and restore words for variables or values.
+
+        These words allow you to quickly save the contents of a
+        variable of value on the return stack, and set it to some other
+        value temporarily with SAVE!>.  The previous contents may then
+        be restored with RESTORE>.
+
+        Here is an example, first the old way:
+
+                VARIABLE MYSTUFF
+
+                : DEF   ( --- )
+                        32 MYSTUFF DUP @ >R !
+                        ... Do something with the new MYSTUFF ...
+                        R> MYSTUFF ! ;
+
+        Here is an example of how to use SAVE!> and RESTORE>:
+
+                : DEF   ( --- )
+                        32 SAVE!> MYSTUFF
+                        ... Do something with the new MYSTUFF ...
+                        RESTORE> MYSTUFF ;
+
+%SAVE!>         ( n1 --- )
+        Save the BODY contents of the following definition on the return
+        stack and set its BODY to n1.
+
+%SAVE>          ( --- )
+        Save the BODY contents of the following definition on the return
+        stack.
+
+%RESTORE>       ( --- )
+        Restore the BODY of the following definition from the return stack.
+
+%USAVE!>        ( n1 --- )
+        Save the USER data area for the following definition on the return
+        stack and set it to n1.
+
+%USAVE>         ( --- )
+        Save the USER data area for the following definition on the return
+        stack.
+
+%URESTORE>      ( --- )
+        Restore the USER data area of the following definition from the
+        return stack.
+
+?COMP           ( --- )
+        Abort if we are not in compiling.
+
+SAVE!>          ( n1 | <name> --- )
+        Leaves value in <name> on return stack and sets body of <name> to
+        n1, the equivalent of "VARIABLE-NAME DUP @ >R !".
+
+SAVE>           ( | <name> --- )
+        Saves value in <name> body on the return stack. Equivelant to
+        "VARIABLE-NAME @ >R" but faster
+
+RESTORE>        ( | <name> --- )
+        Restore body of <name> from the return stack. Equivelant to
+        "R> VARIABLE-NAME !" but faster.
+

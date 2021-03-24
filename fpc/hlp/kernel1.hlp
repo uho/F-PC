@@ -1,0 +1,689 @@
+\ KERNEL1.HLP
+
+        The first 8 bytes in the system are vectors to the Cold and
+        Warm start entries.  You can freely jump to them in code
+        anytime. The DPUSH and HPUSH labels are space savers.  We
+        jump to them in several CODE words when we want to push their
+        contents on the Parameter Stack. >NEXT is where all the
+        action is.  It is the guts of the Forth Virtual Machine. It
+        must advance the interpretive pointer held in the IP
+        register pair and jump indirect to what it points to.
+
+        We define a few macros here to make our life a little easier
+        later.  Using NEXT as a macro allows us to put it inline
+        later.
+
+INLINE_NEXT     ( -- flag )
+        Returns a true flag if we are generating NEXT as an in-line
+        macro in code definitions.
+
+?.INLINE        ( -- )
+        Prints the state of INLINE_NEXT
+
+]]      ( -- )          IN-META vocabulary
+        A simple redefinition of  ]  in the IN-META vocabulary.
+
+[[      ( -- )          IN-META vocabulary
+        A redefinition of  [  within the IN-META vocabulary.
+
+ORIGIN
+        Label of a code level instruction to JMP to the Cold-Start
+        location.  It is followed by a JMP to the Warm-Start location.
+
+DPUSH
+        Label of a code sequence which pushes the DX register, then
+        pushes the AX register, followed by NEXT .
+
+>NEXT
+        Label of the NEXT sequence.  This is the location we jump to
+        when we are NOT using in-line NEXT.
+
+XSEQ    ( -- addr )
+        A variable which holds the value of the base of List space.
+
+YSEG    ( -- addr )
+        A variable which holds the base of Head space.
+
+ABNORM
+        Label of a code level routine used after a control-break
+        sequence to restore >NEXT and then jump to a warm-start.
+
+BIOSBK
+        A label to go to upon an interrupt at the BIOS level when a
+        control-break key is encountered.
+
+DOSBK
+        A label to go to upon an interrupt at the DOS level when a
+        control-break key is encountered.
+
+RP      Used to hold the depth of the return stack
+
+NEST    The runtime code for :  It pushs the current IP onto the
+        return stack and sets the IP to point to the parameter field
+        of the word being executed.
+
+EXIT            ( --- )
+        Pop an entry off the return stack and place it into the
+        Interpretive Pointer.  Terminates a Hi Level definition.
+
+?EXIT           ( f1 --- )
+        If boolean f1 is true then perform EXIT above else continue
+        executing the current definition.
+
+UNNEST          ( --- )
+        Same as exit.  Compiled by ; to help decompiling.
+
+DODOES
+        The runtime portion of defining words.  First it pushes the
+        IP onto the return stack and then it pushes the BODY address
+        of the word being executed onto the parameter stack.
+
+UP              ( --- a1 )
+        Holds a pointer to the current USER area. ( multitasking )
+
+DOCONSTANT
+        The run time code for CONSTANT.  It takes the contents of
+        the parameter field and pushes it onto the stack.
+
+DOUSER
+        The run time code for USER variables.  Places a pointer to
+        the current version of this variable on the stack. Needed
+        for multitasking.
+
+DOVALUE
+        Same as DOCONSTANT, but is is assumed that the user may change
+        the value.
+
+DOUSER-VARIABLE
+        Basic code routine for user variables.
+
+(LIT)
+        The runtime code for literals.  Pushes the following
+        two bytes onto the parameter stack and moves the IP over
+        them.  It is compiled by the word LITERAL.
+
+DOBEGIN         ( --- )
+DOTHEN          ( --- )
+        These words are really just NOOP's. They are used as place holders
+        for the Forth decompiler. I know they probably slow things down a
+        little bit, but I felt it was important to be able to decompile
+        back to source as much as possible.
+
+DOAGAIN
+DOREPEAT  A special version of BRANCH that is used to mark a return point
+        for the decompiler.
+
+?WHILE
+?UNTIL          ( f1 --- )
+        A special version of ?BRANCH that is used to mark a return point
+        for the decompiler.
+
+BRANCH          ( --- )
+        Performs an unconditional branch.  Notice that we
+        are using absolute addresses insead of relative ones. (fast)
+
+?BRANCH         ( f1 --- )
+        Performs a conditional branch.  If the top of the
+        parameter stack in True, take the branch.  If not, skip
+        over the branch address which is inline.
+
+LOOP-EXIT   is a common routine used by (LOOP) and (+LOOP)
+        It is called when the loop has terminated and is exited
+        normally.
+
+UNDO            ( --- )
+        Cleans up the return stack so we can EXIT from the current loop
+        without crashing, as in DO and "UN"DO.
+
+(LOOP)          ( --- )
+        the runtime procedure for LOOP.  Branches back to
+        the beginning of the loop if there are more iterations to
+        do.  Otherwise it exits.  The loop counter is incremented.
+
+(+LOOP)         ( n1 --- )
+        Increment the loop counter by the value on the stack and
+        decide whether or not to loop again.  Due to the wierdness
+        of the 8080, you have to stand on your head to determine the
+        conditions under which you loop or exit.
+
+(DO)            ( n1 n2 --- )
+        The runtime code compiled by DO. Pushes the inline address
+        onto the return stack along with values needed by (LOOP).
+
+(?DO)           ( n1 n2 --- )
+        The runtime code compiled by ?DO.  The difference between
+        ?DO and DO is that ?DO will not perform any iterations if
+        the initial index is equal to the final index.
+
+(OF)            ( n1 n2 -- n1 )  ( or )  ( n1 n1 -- )
+        The run-time code compiled of OF .  If the top two stack
+        elements are the same, the two items will be dropped from the
+        stack and the code following OF will be executed.  Otherwise,
+        only the top item is dropped from the stack, and a branch is
+        taken from the literal following the in-line (OF) .
+
+BOUNDS          ( a1 n1 --- a2 a3 )
+        Given address a1 and length n1, return a2 and a3 the boundary
+        addresses for DO ... LOOP.
+
+>NEXT           ( --- a1 )
+        The address of the inner interpreter.
+
+>NEST           ( --- a1 )
+        The address of the NEST routine.
+
+EXECUTE         ( a1 --- )
+        the word whose code field is on the stack.  Very useful for
+        passing executable routines to procedures!!!
+
+PERFORM         ( a1 --- )
+        The word whose code field is stored at the address pointed to by
+        a1, the number on the stack.  Same as @ EXECUTE
+
+GOTO            ( --   )
+        terminates execution of the current colon def used to avoid return
+        stack loading, and for execution speed by combining exit and next
+        also used by coroutines.
+
+DODEFER  The runtime code for deferred words.  Fetches the
+        code field and executes it.
+
+EXEC:           ( n -- )
+        Execute the n-th word following the word EXEC: in a high level
+        definition. Example:
+
+                : TEST  ( n1 -- )
+                        0 MAX 3 MIN
+                        EXEC: FUNC-0 FUNC-1 FUNC-2 FUNC-3 ;
+
+DOUSER-DEFER    ( <word_dependent> )
+        The runtime code for User deferred words.  These are identical
+        to regular deferred words except that each task has its own
+        version.
+
+GO              ( a1 --- )
+        Execute code at the given address.
+
+NOOP            ( --- )
+        One of the most useful words in Forth.  Does nothing.
+
+PAUSE           ( --- )
+        Used by the Multitasker to switch tasks.
+
+I               ( --- n1 )
+        returns the current loop index.  It now requires a little more
+        calculation to compute it than in FIG Forth but the tradeoff is a
+        much faster (LOOP).  The loop index is stored on the Return Stack.
+
+J               ( --- n1 )
+        returns the loop index of the next to inner loop in nested DO .. LOOPs.
+
+K               ( -- n1 )
+        returns the loop index of the third loop outward in nested DO .. LOOPs.
+
+(LEAVE)         ( --- )
+        Does an immediate exit of a DO ... LOOP structure.  Unlike
+        FIG Forth which waits until the next LOOP is executed.
+
+(?LEAVE)        ( f1 --- )
+        Leaves if the flag on the stack is true.  Continues if not.
+
+LEAVE           ( --- )
+        Jumps immediately to the end of a  DO ... LOOP structure.
+
+@               ( a1 --- n1 )
+        Fetch a 16 bit value from addr.
+
+!               ( n1 a1 --- )
+        Store a 16 bit value at addr.
+
+C@              ( a1 --- b1 )
+        Fetch an 8 bit value from addr.
+
+C!              ( b1 a1 --- )
+        Store an 8 bit value at addr.
+
+
+CMOVE           ( a1 a2 n1 --- )
+        Move a set of bytes from the from address to the to address.
+        The number of bytes to be moved is count.  The bytes are
+        moved from low address to high address, so overlap is
+        possible and in fact sometimes desired.
+
+CMOVE>          ( a1 a2 n1 --- )
+        The same as CMOVE above except that bytes are moved in the
+        opposite direction, ie from high addresses to low addresses.
+
+PLACE           ( from count to --- )
+        Move the characters at from to to with a preceding length
+        byte of len.
+
+SP@             ( --- a1 )
+        Return the address of the top entry on the parameter stack.
+
+SP!             ( a1 --- )
+        ( Warning, this is different from FIG Forth )
+        Sets the parameter stack pointer to the specified value.
+
+RP@             ( --- a1 )
+        Return the address of the next entry on the return stack.
+
+RP!             ( a1 --- )
+        ( Warning, this is different from FIG Forth )
+        Sets the return stack pointer to the specified value.
+
+DROP            ( n1 --- )
+        Throw away the top element of the stack.
+
+DUP             ( n1 --- n1 n1 )
+        Duplicate the top element of the stack.
+
+SWAP            ( n1 n2 --- n2 n1 )
+        Exchange the top two elements on the stack.
+
+OVER            ( n1 n2 --- n1 n2 n1 )
+        Copy the second stack element to the top.
+
+PLUCK           ( n1 n2 n3 --- n1 n2 n3 n1 )
+        Copy the third stack element to the top.
+
+TUCK            ( n1 n2 --- n2 n1 n2 )
+        Tuck the first element under the second one.
+
+NIP             ( n1 n2 --- n2 )
+        Drop the second element from the stack.
+
+ROT             ( n1 n2 n3 --- n2 n3 n1 )
+        Rotate the top three element, bringing the third to the top.
+
+-ROT            ( n1 n2 n3 --- n3 n1 n2 )
+        The inverse of ROT.  Rotates the top element to third place.
+
+FLIP            ( n1 --- n2 )
+        Exhange the hi and low halves of a word.
+
+SPLIT           ( n1 --- n2 n3 )
+        SPLIT the 16 bit value n1 into two stack entries which are the LOW
+        and HIGH bytes of N1. The HIGH byte is on the top of the stack.
+
+JOIN            ( n1 n2 -- n3 )
+        Join bytes into one word. The low byte of n2 becomes the high byte
+        of n3, and the low byte of n1 becomes the low byte of n3.
+
+?DUP            ( n1 --- n1 n1<>0 | n1=0 )
+        Duplicate the top of the stack if it is non-zero.
+
+?DROP           ( n1 false -- false | n1 true -- n1 true )
+        If the top item on the stack is false, then discard n1 and return
+        the false flag else leave the stack unchanged.
+
+R>              ( --- n1 )
+        Pops a value off of the return stack and pushes it onto the
+        parameter stack.  It is dangerous to use this randomly!
+
+R>DROP          ( --- )
+        Pops a value off of the return stack and discards it. It is
+        dangerous to use this randomly!
+
+DUP>R           ( n1 --- n1 )
+        Duplicates the value on the parameter stack and pushes it onto
+        return stack.  It is dangerous to use this randomly!
+
+>R              ( n1 --- )
+        Pops a value off of the parameter stack and pushes it onto
+        return stack.  It is dangerous to use this randomly!
+
+2R>             ( --- n1 n2 )
+        Pops two values off of the return stack and pushes them onto the
+        parameter stack.  It is dangerous to use this randomly!  This word
+        is equivalent to: R> R> SWAP  That is, the order of the operator on
+        the return stack is maintained when they are placed on the
+        parameter stack.
+
+
+2>R             ( n1 n2 --- )
+        Pops two values off of the parameter stack and pushes them onto the
+        return stack.  It is dangerous to use this randomly!  This word
+        is equivalent to: "SWAP >R >R".  That is, the order of the operator
+        on the parameter stack is maintained when they are placed on the
+        return stack.
+
+R@              ( --- n1 )
+        Copies the value on the return stack to the parameter stack.
+
+2R@             ( --- n1 n2 )
+        Copies the two top values from the return stack to the parameter
+        stack. Same as "R> R> 2DUP >R >R SWAP" that is the order of the
+        operator on the return stack is maintained when they are placed
+        on the parameter stack.
+
+PICK            ( n1 --- n2 )
+        Reaches into the stack and grabs an element, copying it
+        to the top of the stack.  For example, if the stack has 1 2 3,
+        then 0 PICK is 3, 1 PICK is 2, and 2 PICK is 1.
+
+RPICK           ( k -- nk )
+        Pick a copy of the k-th item on the return stack and push onto the
+        parameter stack.
+
+AND             ( n1 n2 --- n3 )
+        Returns the bitwise AND of n1 and n2 on the stack.
+
+OR              ( n1 n2 --- n3 )
+        Returns the bitwise OR of n1 and n2 on the stack.
+
+XOR             ( n1 n2 --- n3 )
+        Returns the bitwise Exclusive Or of n1 and n2 on the stack.
+
+NOT             ( n1 --- n2 )
+        Does a ones complement of the top.  Equivalent to -1 XOR.
+
+TRUE
+FALSE           ( --- f1 )
+        Constants for clarity.
+
+CSET            ( n addr -- )
+        Set the contents of addr so that the bits that are 1 in n
+        are also 1 in addr.  Equivalent to DUP C@ ROT OR SWAP C!
+
+CRESET          ( n a1 --- )
+        Set the contents of addr so the the bits that are 1 in n
+        are zero in addr.  Equivalent to DUP C@ ROT NOT AND SWAP C!
+
+CTOGGLE         ( a1 n1 --- )
+        Flip the bits in addr by the value n.  Equivalent to
+        DUP C@ ROT XOR SWAP C!
+
+ON              ( a1 --- )
+        Set the contents of addr to TRUE
+
+OFF             ( a1 --- )
+        Set the contents of addr to FALSE
+
+-1!             ( addr -- )
+        Set the contents of the 16 bit quantity at addr to -1
+        (all bits set).
+
+0!              ( addr -- )
+        Clear all 16 bits at the specified address.
+
+INCR            ( addr -- )
+        Increment the word at the specified address by 1.
+
+DECR            ( addr -- )
+        Decrement the word at the specified address by 1.
+
++               ( n1 n2 --- n3 )
+        Add the top two numbers on the stack and return the result.
+
+NEGATE          ( n1 --- n2 )
+        Turn the number into its negative.  A twos complement op.
+
+-               ( n1 n2 --- n3 )
+        Subtracts n2 from n1 leaving the result on the stack.
+
+ABS             ( n1 --- n2 )
+        Return the absolute value of the 16 bit integer on the stack
+
+D+!             ( d addr -- )
+        Add the double number to the contents of the double word at
+        the specified address.
+
++!              ( n1 a1 --- )
+        Increment the value at addr by n.  This is equivalent to
+        the following:   DUP @ ROT + SWAP ! but much faster.
+
+C+!             ( b1 a1 --- )
+        Increment the byte value at addr by n1. This is equivalent the
+        following: "DUP C@ ROT + SWAP C!" but much faster.
+
+PC@             ( port# -- n1 )
+        Read the 8 bit port# and return value n1.
+
+P@              ( port# -- n1 )
+        Read the 16 bit port# and return value n1.
+
+PC!             ( n1 port# --- )
+        Write the byte n1 to the 8 bit port#.
+
+P!              ( n1 port# --- )
+        Write the value n1 to the 16 bit port#.
+
+PDOS            ( a1 drive# --- f1 )
+        Read the current DOS path of drive# into the array at a1. The
+        string returned will be NULL terminated. F1 returns TRUE if an
+        error occured.
+
+#THREADS        ( -- n )
+        Return the number of threads used in the dictionary.
+
+2*              ( n1 --- n2 )
+        Double the number on the Stack.
+
+2/              ( n1 --- n2 )
+        Shift the number on the stack right one bit.  Equivalent to
+        division by 2 for positive numbers.
+
+U2/             ( n1 --- n2 )
+        16 bit logical right shift.
+
+U16/            ( n1 --- n2 )
+        Four 16 bit logical right shifts. Unsigned divide by 16 decimal.
+
+U8/             ( n1 --- n2 )
+        Three 16 bit logical right shifts.  Unsigned divide by 8.
+
+8*              ( n1 --- n2 )
+        Multiply the top of the stack by 8.
+
+1+              ( n1 --- n2 )
+        Increment the top of the stack by one.
+
+2+              ( n1 --- n2 )
+        Increment the top of the stack by two.
+
+1-              ( n1 --- n2 )
+        Decrement the top of the stack by one.
+
+2-              ( n1 --- n2 )
+        Decrement the top of the stack by two.
+
+UM*             ( un1 un2 -- ud )
+        Return a 32 bit unsigned product of two 16 bit unsigned numbers.
+
+*               ( n1 n2 -- n3 )
+        Returns a product of two numbers.  The numbers may be either
+        signed or unsigned.  The product will be correct as long as it
+        may be properly represented in 16 bits!
+
+U*D     is a synonym for UM*
+
+UM/MOD
+        The unsigned double numerator ud is divided by an unsigned
+        single denominator un to produce an unsigned quotient and
+        unsigned remainder.  The quotient is at the top of the stack.
+
+0=              ( n1 --- f1 )
+        Returns True if top is zero, False otherwise.
+
+0<              ( n1 --- f1 )
+        Returns true if top is negative, ie sign bit is on.
+
+0>              ( n1 --- f1 )
+        Returns true if top is positive.
+
+0<>             ( n1 --- f1 )
+        Returns true if the top is non-zero, False otherwise.
+
+=               ( n1 n2 --- f1 )
+        Returns true if the two elements on the stack are equal,
+        False otherwise.
+
+<>              ( n1 n2 --- f1 )
+        Returns true if the two element are not equal, else false.
+
+?NEGATE         ( n1 n2 --- n3 )
+        Negate the second element if the top is negative.
+
+U<              ( n1 n2 --- f1 )
+        Compare the top two elements on the stack as unsigned
+        integers and return true if the second is less than the
+        first.  Be sure to use U< whenever comparing addresses, or
+        else strange things will happen beyond 32K.
+
+U>              ( n1 n2 --- f1 )
+        Compare the top two elements on the stack as unsigned
+        integers.  True if n1 > n2 unsigned.
+
+<               ( n1 n2 --- f1 )
+        Compare the top two elements on the stack as signed
+        integers and return true if n1 < n2.
+
+>               ( n1 n2 --- f1 )
+        Compare the top two elements on the stack as signed
+        integers and return true if n1 > n2.
+
+UMIN            ( n1 n2 --- n3 )
+        Return the minimum of n1 and n2 , treated as unsigned numbers.
+
+UMAX            ( n1 n2 --- n3 )
+        Return the maximum of n1 and n2 , treated as unsigned numbers.
+
+MIN             ( n1 n2 --- n3 )
+        Return the minimum of n1 and n2
+
+MAX             ( n1 n2 --- n3 )
+        Return the maximum of n1 and n2
+
+WITHIN          ( n lo hi --- f1 )
+        Return true if lo <= n < hi, otherwise false.  Signed comparison.
+
+BETWEEN         ( n lo hi --- f1 )
+        Return true if lo <= n <= hi, otherwise false.  Signed comparison.
+
+2@              ( a1 --- d1 )
+        Fetch a 32 bit value from addr.
+
+2!              ( d1 a1 --- )
+        Store a 32 bit value at addr.
+
+2DROP           ( n1 n2 --- )
+        Drop the top two elements of the data stack.
+
+3DROP           ( n1 n2 n3 --- )
+        Drop the top three elements of the data stack.
+
+2DUP            ( n1 n2 --- n1 n2 n1 n2 )
+        Duplicate the top two elements of the data stack.
+
+3DUP            ( n1 n2 n3 --- n1 n2 n3 n1 n2 n3 )
+        Duplicate the top three elements of the data stack.
+
+2SWAP           ( n1 n2 n3 n4 --- n3 n4 n1 2n )
+        Swap the top two pairs of numbers on the stack.  You can use
+        this operator to swap two 32 bit integers and preserve
+        their meaning as double numbers.
+
+2OVER           ( n1 n2 n3 n4 --- n1 n2 n3 n4 n1 2n )
+        Copy the second pair of numbers over the top pair.  Behaves
+        like 2SWAP for 32 bit integers.
+
+D+              ( d1 d2 --- d3 )
+        Add the two double precision numbers on the stack and
+        return the result as a double precision number.
+
+DNEGATE         ( d1 d2 --- d3 )
+        Same as NEGATE except for double precision numbers.
+
+S>D             ( n1 --- d1 )
+        Take a single precision number and make it double precision
+        by extending the sign bit to the upper half.
+
+DABS            ( d1 --- d2 )
+        Return the absolute value of the 32 bit integer on the stack
+
+D2*             ( d1 --- d2 )
+        32 bit left shift.
+
+
+D2/             ( d1 --- d2 )
+        32 bit arithmetic right shift. Equivalent to divide by 2.
+
+D-              ( d1 d2 --- d3 )
+        Subtract the two double precision numbers.
+
+?DNEGATE        ( d1 n --- d2 )
+        Negate the double number if the top is negative.
+
+D0=             ( d1 --- f1 )
+        Compare the top double number to zero.  True if d = 0
+
+D=              ( d1 d2 --- f1 )
+        Compare the top two double numbers.  True if d1 = d2
+
+DU<             ( d1 d2 --- f1 )
+        Performs unsigned comparison of two double numbers.
+
+D<              ( d1 d2 --- f1 )
+        Compare the top two double numbers.  True if d1 < d2
+
+D>              ( d1 d2 --- f1 )
+        Compare the top two double numbers.  True if d1 > d2
+
+4DUP            ( n1 n2 n3 n4 --- n1 n2 n3 n4 n1 n2 n3 n4 )
+        Duplicate the top four elements of the stack.
+
+DMIN            ( d1 d2 --- d3 )
+        Return the lesser of the top two double numbers.
+
+DMAX            ( d1 d2 --- d3 )
+        Return the greater of the the top two double numbers.
+
+*D              ( n1 n2 --- d1 )
+        multiplies two singles and leaves a double.
+
+M/MOD  divides a double by a single, leaving a single quotient
+        and a single remainder. Division is floored.
+
+MU/MOD  divides a double by a single, leaving a double quotient
+        and a single remainder. Division is floored.
+
+/               ( num den -- quot )
+        Divide two signed single precision numbers and return the
+        floored quotient.  Note that  -5 2 /  returns a value of -3 .
+
+/MOD            ( num den -- rem quot )
+        Divide two signed single precision numbers and return the
+        floored quotient and modulus (remainder).  Note that this
+        function is designed to return a modulus which has the same
+        sign as the denominator (usually positive), independent of
+        the sign of the denominator.
+
+MOD             ( num den -- modulus )
+        Return the modulus of the numerator and denominator, where
+        the quotient is "floored".  This is designed to yield a
+        result having the same sign as the denominator.  Note that
+        if the denominator is positive, the result is positive,
+        regardless of the sign of the numerator.
+
+*/MOD           ( n1 n2 n3 -- mod quot )
+        This returns the floored quotient and modulus of a 32 bit
+        numerator and a 16 bit denominator n3 .  The numerator is
+        an intermediate 32 bit product of the 16 bit quantities
+        n1 and n2 .  Note that the sign of the modulus is the same
+        as the sign of the denominator.
+
+*/      is a particularly useful operator, as it allows you to
+        do accurate arithmetic on fractional quantities.  Think of
+        it as multiplying n1 by the fraction n2/n3.  The intermediate
+        result is kept to full accuracy.  Notice that this is not the
+        same as * followed by /.  See Starting Forth for more examples.
+
+ROLL            ( n1 --- n2 )
+        Similiar to ROCK.  Should be avoided.
+        1 ROLL is SWAP, 2 ROLL is ROT, etc.
+        ROLL can be useful, but it is slow.
+
+2ROT            ( n1 n2 n3 n4 n5 n6 --- n3 n4 n5 n6 n1 n2 )
+        Rotates top three double numbers.
+

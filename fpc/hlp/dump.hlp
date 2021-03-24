@@ -1,0 +1,44 @@
+\ DUMP.HLP      A simple dump utility      Enhancements by Tom Zimmer
+
+\ The dump utility gives you a formatted hex dump with the ascii
+\ text corresponding to the bytes on the right hand side of the
+\ screen.
+
+C@FUNC          ( a1 --- c1 )
+        A defered character fetch function, used by DUMP to fetch
+        the data that will be dumped. May be deferd to YC@ to dump
+        from head space, or a user defined @ to dump from any
+        area of memory desired.
+
+.2              ( n1 -- )
+        Print n1 as two digits followed by a space.
+
+D.2             ( addr len -- )
+        Dump the constants of addr for length len, in two digit
+        pairs.
+
+EMIT.           ( char -- )
+        Emit an ascii character char. If the char is not printable
+        then print a ".".
+
+DLN             ( addr --- )
+        Dump a line, consisting of 16 bytes of hex data followed by
+        16 bytes of ascii data.
+
+.HEAD           ( addr len -- addr' len' )
+        Print the header line for DUMP.
+
+<DUMP>          ( addr len -- )
+        Dump the contants of memory from address addr for length len
+        using the currently defined C@ operator. Can be used to
+        define your own new dump words that dump other areas of memory.
+
+DUMP            ( A1 N1 --- )
+        Dump an area of the Code segment.
+
+YDUMP           ( A1 N1 --- )
+        Dump an area of the HEAD segment.
+
+DU              ( addr -- addr+64 )
+        Dump another 4 lines (64 bytes).
+

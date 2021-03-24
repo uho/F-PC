@@ -1,0 +1,162 @@
+\ FDISASS.SEQ   Floating point disassembler extensions  by Robert L. Smith
+
+NEEDS DISASSEM.SEQ
+
+\ Floating Point disassembler
+HEX   DISASSEMBLER DEFINITIONS
+: NOTYPE ;
+.SELF INTEGER*2     .SELF INTEGER*4      .SELF INTEGER*8
+.SELF REAL*4        .SELF REAL*8         .SELF TEMP_REAL
+.SELF BCD
+
+: FTYPE7    ( op ext -- op ext )
+     DUP 3 2/S 1 AND EXEC:  BCD INTEGER*8 STOP[
+
+.SELF ST      .SELF ST(0)    .SELF ST(1)    .SELF ST(2)
+.SELF ST(3)   .SELF ST(4)    .SELF ST(5)    .SELF ST(6)
+.SELF ST(7)
+
+comment:
+\ Disassembler definitions
+
+NOTYPE       Print nothing for "type."
+             Various self-printing types.
+
+FTYPE7       There are two possibilities for an ESC-7 code type:
+             either BCD or INTEGER*8.
+
+ST(i)        Various self-identifying ST registers
+
+comment;
+\ Print floating point arguments
+
+: .STI   ( ext -- ext )
+     DUP 7 AND EXEC: ST(0) ST(1) ST(2) ST(3) ST(4)
+     ST(5) ST(6) ST(7) STOP[
+
+: FTYPE   ( op ext -- op ext )
+     DUP C0 =  IF   NOTYPE EXIT   THEN
+     OVER 7 AND 2* OVER 20 AND  IF  1+  THEN
+     EXEC: REAL*4    REAL*4    REAL*4    NOTYPE
+          INTEGER*4 INTEGER*4 INTEGER*4 TEMP_REAL
+          REAL*8    REAL*8    REAL*8    NOTYPE
+          INTEGER*2 INTEGER*2 INTEGER*2 FTYPE7  STOP[
+
+comment:
+\ Floating Point Arguments
+
+.STI      Print an ST register, depending on the low order
+          3 bits.
+
+FTYPE     Print the operand types.
+
+comment;
+
+: FST,STI   .STI ST ;
+: FSTI,ST   ST .STI ;
+
+: FSTARGS  ( op ext -- op ext )
+     OVER DE =  IF  DUP 30 AND 10 -  IF FSTI,ST THEN EXIT THEN
+     OVER D9 =  IF  DUP 30 AND 0=  IF .STI  THEN  EXIT  THEN
+     OVER 7 AND EXEC:  FST,STI NOTYPE NOTYPE NOTYPE
+     FSTI,ST .STI NOTYPE NOTYPE STOP[
+
+: FARGS  ( op ext -- op ext )
+     DUP C0 AND C0 =  IF  FSTARGS EXIT  THEN
+     FTYPE OVER 1 AND 0=
+     IF  ST  THEN  .MREG ;
+
+comment:
+
+FST,STI     Print an argument of the form  ST, ST(i)
+FSTI,ST     Print an argument of the form  ST(i), ST
+
+FSTARGS     Print the arguments for the mod=11 case.  These
+            are typically of the form  ST,ST(i)  or  ST(i),ST
+            or none.
+
+comment;
+
+.SELF FADD    .SELF FMUL    .SELF FCOM    .SELF FCOMP
+.SELF FSUB    .SELF FSUBR   .SELF FDIV    .SELF FDIVR
+
+.SELF FLD     .SELF FST     .SELF FSTP    .SELF FLDENV
+.SELF FLDCW   .SELF FSTENV  .SELF FSTCW   .SELF FRSTOR
+.SELF FSAVE   .SELF FSTSW
+
+.SELF FXCH      .SELF FNOP      .SELF FCHS      .SELF FABS
+.SELF FTST      .SELF FXAM      .SELF FLD1      .SELF FLD2T
+.SELF FLDL2E    .SELF FLDPI     .SELF FLDLG2    .SELF FLDLN2
+.SELF FLDZ      .SELF FENI      .SELF FDISI     .SELF FCLEX
+.SELF FINIT     .SELF FADDP     .SELF FMULP     .SELF FSUBP
+.SELF FSUBRP    .SELF FDIVP     .SELF FSCALE    .SELF FFREE
+.SELF FDIVRP     .SELF F2XM1     .SELF FYL2X    .SELF FPTAN
+.SELF FPATAN     .SELF FXTRACT   .SELF FDECSTP  .SELF FINCSTP
+.SELF FPREM      .SELF FYL2XP1   .SELF FSQRT    .SELF FRNDINT
+
+: FCOMPP   ( op ext -- op ext )
+     DUP 7 AND 1 =
+     IF   .MOI EXIT  THEN
+     ESC, EXIT ;
+
+: F1FX   ( op ext -- op ext )
+     DUP 0F AND EXEC:
+     F2XM1  FYL2X  FPTAN  FPATAN FXTRACT ESC,  FDECSTP FINCSTP
+     FPREM  FYL2XP1 FSQRT ESC,  FRNDINT FSCALE ESC, ESC, STOP[
+
+: F1EX   ( op ext -- op ext )
+     DUP 0F AND EXEC:
+     FCHS  FABS  ESC,   ESC,  FTST   FXAM   ESC,  ESC,
+     FLD1  FLD2T FLDL2E FLDPI FLDLG2 FLDLN2 FLDZ  ESC,  STOP[
+
+: F1MOD11   ( op ext -- op ext )
+     DUP 38 AND 8 =  IF  FARGS FXCH EXIT  THEN
+     DUP F8 AND C0 =  IF  FARGS FLD EXIT  THEN
+     DUP D0 =  IF  FNOP  EXIT  THEN
+     DUP E0 <  IF  ESC, EXIT  THEN
+     DUP 4 2/S 1 AND EXEC: F1EX F1FX STOP[
+
+: F5MOD11   ( op ext -- op ext )
+     DUP 3 2/S 7 AND DUP 3 >  IF  DROP ESC, EXIT  THEN
+     >R .STI R> EXEC: FFREE OOPS FST FSTP STOP[
+
+: F6MOD11   ( op ext -- op ext )
+     FARGS DUP 3 2/S 7 AND EXEC:
+     FADDP FMULP ESC,  FCOMPP FSUBP FSUBRP FDIVP FDIVRP STOP[
+
+: F3MOD11   ( op ext -- op ext )
+     DUP 38 AND 20 -
+     IF  ESC,
+     ELSE  DUP 7 AND EXEC:  FENI FDISI FCLEX FINIT
+     THEN ;
+
+: FEVEN   ( op ext -- op ext )
+     FARGS DUP 3 2/S 7 AND EXEC:
+     FADD FMUL FCOM FCOMP FSUB FSUBR FDIV FDIVR  STOP[
+
+: FMOD11OP  ( op ext -- op ext )
+     OVER 7 AND EXEC: FEVEN F1MOD11 FEVEN F3MOD11
+     FEVEN F5MOD11 F6MOD11 ESC, STOP[
+
+: FODD0  ( op ext -- op ext )
+     FARGS DUP 3 2/S 3 AND EXEC: FLD ESC, FST FSTP STOP[
+
+: FODD4  ( op ext -- op ext )
+     FARGS OVER 6 AND 2* OVER 3 2/S 3 AND OR EXEC:
+     FLDENV FLDCW FSTENV FSTCW ESC, FLD FSTP ESC,
+     FRSTOR FSAVE ESC, FSTSW FLD FLD FSTP FSTP STOP[
+
+: FODD   ( op ext -- op ext )
+     DUP 38 AND 20 <  IF FODD0  ELSE FODD4  THEN ;
+
+: FOPS  ( op ext -- op ext )
+     DUP C0 AND C0 =  IF  FMOD11OP EXIT THEN
+     OVER 1 AND  IF  FODD  ELSE  FEVEN  THEN ;
+
+' FOPS IS ESCCODE   \ Enable Floating Point
+
+FORTH DEFINITIONS
+
+DECIMAL
+
+

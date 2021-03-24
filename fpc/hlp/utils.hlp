@@ -1,0 +1,68 @@
+\ UTILS.HLP     Help file various utilities.
+
+   Set FUDGE to adjust period of MS.
+MS delays about n MilliSeconds.
+  This clearly depends on your system clock speed.
+  Adjust FUDGE until the delay is right.
+U<=   Unsigned less than or equal.
+U>=   Unsigned greater than or equal.
+<=    Less than or equal.
+>=    Greater than or equal.
+0<=   Less than or equal to zero.
+0>=   Greater than or equal to zero.
+
+LMARGIN is the column number of the left margin.
+RMARGIN is the column number of the right margin.
+?LINE   Move to left margin on next line if we will be past the
+  right margin after printing n characters.
+?CR   Move to left margin on next line if we are past the
+  right margin.
+
+LARGEST (S addr n -- addr' val )
+   Given a address and a number of words to examine, return
+   the address and the value of the largest entry in the
+   array.
+
+#TIMES   A variable that keeps track of how many times.
+TIMES   ( n -- )
+   Re-execute the input stream a specified number of times.
+
+MANY   (S -- )
+   Re-execute the input stream until the user presses a key.
+
+::   compile and execute nameless FORTH code, then forget it.
+
+N      Make the Next screen the current one.
+B      Make the previous (Before) screen the current one.
+L      List the current screen.
+
+FOUND   A local variable to make life easier.
+SCAN-1ST   SCAN for first character of a string if ignoring case
+ otherwise do nothing. This makes SEARCH much faster when case
+ is significant.
+SEARCH   ( sadr slen badr blen -- n f )
+   Search for the s string inside of the b string.  If found
+   f is true and n is the offset from the beginning of the
+   string to where the pattern was found.  If not found, f is
+   false and n is meaningless.
+
+ The following parameters are input to the string operators:
+sa  string-address      sl  string-length
+ba  buffer-address      bl  buffer-length
+ba bl sl DELETE      deletes sl characters from the start of
+  the buffer, filling the end with spaces.
+sa sl ba bl INSERT   inserts the minimum of sl or bl characters
+  into ba from sa.
+sa sl ba bl REPLACE    overwrites the minimum of sl or bl
+  characters onto ba from sa.
+
+PAGE      Printer dependent. Get to a new page.  Increment the
+   page number and reset the line number and the column number.
+FORM-FEED Print a form feed character.
+(PAGE)    Print enough linefeeds to get to next page.
+TEXT?   (S Scr# -- f )
+   Given a screen number, returns true if the first character
+   in the screen is printable and the screen is not blank.
+
+
+

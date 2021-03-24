@@ -1,0 +1,873 @@
+\ DIS8086.SEQ   8086 Disassembler  by Charles Curley
+
+  PREFIX  \ Conversion by  Bill Muench  9 September 88  Fixes
+\ More 'Not Used' Trapped
+\ XCHGA for NOP  FES for 8reg INC DEC
+\ REP REPNE  MUL/DIV  POP CS  ESC
+
+FORTH DEFINITIONS  DECIMAL
+ANEW PRE  WARNING OFF
+
+VOCABULARY DIS8086
+
+HEADERLESS
+
+comment:  To DisAssemble to a file:
+  PFILE <file_spec>
+  PRINT SEE <name>
+  PCLOSE
+
+: PCLOSE ( -- )          \ Restore printing to printer
+        PRNHNDL HCLOSE DROP
+        " PRN." ">$ PRNHNDL $>HANDLE  PRNHNDL HOPEN DROP
+        ['] <?PTR.READY> IS ?PRINTER.READY ;
+
+: PFILE ( | <file.spec> -- )    \ Print to diskfile
+        PRNHNDL HCLOSE DROP
+        BL WORD PRNHNDL $>HANDLE  PRNHNDL HCREATE
+        IF      PCLOSE TRUE ABORT" FAILED TO CREATE FILE."
+        ELSE    ['] TRUE IS ?PRINTER.READY
+        THEN ;
+
+comment;
+
+: COL   ( n -- )
+        #OUT @ - SPACES ;
+
+\+ HEADC@       : .ID|  ( nfa-seg \ no trailing space )
+\+ HEADC@               7 OVER 6 HEADC@ 31 AND 0
+\+ HEADC@               ?DO     2DUP HEADC@ FEMIT 1+
+\+ HEADC@               LOOP    2DROP SPACE ;
+
+\+ YC@          : .ID|  ( nf -- )        \ no trailing space
+\+ YC@                  DUP 1+ DUP YC@ ROT YC@ 31 AND 0
+\+ YC@                  ?DO     DUP 127 AND FEMIT 128 AND
+\+ YC@                          IF ASCII _ 128 OR ELSE 1+ DUP YC@
+\+ YC@                          THEN
+\+ YC@                  LOOP
+\+ YC@                  2DROP ;
+
+\ VARIABLE DUMPSEG
+
+: =SEG   ( seg -- )
+        DUMPSEG ! ;
+
+: .SEG   ( -- )
+        DUMPSEG @ U. ;
+
+CODE 2/S   ( n ct -- n' )         \ shift n right ct
+        POP CX
+        POP AX
+        SHR AX, CL
+        1PUSH
+        END-CODE
+
+CODE 2*S   ( n ct -- n' )         \ shift n left ct
+        POP CX
+        POP AX
+        SHL AX, CL
+        1PUSH
+        END-CODE
+
+CODE SEXT   ( n -- n' )           \ sign extend byte to word
+        POP AX
+        CBW
+        1PUSH
+        END-CODE
+
+VARIABLE SYMBOLIC \ Show registers as FORTH registers
+        SYMBOLIC ON
+
+VARIABLE ID0      \ DisAssembly NAME delay in ms
+        700 ID0 !
+
+VARIABLE RELOC    \ Relocation factor for dump or dis ???
+        RELOC OFF
+
+DIS8086 DEFINITIONS
+
+\ Avoid name conflicts
+
+: LOOPP
+        [COMPILE] LOOP ; IMMEDIATE
+: ANDD
+        AND ;
+: ORR
+        OR ;
+: XORR
+        XOR ;
+: NOTT
+        NOT ;
+
+: WITHIN   ( n l h -- ? )         \ Circular. /* NOT F83 */ )
+        OVER - >R - R> U< ;
+
+\ : NUF? ( -- ? )
+\        KEY? DUP
+\        IF KEY 2DROP KEY 27 =
+\        THEN ;
+
+: +RELOC   ( a -- )
+        RELOC @ + DUMPSEG @ SWAP ;
+
+: (T@)   ( a -- w )
+        +RELOC @L ;
+
+: (TC@)   ( a -- n )
+        +RELOC C@L ;
+
+DEFER T@   ( a -- w )
+DEFER TC@   ( a -- n )
+
+: MEMORY
+        ['] (TC@) IS TC@  ['] (T@)  IS T@ ;
+        MEMORY
+
+\ : DUMPBOOT MEMORY ?CS: =SEG [ ' BOOT >BODY @ , ] ;
+\ ' DUMPBOOT IS BOOT
+
+: .IND   ( indirect -- )   ;       \ Someday!!
+\        POSTVAR @
+\        IF
+\                ." #) "
+\        THEN ;
+
+: .#   ( -- )
+        ." # " ;
+
+: .,   ( -- )
+        ." , " ;
+
+: ?.,   ( op -- op )
+        DUP $0C7 ANDD 6 <> IF ., THEN ;
+
+: .FAR
+        ." FAR " ;
+
+: .INDIRECT
+        ." [] " ;
+
+: ID.L   ( a -- )
+        #OUT @ SWAP .ID| #OUT @ - 8 + SPACES ;
+
+: SELF.L                \ Left Justified Self-doc!
+        CREATE LAST @ , DOES> @ ID.L ;
+
+: .SELF                 \ Self-doc!
+        CREATE LAST @ , DOES> @ .ID| ;
+
+: .ME                   \ print current name
+        LAST @ [COMPILE] LITERAL COMPILE ID.L ; IMMEDIATE
+
+VARIABLE CP
+
+: NEXTB   ( -- n )
+        CP @ TC@ 1 CP +! ;
+
+: NEXTW   ( -- w )
+        CP @ T@  2 CP +! ;
+
+: .NA   ( n -- )
+        ."   ??? " U. ;
+
+: .NA0   ( n - n )
+        DUP .NA ;
+
+: .NA1   ( op ext -- )
+        SWAP .NA U. ;
+
+VARIABLE OPS  \ operand count
+VARIABLE DISP \ 2nd operand ext, flag, ct
+
+: ?DISP   ( op ext -- op ext | ?MOD disp )
+        DUP 6 2/S ?DUP 0=
+        IF      ( MOD=0 )
+                DUP 7 ANDD ( ?R/M ) 6 = 2 ANDD
+        THEN
+        DUP 3 =
+        IF      ( MOD=3 )
+                DROP 0
+        THEN DISP ! ;
+
+HEADERS
+
+.SELF AL  .SELF AX   .SELF [BX+SI]  .SELF ES
+.SELF CL  .SELF CX   .SELF [BX+DI]  .SELF CS
+.SELF DL  .SELF DX   .SELF [BP+SI]  .SELF SS
+.SELF BL  .SELF BX   .SELF [BP+DI]  .SELF DS
+.SELF AH  .SELF SP   .SELF [SI]
+.SELF CH  .SELF BP   .SELF [DI]
+.SELF DH  .SELF SI   .SELF [BP]
+.SELF BH  .SELF DI   .SELF [BX]
+.SELF RP  .SELF [RP] \ Return Stack Pointer
+.SELF IP  .SELF [IP] \ Interpreter Pointer
+.SELF W   .SELF [W]  \ Working Register
+
+SELF.L NEXT   SELF.L 1PUSH  SELF.L 2PUSH
+SELF.L BRAN1  SELF.L PLOOP
+
+HEADERLESS
+
+CREATE SYMBOLS
+ASSEMBLER
+        >NEXT , >NEXT 1- , >NEXT 2- , ' BRANCH >BODY , ' (LOOP) 5 + ,
+DIS8086
+        HERE SYMBOLS - 2/ CONSTANT SYMBOLCT
+
+: ?SYMBOL   ( a -- a ? )          \ if n = -1 no symbol else index
+        TRUE DUMPSEG @ ?CS: = SYMBOLIC @ 0<> AND
+        IF      SYMBOLCT 0 ( iff in code segment )
+                DO      OVER I 2* SYMBOLS + @ =
+                        IF DROP I LEAVE THEN
+                LOOPP
+        THEN ;
+
+: .SYMBOL   ( a | name or value )
+        ?SYMBOL DUP 0<
+        IF      DROP U. EXIT
+        THEN
+        NIP EXEC: NEXT 1PUSH 2PUSH BRAN1 PLOOP ;
+
+: SYMBOL
+        CREATE ' >NAME , ' >NAME ,
+        DOES> SYMBOLIC @
+        IF      2+
+        THEN @ .ID| ;
+
+\ SYMBOL BX BX W   SYMBOL [BX] [BX] [W]
+SYMBOL SI SI IP  SYMBOL [SI] [SI] [IP]
+SYMBOL BP BP RP  SYMBOL [BP] [BP] [RP]
+
+HEADERS
+
+.SELF BYTE  .SELF WORD
+
+HEADERLESS
+
+: .SIZE    ( op -- )
+        1 ANDD EXEC: BYTE WORD ;
+
+: .8REG    ( ext -- )
+        7 ANDD EXEC: AL CL DL BL AH CH DH BH ;
+
+: .16REG    ( ext -- )
+        7 ANDD EXEC: AX CX DX BX SP BP SI DI ;
+
+: .R8/16    ( op ext -- )
+        SWAP 1 ANDD EXEC: .8REG .16REG ;
+
+: .R/M    ( op ext -- op ext )
+        2DUP .R8/16 ;
+: .REG   ( op ext -- op ext )
+        2DUP 3 2/S .R8/16 ;
+
+: 0DISP
+        ." 0 " ;
+
+: BDISP|                \ byte displacement
+        CP @ DISP @ + TC@    1 OPS +! ;
+
+: BDISP                 \ byte displacement
+        BDISP| SEXT . ;
+
+: WDISP                 \ word displacement
+        CP @ DISP @ + T@ U.  2 OPS +! ;
+
+: .DISP   ( op ext -- op ext )
+        DUP 6 2/S 3 ANDD
+        EXEC: 0DISP BDISP WDISP .R/M ;
+
+: BIMM                  \ byte immediate
+        .# BDISP| . ;
+
+: WIMM                  \ word immediate
+        .# WDISP ;
+
+: .IMM   ( op -- )
+        1 ANDD
+        IF      WIMM EXIT
+        THEN BIMM ;
+
+: .MREG   ( op ext -- op ext )     \ reg + disp
+        $0C0 2DUP ANDD =
+        IF      ( MOD=3 )
+                .R/M EXIT
+        THEN
+        DUP $0C7 ANDD 6 =
+        IF      ( MOD=0 R/M=6 )
+                .IND WDISP EXIT
+        THEN
+        .DISP  DUP 7 ANDD ( MOD=1 or 2 )
+        EXEC: [BX+SI] [BX+DI] [BP+SI] [BP+DI] [SI] [DI] [BP] [BX] ;
+
+: .SEG   ( op -- )
+        3 2/S 3 ANDD EXEC: ES CS SS DS ;
+
+: SEG:   ( op -- )        \ segment override
+        .SEG ." :" ;
+
+HEADERS
+
+: POP   ( op -- )
+        DUP 15 = IF .NA EXIT THEN .ME .SEG ;
+
+: PUSH   ( op -- )
+        .ME .SEG ;
+
+HEADERLESS
+
+: P/P   ( op -- )
+        DUP 1 ANDD EXEC: PUSH POP ;
+
+HEADERS
+
+SELF.L DAA  SELF.L DAS  SELF.L AAA  SELF.L AAS
+
+HEADERLESS
+
+: .ADJ   ( op -- )
+        3 2/S 3 ANDD EXEC: DAA DAS AAA AAS ;
+
+: P/SEG   ( op -- )       \ push  seg override
+        DUP 5 2/S 1 ANDD EXEC: P/P SEG: ;
+
+: P/ADJ   ( op -- )       \ pop  adjust
+        DUP 5 2/S 1 ANDD EXEC: P/P .ADJ ;
+
+HEADERS
+
+SELF.L ADD SELF.L ADC  SELF.L AND  SELF.L XOR
+SELF.L OR  SELF.L SBB  SELF.L SUB  SELF.L CMP
+
+HEADERLESS
+
+: .AL/X   ( op  -- )
+        1 ANDD EXEC: AL AX ;
+
+: .ALU   ( op -- )
+        3 2/S 7 ANDD
+        EXEC: ADD OR ADC SBB AND SUB XOR CMP ;
+
+: ALU   ( op -- op )
+        DUP .ALU DUP 4 ANDD
+        IF DUP .AL/X ., .IMM  EXIT
+        THEN
+        NEXTB OVER 2 ANDD
+        IF      .REG ., .MREG
+        ELSE    .MREG ?., .REG
+        THEN
+        2DROP ;
+
+: 00-3F   ( op -- op )            \ 00-3F
+        DUP 7 ANDD
+        EXEC: ALU ALU ALU ALU ALU ALU P/SEG P/ADJ ;
+
+: .REGGP   ( op -- )      \ register group
+        CREATE LAST @ ,
+        DOES> @ ID.L .16REG ;
+
+HEADERS
+
+.REGGP INC  .REGGP DEC  .REGGP PUSH  .REGGP POP
+
+HEADERLESS
+
+: REGS   ( op -- )                \ 40-5F
+        DUP 3 2/S 3 ANDD
+        EXEC: INC DEC PUSH POP ;
+
+: 60-6F   ( op -- )
+        .NA ;
+
+HEADERS
+
+SELF.L JA   SELF.L JAE  SELF.L JB   SELF.L JBE
+SELF.L JE   SELF.L JG   SELF.L JGE  SELF.L JL
+SELF.L JLE  SELF.L JNE  SELF.L JNO  SELF.L JNS
+SELF.L JO   SELF.L JPE  SELF.L JPO  SELF.L JS
+
+HEADERLESS
+
+: .BR|   ( op -- )
+        15 ANDD
+        EXEC: JO JNO JB  JAE JE JNE JBE JA
+        JS JNS JPE JPO JL JGE JLE JG ;
+
+: .BRANCH   ( op -- )             \ 70-7F branch & dest
+        .BR| NEXTB SEXT CP @ + .SYMBOL ;
+
+: 40-7F   ( op -- )               \ 40-7F
+        DUP 4 2/S 3 ANDD
+        EXEC: REGS REGS 60-6F .BRANCH ;
+
+: ALU#   ( op -- )                \ 80-81
+        NEXTB DUP .ALU .MREG ?.,
+        ?DISP DROP DUP .IMM .SIZE ;
+
+: .NA1X   ( op ext -- )
+        .NA1 2R> 2DROP ;
+: .MATH   ( ext -- )
+        3 2/S 7 ANDD
+        EXEC: ADD .NA1X ADC SBB .NA1X SUB .NA1X CMP ;
+
+: 83S   ( op -- )                 \ 83
+        NEXTB DUP .MATH .MREG ?., ?DISP BIMM DROP .SIZE ;
+
+: 1GP   ( op -- )                 \ r/m reg
+        CREATE LAST @ ,
+        DOES> @ ID.L NEXTB .MREG ?., .REG 2DROP ;
+
+HEADERS
+
+1GP TEST  1GP XCHG  SELF.L LEA  SELF.L MOV
+
+HEADERLESS
+
+: MOVRM/REG   ( op -- )           \ 88-89
+        MOV NEXTB .MREG ?., .REG 2DROP ;
+
+: MOVD   ( op -- )                \ 8A-8B
+        MOV NEXTB .REG ., .MREG 2DROP ;
+
+: MOVS>M   ( op -- )              \ 8C-8F
+        NEXTB OVER $8D =
+        IF LEA .REG ., .MREG
+        ELSE OVER $8F =
+                IF      DUP $38 ANDD
+                        IF .NA1 EXIT
+                        THEN
+                        [ ' POP >NAME ] LITERAL ID.L .MREG
+                ELSE ( 8C 8E )
+                        DUP $20 ANDD
+                        IF      .NA1 EXIT
+                        THEN
+                        MOV SWAP 1 ORR ( Force 16bit moves only )
+                        SWAP OVER 2 ANDD
+                        IF      ( 8E )
+                                DUP .SEG ., .MREG
+                        ELSE    ( 8C )
+                                .MREG ?., DUP .SEG
+                        THEN
+                THEN
+        THEN
+        2DROP ;
+
+: 8MOVS   ( op -- )               \ 80-8F
+        DUP 2/ 7 ANDD
+        EXEC:   ALU#       83S     TEST      XCHG
+                MOVRM/REG  MOVD    MOVS>M    MOVS>M ;
+
+HEADERS
+
+SELF.L XCHG  SELF.L CBW    SELF.L CWD   SELF.L CALL
+SELF.L WAIT  SELF.L PUSHF  SELF.L POPF  SELF.L SAHF
+SELF.L LAHF  SELF.L TEST
+
+HEADERLESS
+
+: INTER                 \ interseg jmp or call
+        .FAR NEXTW NEXTW U. .SYMBOL ;
+
+: CALLINTER             \ interseg call
+        CALL INTER ;
+
+: XCHGA   ( op -- )               \ 90-97
+        DUP 7 ANDD
+        IF      XCHG .16REG ., AX EXIT
+        THEN
+        DROP ." NOP " ;
+
+: 98-9F   ( op -- )               \ 98-9F
+        7 ANDD
+        EXEC:   CBW     CWD     CALLINTER  WAIT
+                PUSHF   POPF    SAHF       LAHF ;
+
+: 90S   ( op -- )                 \ 90-9F
+        DUP 3 2/S 1 ANDD EXEC: XCHGA 98-9F ;
+
+: MOVA   ( op -- )                \ A0-A3
+        MOV DUP 2 ANDD
+        IF      .IND WDISP .AL/X EXIT
+        THEN
+        .AL/X ., .IND WDISP ;
+
+HEADERS
+
+: MOVS   ( op -- )                \ A4-A5
+        .ME .SIZE ;
+
+: CMPS   ( op -- )                \ A6-A7
+        .ME .SIZE ;
+
+HEADERLESS
+
+: .TEST   ( op -- )               \ A8-A9
+        TEST DUP .AL/X ., .IMM ;
+
+HEADERS
+
+: STOS   ( op -- )                \ AA-AB
+        .ME .SIZE ;
+
+: LODS   ( op -- )                \ AC-AD
+        .ME .SIZE ;
+
+: SCAS   ( op -- )                \ AE-AF
+        .ME .SIZE ;
+
+HEADERLESS
+
+: A0S   ( op -- )                 \ A0-AF
+        DUP 2/ 7 ANDD
+        EXEC:   MOVA   MOVA   MOVS   CMPS
+                .TEST  STOS   LODS   SCAS ;
+
+: MOV#   ( op -- )                \ B0-BF
+        MOV DUP 8 ANDD
+        IF      .16REG ., WIMM EXIT
+        THEN
+        .8REG ., BIMM ;
+
+: 80-BF   ( op -- )               \ 80-BF
+        DUP 4 2/S 3 ANDD
+        EXEC:   8MOVS   90S    A0S    MOV# ;
+
+HEADERS
+
+SELF.L LES  SELF.L LDS  SELF.L INTO  SELF.L IRET
+
+: RET   ( op -- )                 \ C2-C3 CA-CB
+        .ME DUP 8 ANDD
+        IF      .FAR
+        THEN
+        1 ANDD 0=
+        IF      WDISP ( ??? ) ." +SP"
+        THEN ;
+
+HEADERLESS
+
+: .L/L   ( op -- )
+        1 ANDD EXEC: LES LDS ;
+
+: LES/LDS   ( op -- )             \ C4-C5
+        DUP .L/L NEXTB .REG ., .MREG 2DROP ;
+
+: MOV#R/M   ( op -- )             \ C6-C7
+        NEXTB DUP $38 ANDD
+        IF      .NA1 EXIT
+        THEN
+        MOV .MREG ?., ?DISP DROP DUP .IMM .SIZE ;
+
+HEADERS
+
+: INT   ( op -- )                 \ CC-CD
+        .ME 1 ANDD
+        IF      NEXTB
+        ELSE    3
+        THEN
+        U. ;
+
+HEADERLESS
+
+: INTO/IRET   ( op -- )           \ CE-CF
+        1 ANDD
+        EXEC:   INTO   IRET ;
+
+: C0S   ( op -- )                 \ C0-CF
+        DUP 2/ 7 ANDD
+        EXEC:   .NA    RET    LES/LDS  MOV#R/M
+                .NA    RET    INT      INTO/IRET ;
+
+HEADERS
+
+SELF.L ROL  SELF.L ROR  SELF.L RCL  SELF.L RCR
+SELF.L SHL  SELF.L SHR  SELF.L SAR
+
+HEADERLESS
+
+: .SHIFTS   ( ext -- )
+        3 2/S 7 ANDD
+        EXEC:   ROL   ROR   RCL   RCR
+                SHL   SHR   .NA0  SAR ;
+
+: SHIFTS   ( op -- )              \ D0-D3
+        NEXTB DUP 3 2/S 7 ANDD 6 =
+        IF      .NA1 EXIT
+        THEN
+        DUP .SHIFTS .MREG DROP 2 ANDD
+        IF      ?., CL
+        THEN ;
+
+HEADERS
+
+: AAM   ( op -- )                 \ D4
+        .ME NEXTB 2DROP ;
+
+: AAD   ( op -- )                 \ D5
+        .ME NEXTB 2DROP ;
+
+: XLAT   ( op -- )                \ D7
+        .ME DROP ;
+
+: ESC,   ( op ext -- op ext )      \ D8-DF
+        .ME 2DUP $38 ANDD SWAP 7 ANDD ORR . .MREG ;
+
+HEADERLESS
+
+DEFER ESCCODE   ' ESC, IS ESCCODE
+
+: D0S   ( op -- )                 \ D0-DF
+        DUP 8 ANDD
+        IF      NEXTB ESCCODE 2DROP EXIT
+        THEN
+        DUP 7 ANDD
+        EXEC:   SHIFTS   SHIFTS   SHIFTS   SHIFTS
+                AAM      AAD      .NA      XLAT ;
+
+HEADERS
+
+SELF.L LOOPE  SELF.L LOOP  SELF.L JCXZ  SELF.L LOOPNE
+
+HEADERLESS
+
+: .LOOP   ( op -- )
+        3 ANDD
+        EXEC:   LOOPNE   LOOPE   LOOP   JCXZ ;
+
+: LOOPS   ( op -- )               \ E0-E3
+        .LOOP NEXTB SEXT CP @ + .SYMBOL ;
+
+HEADERS
+
+SELF.L IN  SELF.L OUT  SELF.L JMP
+
+HEADERLESS
+
+: IO#   ( op -- )                 \ E4-E7
+        DUP 2 ANDD
+        IF      OUT BIMM .AL/X EXIT
+        THEN
+        IN .AL/X ., BIMM ;
+
+: IOX   ( op -- )                 \ EC-EF
+        DUP 2 ANDD
+        IF      OUT DX ., .AL/X EXIT
+        THEN
+        IN .AL/X ., DX ;
+
+: .CALL   ( op -- )
+        3 ANDD
+        EXEC:   CALL   JMP    JMP    JMP ;
+
+: CALLS   ( op -- )               \ E8-EB
+        DUP .CALL DUP 2 ANDD
+        IF DUP 1 ANDD
+                IF      NEXTB SEXT CP @ + .SYMBOL
+                ELSE    INTER
+                THEN
+        ELSE    NEXTW CP @ + .SYMBOL
+                ( make smart about DEBUG's tricks and E0 )
+                DUP $0E9 = CP @ C@ $0E0 = ANDD
+                IF      1 CP +!
+                THEN
+        THEN
+        DROP ;
+
+: E0S   ( op -- )                 \ E0-EF
+        DUP 2 2/S 3 ANDD
+        EXEC:   LOOPS   IO#   CALLS   IOX ;
+
+: FTEST   ( op -- )               \ F6-F7
+        TEST .MREG ?., ?DISP DROP DUP .IMM .SIZE ;
+
+HEADERS
+
+SELF.L NOT  SELF.L NEG  SELF.L MUL  SELF.L IMUL
+SELF.L DIV  SELF.L IDIV SELF.L REP  SELF.L REPNE
+SELF.L LOCK SELF.L HLT  SELF.L CMC  SELF.L CLC
+SELF.L STC  SELF.L CLI  SELF.L STI  SELF.L CLD
+SELF.L STD  SELF.L INC  SELF.L DEC  SELF.L PUSH
+
+HEADERLESS
+
+: .MUL/DIV   ( ext -- )
+        3 2/S 3 ANDD
+        EXEC:   MUL  IMUL  DIV  IDIV ;
+
+: MUL/DIV   ( op ext -- )         \ F6-F7
+        DUP .MUL/DIV .MREG 2DROP ;
+
+: .NOT/NEG   ( ext -- )
+        3 2/S 1 ANDD
+        EXEC:  NOT  NEG ;
+
+: NOT/NEG   ( op ext -- )         \ F6-F7
+        DUP .NOT/NEG .MREG 2DROP ;
+
+: F6-F7S   ( op -- )              \ F6-F7
+        NEXTB DUP 3 2/S 7 ANDD
+        EXEC:   FTEST    .NA1     NOT/NEG  NOT/NEG
+                MUL/DIV  MUL/DIV  MUL/DIV  MUL/DIV ;
+
+: .FES   ( ext -- )
+        3 2/S 1 ANDD
+        EXEC:   INC   DEC ;
+
+: FES   ( op -- )                 \ FE
+        NEXTB DUP 3 2/S 6 ANDD
+        IF      .NA1 EXIT
+        THEN
+        DUP .FES .MREG 2DROP ;
+
+: .FCALL/JMP   ( ext -- )
+        2/ 1 ANDD EXEC: JMP CALL ;
+
+: FCALL/JMP   ( op ext -- )       \ FF
+        DUP 3 2/S DUP .FCALL/JMP
+        DUP 1 ANDD IF .FAR THEN
+            6 ANDD IF .INDIRECT THEN
+        .MREG 2DROP ;
+
+: FPUSH   ( op ext -- )           \ FF
+        DUP 8 ANDD 0=
+        IF      PUSH .MREG 2DROP EXIT
+        THEN
+        .NA1 ;
+
+: .FINC   ( op ext -- )
+        3 2/S 1 ANDD
+        EXEC:   INC   DEC ;
+
+: FINC   ( op ext -- )            \ FF
+        DUP .FINC .MREG $0C7 ANDD 6 =
+        IF      WORD
+        THEN
+        DROP ;
+
+: FFS   ( op -- )                 \ FF
+        NEXTB DUP 4 2/S 3 ANDD
+        EXEC:   FINC  FCALL/JMP  FCALL/JMP  FPUSH ;
+
+: .NAF1   ( a -- a )
+        DUMPSEG @ OVER C@L .NA ;
+
+: F0S   ( op -- )                 \ F0-FF
+        DUP 15 ANDD DUP 7 ANDD 6 <
+        IF      NIP
+        THEN
+        EXEC:   LOCK   .NAF1  REPNE   REP
+                HLT    CMC    F6-F7S  F6-F7S
+                CLC    STC    CLI     STI
+                CLD    STD    FES     FFS ;
+
+: C0-FF   ( op -- )               \ C0-FF
+        DUP 4 2/S 3 ANDD
+        EXEC:   C0S  D0S  E0S  F0S ;
+
+HEADERS
+
+: .INSTONE      ( op -- )
+                255 ANDD DUP 6 2/S
+                EXEC:   00-3F   40-7F   80-BF   C0-FF ;
+
+: INST          \ display opcode at ip  advancing as needed
+        2 SPACES NEXTB .INSTONE OPS @ CP +!  OPS OFF  DISP OFF ;
+
+HEADERLESS
+
+0 VALUE STOPNOW
+
+: .CODE-NAME   ( -- )
+        CR ." CODE " CP @ >NAME .ID| CR ;
+
+: ?@NAME   ( -- F1 )
+        DUMPSEG @ ?CS: =
+        IF      CP @ >NAME [ ' NO-NAME >NAME ] LITERAL XORR
+        ELSE    FALSE
+        THEN  ;
+
+: BASE.R   ( n n -- )
+        BASE @ 16 = + U.R ;
+
+: DUMP|   ( a n -- )
+        BOUNDS
+        DO      I TC@ 4 BASE.R
+        LOOPP ;
+
+: TYPE_   ( a n -- )
+        BOUNDS
+        DO      I TC@ 127 ANDD DUP ( ASCII ~ 1+ BLANK ) 127 32 WITHIN
+                IF      DROP ASCII _
+                THEN
+                EMIT
+        LOOPP ;
+
+FORTH DEFINITIONS
+
+HEADERS
+
+: DM   ( a -- a' )      \ Display Memory
+        [ DIS8086 ] SAVESTATE
+        BEGIN   CR DUMPSEG @ 5 BASE.R ." :"
+                DUP 5 BASE.R ." : "   BASE @ 2DUP DUMP|
+                2 SPACES 2DUP TYPE_ +
+                ?KEYPAUSE
+        AGAIN   ;
+
+: DIS   ( a -- )           \ disassemble from address
+        [ DIS8086 ] CP !
+        SAVESTATE HEX
+        OFF> STOPNOW
+        CR ?@NAME
+        IF      .CODE-NAME
+        THEN
+        BEGIN   CP @  INST
+                37 COL ." \" DUMPSEG @ 5 U.R DUP 5 U.R
+                CP @ OVER - 2DUP SPACE DUMP| 69 COL TYPE_
+                ?STACK CR
+                ?@NAME PRINTING @ ANDD 0=
+                KEY?
+                IF      KEY 27 <> DUP
+                        IF      DROP KEY 27 <>
+                        THEN
+                        ANDD
+                THEN
+                40 MS
+        WHILE   ?@NAME IF .CODE-NAME THEN
+        REPEAT  ;
+
+\ Locate existing INTerrupts
+CODE #INT2@   ( int# -- seg off )
+        POP AX        \ int#
+        MOV AH, # $35 \ cmd
+        PUSH ES       \ save ES
+        INT $21       \ DOS
+        POP AX        \ get ES
+        PUSH ES       \ seg
+        PUSH BX       \ off
+        MOV ES, AX    \ restore ES
+        NEXT
+        END-CODE
+
+: IDIS   ( int# -- )
+        #INT2@ SWAP =SEG DIS ;
+
+: SEEN   ( a -- )
+        [ HIDDEN ]
+        ?CS: =SEG  RELOC OFF
+        DUP @REL>ABS DEFINITION-CLASS MAX-CLASSES =
+        IF      DUP DOES? NIP 0=
+                IF      DIS EXIT
+                THEN
+        THEN
+        (SEE) ;
+
+: SEE   ( | name -- )
+        ' SEEN ;
+
+WARNING ON
+
+: TASK ;
+
+CR .( DIS8086 LOADED )
+

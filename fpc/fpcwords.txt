@@ -1,0 +1,681 @@
+
+øForth-help              F-PC Forth Command Help
+                         ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+                           F-PC word catgories
+
+       ùApplications          ùBoolean-words         ùBranch/Loop
+
+       ùColor-words           ùCompile-Directives    ùDisplay-words
+
+       ùDOS-Commands          ùDouble-Number         ùField-words
+
+       ùFile-words            ùInternals             ùKeyboard-words
+
+       ùLineEdit-words        ùLogical-words         ùMath-words
+
+       ùMemory-words          ùMenu-words            ùNumber-Conversion
+
+       ùString-words          ùTime/Date-words       ùWindow-words
+
+
+
+øApplications         F-PC Application generation words
+                      ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+       ùFSAVE           Save the current memory image to a file.
+
+       ùTURNKEY         Save reduced size memory image to a file
+                        without heads.
+
+       ùBOOT            A deferred word that you can fill with your
+                        own boot time routine.
+
+       ùDEFAULT         A deferred word that handles the DOS command
+                        line entered at the beginning of execution.
+
+       ùINITSTUFF       A deferred word initialization CHAIN of routines
+                        to perform in sequence at cold start time.
+
+
+
+  (F9 will browse the source for a word, and Alt-H will browse its Help)
+
+øBoolean-words          Boolean Operators in F-PC
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+                ù<              ù>              ù0<             ù0>
+
+                ù<=             ù>=             ùU<             ùU>
+
+                ùU<=            ùU>=            ù<>
+
+
+
+
+
+
+
+
+
+
+  (F9 will browse the source for a word, and Alt-H will browse its Help)
+
+øBranch/Loop       Conditional Branch and Loop Control
+                   ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+                ùIF     ...     ùELSE   ...     ùTHEN
+
+                ùBEGIN  ...     ùUNTIL
+
+                ùBEGIN  ...     ùWHILE  ...     ùREPEAT
+
+                ùDO     ...     ùLEAVE  ...     ùLOOP
+
+                ùDO     ...     ù?LEAVE ...     ù+LOOP
+
+                ùFOR    ...     ùNEXT
+
+                ùUNDO
+
+
+  (F9 will browse the source for a word, and Alt-H will browse its Help)
+
+øColor-words            Color Control in F-PC
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+                ùRED            ùGREEN          ùBLUE
+
+                ùYELLOW         ùMAGENTA        ùCYAN
+
+                ùBROWN          ùWHITE          ùBLACK
+
+                ùLTGRAY         ùDKGRAY         ùLTBLUE
+
+                ùLTGREEN        ùLTRED          ùLTMAGENTA
+
+                ù>FG            ù>BG            ù>COLOR
+
+                ù>LCD           ù>MONO
+
+
+  (F9 will browse the source for a word, and Alt-H will browse its Help)
+
+øCompile-Directives         Compiler Controls
+                            ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+                ùCOMMENT:       ù(              ù\
+
+                ù}              ù\\             ù/*
+
+                ù#IF            ù#ELSE          ù#THEN
+
+
+
+
+
+
+
+
+
+
+  (F9 will browse the source for a word, and Alt-H will browse its Help)
+
+øDisplay-words      Display Output and Control Words
+                    ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+        ù>ATTRIB1       ù>ATTRIB2       ù>ATTRIB3       ù>ATTRIB4
+
+        ù>ATTRIB5       ù>ATTRIB6       ù>ATTRIB7       ù>ATTRIB8
+
+        ù>BOLD          ù>BOLDBLNK      ù>BOLDUP        ù>LCD
+
+        ù>MONO          ù>NORM          ù>REV           ù>REVBLNK
+
+        ù>UL            ùAT             ùCLS            ùCR
+
+        ùDARK           ùEEOL           ùEMIT           ùFEMIT
+
+        ùIBM--LINE      ùIBM-AT         ùIBM-AT?        ùIBM-DARK
+
+        ùPAGE           ùSPACE          ùSPACES         ùTYPE
+
+  (F9 will browse the source for a word, and Alt-H will browse its Help)
+
+øDOS-Commands                DOS Commands
+                             ÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+                ùCD             ùCHDIR          ùCLS
+
+                ùCOPY           ùDEL            ùDIR
+
+                ùREN            ùRENAME         ùSYS
+
+                ù`              ù$SYS           ù"SYSCOMMAND
+
+
+
+
+
+
+
+
+  (F9 will browse the source for a word, and Alt-H will browse its Help)
+
+øDouble-Number          Double Number Operators
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+                ù*D             ù2!             ù2>R
+
+                ù2@             ù2DROP          ù2DUP
+
+                ù2R>            ùD+             ùD-
+
+                ùD.             ùD.R            ùD0=
+
+                ùD2/            ùD<             ùD=
+
+                ùD>             ùDMAX           ùDMIN
+
+                ùDU<            ùUD.            ùUD.R
+
+
+  (F9 will browse the source for a word, and Alt-H will browse its Help)
+
+øField-words            F-PC Field Conversion Words
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+        Moves From      CFA     ù>BODY    BODY      Moves To
+
+                        CFA     ù>LINK    LINE
+
+                        CFA     ù>NAME    NAME
+
+                        BODY    ùBODY>    CFA
+
+                        LINK    ùL>NAME   NAME
+
+                        LINK    ùLINK>    CFA
+
+                        NAME    ùN>LINK   LINK
+
+                        NAME    ùNAME>    CFA
+
+  (F9 will browse the source for a word, and Alt-H will browse its Help)
+
+øFile-words             File Control Words
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  F-PC uses HANDLES to interface with DOS files. A handle to DOS is a 16 bit
+number in the range 0 to 20. The first handles 0 to 4 are taken for DOS's
+standard devices. F-PC uses a structure in CODE space that holds the number
+DOS calls a handle, as well as the name of the file associated with the
+handle.  F-PC calls this entire STRUCTURE a HANDLE.  You can create handles
+which hold the above mentioned items, with the word HANDLE.  A handle that
+contains a name can be opened, closed, deleted renamed etc.  A handle once
+created returns address, and all file words know how to step into a handle
+to get or set the information they need.
+
+  More information is available on the following items:
+
+
+        ùHandle-Structure       ùFile-Wordset       ùLineread-Example
+
+
+  Also see the Users Manual Chapter 5 for additional information.
+
+øHandle-Structure       F-PC handle structure
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+        The HANDLE memory data structure is as shown here.
+
+
+          1byte    65 bytes      2 bytes    2 bytes
+        ÚÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+        ³ count  ³ Filename....0 ³ attrib   ³ handle > -1 ³
+        ÀÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+          addr     addr+1          addr+66    addr+68
+           ³        ³               ³          ³
+           ³        À >NAM          À >ATTRIB  À >HNDLE
+           ³
+           À Address of the array returned by a word defined with HANDLE.
+
+   A >HNDLE value of less than 0 indicates no file is open on this handle.
+
+
+
+øLineread-Example       An Example of File Usage
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+A sequential line read word LINEREAD is provided, which reads one line at a
+time from the file whose handle is in SEQHANDLE, returning an address of a
+count string which also includes the CRLF characters at the end of the
+line.  You will have to strip them off if you don't want them. The LINEREAD
+word is used as follows:
+
+: sample        ( | <filename> --- )
+        open                    \ open a file
+        0.0 seek                \ reset file pointer buffer
+        begin
+                lineread        \ read a line, returns an address of counted $
+                dup c@          \ check for length,
+        0 <> while              \ while buffer contains something
+                cr count 2- type\ type line just read without the CRLF chars.
+        repeat  drop            \ repeat till file empty.
+        close ;                 \ close the file.
+
+
+øFile-Wordset           The File Control Wordset
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ ù$FILE          ù$FLOAD         ù$HOPEN         ù.FILE          ù.FPATH
+
+ ù>LINE          ùCHARREAD       ùCLOSE          ùCLOSEALL       ùCURPOINTER
+
+ ùFILE           ùFILE>TIB       ùFL             ùFLOAD          ùFPATH
+
+ ùFPATH+         ùHCLOSE         ùHCLOSE         ùHCREATE        ùHDELETE
+
+ ùHIDELINES      ùHNDLS          ùHOPEN          ùHRENAME        ùIBLEN
+
+ ùIBRESET        ùLINEREAD       ùLOAD           ùMOVEPOINTER    ùOBLEN
+
+ ùOK             ùOPEN           ùSEEK           ùSEQDOWN        ùSEQHANDLE
+
+ ùSEQHANDLE+     ùSEQUP          ùSETTIB         ùSHOWLINES      ùHANDLE
+
+  (F9 will browse the source for a word, and Alt-H will browse its Help)
+
+øInternals              F-PC Internal Structure
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+   F-PC is a DTC (Direct Thread Code) 16 bit Forth. Both stacks are 16 bits.
+ F-PC obtains its large addressing space through the use of segment pointers
+ to COLON definitions which are located outside of Forth's normal 64k CODE
+ area. F-PC's symbols or headers are also kept in an external 64k segment
+ area, leaving all of the 64k CODE area for CODE and DATA. Additional space
+ savings have been obtained by placing all ." strings in LIST space with the
+ COLON definitions.  The primary limiting factor in F-PC with respect to
+ space utilization seems to be symbol space, which is limited to around
+ 5000 symbols max. To a large extent even this limit can be overcome through
+ the use of a built in BEHEAD mechanism. VERY LARGE applications can be
+ coded in F-PC.  F-TC does have the usual 8086 type problem of dealing with
+ large linear data areas across 64k segment boundries, but again there are
+ the usual solutions to this problem involving the use of either segment and
+ offset double pointers, or of placing data elements on segment boundries.
+
+Internals for   ùCODE-DEFs   ùCOLON-DEFs  ùVARIABLEs   ùCONTANTs
+
+                ùHEADERs     ùVALUEs      ùDEFERREDs    ùCREATE-DOESs
+
+øHEADERs               F-PC Internal Structure  (Headers)
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                        The Header of the word ùHEX
+
+             ÚÄÄÄÄÄÄÄ¿
+     ù>VIEW  ³ view  ³  16 bit-offset into file where word was defined.
+             ÃÄÄÄÄÄÄÄ´
+     ù>LINK  ³ link  ³  Offset of next lower definition's LINK field.
+             ÃÄÄÄÄÄÄÄ´
+     ù>NAME  ³  cnt  ³  Usual count type with smudge and immediate bits.
+             ÃÄÄÄÄÄÄÄ´
+             ³   H   ³  First letter of the HEX definition.
+             ÃÄÄÄÄÄÄÄ´
+             ³   E   ³
+             ÃÄÂÄÄÄÄÄ´
+             ³1³ X   ³  Most significant bit of last char set to 1.
+             ÃÄÁÄÄÄÄÄ´
+             ³CFA PTR³  Offset of CFA in CODE space.
+             ÀÄÄÄÄÄÄÄÙ
+                        ("Y" operators are used to manipulate HEAD space.)
+
+øCOLON-DEFs            F-PC Internal Structure  (COLON)
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                The CODE Field of the COLON definition ùHEX
+
+
+                CFA
+           +0ÚÄÄÄÄÄÄ¿
+      ùBODY> ³  $E9 ³   The infamous CFA (Code Field Address).
+           +1ÃÄÄÄÄÄÄ´
+             ³ NEST ³   Relative offset to NEST for COLON definition.
+           +3ÃÄÄÄÄÄÄ´
+      ù>BODY ³ LIST ³   BODY starts at CFA + 3, and contains the RELATIVE
+             ÀÄÄÄÄÄÄÙ   SEGMENT of where the the list is located in LIST
+                        space.
+
+                        ("X" & Long operators are used to manipulate
+                        LIST space.)
+
+       The next screen shows the LIST space for the COLON definition HEX.
+
+
+                        F-PC Internal Structure  (COLON)
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                 The LIST space of the COLON definition ùHEX
+
+         +0ÚÄÄÄÄÄÄÄÄÄ¿
+           ³  ù(LIT) ³  The formula below returns this the LIST address.
+         +2ÃÄÄÄÄÄÄÄÄÄ´
+           ³   $10   ³  ' HEX >BODY @ XSEG @ + ( --- A1 )
+         +4ÃÄÄÄÄÄÄÄÄÄ´
+           ³  ùBASE  ³
+         +6ÃÄÄÄÄÄÄÄÄÄ´
+           ³   ù!    ³  The remaining 6 bytes of the 16 byte segment are
+         +8ÃÄÄÄÄÄÄÄÄÄ´  null filled.
+           ³ ùUNNEST ³
+           ÀÄÄÄÄÄÄÄÄÄÙ
+
+  a1 returned by the above calculation is in LIST space, and you could use
+ùLDUMP to examine it, but ùXDUMP will perform the calculation for you if
+used as follows:
+                        ' HEX >BODY @ 10  ùXDUMP
+
+øCODE-DEFs             F-PC Internal Structure  (CODE)
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                The CODE Field of the CODE definition ù2+
+
+                CFA
+           +0ÚÄÄÄÄÄ¿
+             ³ $E9 ³            POP AX
+             ÃÄÄÄÄÄÁÄÄÄÄÄ¿
+             ³ $05 $0200 ³      ADD AX, # $0002
+             ÃÄÄÄÄÄÂÄÄÄÄÄÙ      ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+             ³ $50 ³            PUSH AX        ÃÄ The last four instructions
+             ÃÄÄÄÄÄ´            ÄÄÄÄÄÄÄÄÄÄÄ¿   ³  makeup the 1PUSH macro
+             ³ $26 ³            ES:        ³   ³
+             ÃÄÄÄÄÄ´                       ³   ³
+             ³ $AD ³            LODSW      ÃÄ The last three instructions
+             ÃÄÄÄÄÄÁÄ¿                     ³  makeup the NEXT macro
+             ³ $FFE0 ³          JMP AX     ³   ³
+             ÀÄÄÄÄÄÄÄÙ          ÄÄÄÄÄÄÄÄÄÄÄÙ ÄÄÙ
+
+        As you can see the CFA of a CODE definition contains CODE.
+
+øVARIABLEs             F-PC Internal Structure  (VARIABLEs)
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                  The CODE Field of the VARIABLE ùDPL
+
+
+                CFA
+           +0ÚÄÄÄÄÄÄÄ¿
+      ùBODY> ³  $E8  ³  CALL instruction.
+           +1ÃÄÄÄÄÄÄÄ´
+             ³ NEXT  ³  Relative offset to NEXT code routine.
+           +3ÃÄÄÄÄÄÄÄ´
+      ù>BODY ³ VALUE ³  The BODY of a VARIABLE contains the actual
+             ÀÄÄÄÄÄÄÄÙ  variables value.
+
+
+  The code for a variable simply CALLs NEXT which pushes the address of the
+BODY of the variable on the data stack and continues execution.
+
+
+
+
+øCONSTANTs             F-PC Internal Structure  (CONSTANTs)
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                  The CODE Field of the CONSTANT ùMAGENTA
+
+
+                CFA
+           +0ÚÄÄÄÄÄÄÄ¿
+      ùBODY> ³  $E8  ³  CALL instruction.
+           +1ÃÄÄÄÄÄÄÄ´
+             ³ DOCON ³  Relative offset to DOCONSTANT code routine.
+           +3ÃÄÄÄÄÄÄÄ´
+      ù>BODY ³ VALUE ³  The BODY of a CONSTANT contains the actual
+             ÀÄÄÄÄÄÄÄÙ  constant's value.
+
+
+  The code for a constant CALLs DOCONSTANT which pushes the contents of the
+BODY of the constant on the data stack and continues execution.
+
+
+
+
+øVALUEs                F-PC Internal Structure  (VALUEs)
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                  The CODE Field of the VALUE ùROWS
+
+
+                CFA
+           +0ÚÄÄÄÄÄÄÄ¿
+      ùBODY> ³  $E8  ³  CALL instruction.
+           +1ÃÄÄÄÄÄÄÄ´
+             ³ DOVAL ³  Relative offset to DOVALUE code routine.
+           +3ÃÄÄÄÄÄÄÄ´
+      ù>BODY ³ VALUE ³  The BODY of a VALUE contains the actual
+             ÀÄÄÄÄÄÄÄÙ  VALUE's value.
+
+
+  The code for a constant CALLs DOVALUE which pushes the contents of the
+BODY of the value on the data stack and continues execution.
+
+
+
+
+øDEFERREDs              F-PC Internal Structure  (DEFERREDs)
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                  The CODE Field of the DEFERed word ùCR
+
+
+                CFA
+           +0ÚÄÄÄÄÄÄÄ¿
+      ùBODY> ³  $E8  ³  CALL instruction
+           +1ÃÄÄÄÄÄÄÄ´
+             ³ DODEF ³  Relative offset to DODEFER code routine.
+           +3ÃÄÄÄÄÄÄÄ´
+      ù>BODY ³ VALUE ³  The BODY of a DEFERRED word contains the CFA of
+             ÀÄÄÄÄÄÄÄÙ  the word CR is deferred to (CRLF in this case).
+
+
+  The code for a deferred word CALLs DODEFER which executes the contents of
+the BODY of the deferred word.
+
+
+
+
+øCREATE-DOESs          F-PC Internal Structure  (CREATE-DOESs)
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+  The structure of CREATE DOES> words in F-PC is fairly complex, so we will
+look at a simple but specific example of how such a word is compiled into
+the various segments used by F-PC. The example we will use is for a
+defining word that creates words that type a single graphics character to
+the display:
+
+        : GREMIT <name> ( N1 --- )
+                        CREATE C, DOES> 1 TYPE ;
+
+        $02 GREMIT HAPPY        \ $02 is the hex value for "" A happy face.
+
+
+  On the next screen we will see how these words get compiled into memory.
+
+
+                Press PgDn to see the compiled structure.
+
+                        F-PC Internal Structure  (CREATE-DOESs cont.)
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+        List segment of GREMIT                   Child's List segment
+      ÚÄÁÄÄÄÄÄÄÂÄÄÄÄÂÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÁÄÄÄÄÄÄÂÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄ¿
+ LIST ³ CREATE ³ C, ³ (;CODE) ³ GREMIT-DOES ptr ³ (LIT) ³ 1 ³ TYPE ³ UNNEST ³
+      ÀÄÂÄÄÄÄÄÄÁÄÄÄÄÁÄÄÄÄÄÄÄÄÄÁÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÂÄÄÄÁÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÙ
+        ³         ÚÄÄÄÄÄÄÄÄÄÄ¿  ³           ÚÄÄÄÄÄÄÄÁÄÄ¿
+        ÀÄÄÄ<ÄÄÄÄÄ´ XSEG @ + ³  ³           ³ XSEG @ + ³
+                  ÀÄÄÄÂÄÄÄÄÄÄÙ  V           ÀÄÄÂÄÄÄÄÄÄÄÙ
+                      ^         ³              ^
+      ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÁÄÄÄÄÄÂÄÄÄÁÄÄÂÄÄÄÄÄÄÄÄÂÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ CODE ³ JMP NEST ³ LIST ptr ³ CALL ³ DODOES ³ DOES-LIST ptr ³   ...
+      ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÁÄÄÂÄÄÄÁÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+                               ^        CODE and BODY for the word GREMIT
+                 ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+      ÚÄÄÄÄÄÄÂÄÄÄÁÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄ¿
+ CODE ³ CALL ³ GREMIT-DOES ³ $02 ³      CODE and BODY of the word HAPPY
+      ÀÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÙ
+                                        Press PgDn for more description
+
+                        F-PC Internal Structure  (CREATE-DOESs cont.)
+                        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  As you can see in the previous screen, building the definition GREMIT
+(shown top and middle) compiles information into both the LIST and CODE
+areas. The child word HAPPY (at the bottom) compiles a small amount
+information into the CODE area.  This is a particularly efficient way to
+create classes of words that differ only in their data. In this case HAPPY
+uses only five bytes of CODE memory.
+
+  The child of a CREATE-DOES word in effect calls a headerless COLON
+definition that is built as part of the defining word.
+
+  When compiling GREMIT, a pointer to GREMIT-DOES is compiled into LIST
+space for later use when compiling the child words. The child word is then
+linked to call the DOES portion of the parent word.
+
+  When the parent word is executing through its LIST, parent execution
+actually stops after (;CODE) is executed.  The remainder of the parent
+definition is only executed by the child words.
+
+øKeyboard-words              Keyboard Words
+                             ÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  F-PC provides flexible and powerful access to the keyboard.  You can read
+all keys on the keyboard that will return keycodes, and even differentiate
+between keys that return the same keycodes but different scancodes. It is
+also possible to look ahead one keystroke to see what key has been pressed
+but has not been read yet.
+
+                ùKEY            ùKEY?           ùKEYFILTERing
+
+                ù(KEY)          ù(KEY?)         ùLooking-Ahead
+
+                ùBIOSKEY        ùBIOSKEY?       ù?KEYPAUSE
+
+                ùSCANCODES
+
+
+
+
+
+øKEYFILTERing          Key Filtering: What's it for?
+                       ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  A deferred word ùKEYFILTER is provided for the purpose of allowing
+applications to process all keys returned from the keyboard prior to those
+keys being passed to the rest of the Forth system.
+
+
+øLooking-Ahead
+øSCANCODES       Looking at the next key without getting it
+                 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  A VALUE ùBIOSKEYVAL is provided which holds the keycode and scancode of
+the most recent call to ùBIOSKEY? . Since the key is not actually read
+from the keyboard buffer, this provides a mechanism for looking ahead one
+keystroke. This can be useful when writing a key interpreter for an
+application.
+
+                             Scan Codes
+                             ÄÄÄÄÄÄÄÄÄÄ
+
+  Scancodes are values assigned to keys according to their position on the
+keyboard rather than by their ASCII table position. Immediately after a key
+is accepted using ùKEY you can look at the value in ùBIOSKEYVAL . The upper
+byte of this word will contain the Scan code for the key just read.  This
+allows you to see the keypad + - * and number keys as different from the
+same keys in the main body of the keyboard.  See the IBM documentation for
+a table of scan codes.
+
+
+øLineEdit-words           Using the Line Editor
+                          ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  F-PC provides a very nice general purpose line editor for use in your
+programs. The word to invoke it is ùLINEEDITOR . Its usage is as follows:
+
+                20 8 MYBUF 22 LINEEDITOR ( --- f1 )
+
+  In the above example, the edit will start at column 20 of row 8. The edit
+will be performed on the counted string in MYBUF, and the maximum length the
+edit will be allowed to be will be 22 characters.  The line editor is
+terminated by either the Enter key or the ESC key. If the ESC key was
+pressed then a FALSE boolean flag is returned, otherwise a TRUE flag is
+returned.  A mouse can be used to position the cursor within the edit line.
+
+  If the edit is completed with Enter, then the edit string is placed back
+into MYBUF. If the edit is terminated with ESC then MYBUF will contain the
+original string unmodified by any edit operations performed during
+lineedit.
+
+
+øLogical-words             Logical Operators
+                            ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  F-PC provides the usual logical operators. These operators are BIT logical.
+
+                     ùAND    ùOR     ùNOT    ùXOR
+
+øMath-words                  Math Operators
+                             ÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  F-PC provides several single and double precision math operators, as well
+as several shift operators. Most of these are written in assembly language
+to provide high performance. An additional set of math operators is
+provided in an add-on file supporting floating point math. Both software and
+hardware floating point math are supported: see the files SFLOAT.SEQ and
+HFLOAT.SEQ for further information on floating point math.
+
+        ù+      ù-      ù*      ù/      ùMOD    ù/MOD   ù*/MOD
+
+        ù*/     ùNEGATE ùABS    ùUM*    ùU*D    ù*D     ùM/MOD
+
+        ùMU/MOD ùUM/MOD ù1+     ù2+     ù1-     ù2-     ùS>D
+
+        ù2*     ù8*     ù2/     ùU2/    ùU8/    ùU16/   ù?NEGATE
+
+        ùD+     ùD-     ùDABS   ùD2*    ùD2/
+
+        ùDNEGATE        ù?DNEGATE
+
+øMemory-words                Memory Operators
+                             ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  A full complement of memory operators is provided in F-PC to access
+normal CODE segment memory, as well as external areas of the PC outside the
+64k boundry.  Additional support is provided for EXPANDED memory: see the
+file EXPANDED.SEQ.
+
+        ù@      ù!      ùC@     ùC!     ùMOVE   ùCMOVE  ùCMOVE>
+
+        ù@L     ù!L     ùC@L    ùC!L    ùCMOVEL ùCMOVEL>
+
+        ùHERE   ù?CS:   ù?ES:   ùCOMPARE ùSSEG  ùYSEG  ùYCSET
+
+        ùYHERE  ùYS:    ùY@     ùY!     ùYC@    ùYC!    ùY,
+
+        ùXHERE  ùX,     ùXC,    ùXDP    ùXDPSEG ùSCAN   ùSKIP
+
+        ùPARSE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

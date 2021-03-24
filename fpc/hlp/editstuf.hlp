@@ -1,0 +1,66 @@
+\ EDITSTUF.HLP  Stuff needed by the editor              by Tom Zimmer
+
+editor          ( --- )
+        The vocabulary that contains all of the editor words. Normally
+        you use "line# EDIT", "SED filename" or just "ED" to start
+        the editor.
+
+        Once in the editor, ESC will allow you to exit. Your changes
+        will automatically be saved.
+
+        The command SED <enter> by it self will prompt you for the
+        name of a file to create.
+
+        See also  ED  EDIT  SED  FIX  VIEW
+
+tsegb           text segment beginning
+lseg            linelist save segment
+dseg            delete lines segment
+toff            Text offset to end of front section of edit text.
+tend            Text offset to front of back section of edit text.
+
+seginit         ( --- )
+        Initialize the editor segment pointers to reset, that is
+        no editing has been done, and the pointers can not be
+        valid, so clear them out.
+
+mxlln           Maximum length editor will allow entry of text.
+maxlines        Maximum number of lines editor will allow.
+maxdline        Maximum number of lines we save on delete line.
+
+memabort        ( f1 --- )
+        Abort if f1 is true, with message that there was not enough
+        memory to start up the editor.
+
+edinit
+tbuf.init       ( --- )
+        Initialize the edit segment pointers when the editor is
+        started the first time.
+
+ovinit          ( --- )
+        Pseudonym for tbuf.init, they were different at one time, now
+        ovinit just calls tbuf.init.
+
+'sed            Defered word used when starting editor.
+'ed             Defered word used when re-starting editor on an
+                existing file.
+'listing        Defered word used when creating printed listings.
+
+sed             ( --- )
+        Start the editor, and prompt for a file.
+
+ed              ( --- )
+        Start the editor on the file that is already open.
+
+edit            ( n1 --- )
+        Start the editor, on the current file, on the line specified
+        by n1.
+
+listing         ( --- )
+        Create a printed listing of the currently open file.
+
+fix             ( | name --- )
+        Locate "name" and open the file that contains the source for
+        it, then enter the editor on the line where name is defined.
+
+

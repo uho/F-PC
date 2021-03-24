@@ -1,0 +1,85 @@
+\ PERTYPE         Backslash Type, Imbedded Attribute Switches
+
+                                                        by Tom Zimmer
+
+    This utility allows the creation of special ." strings that contain
+  imbedded escape sequences to select various display operations.
+
+    The leading character is "\", followed by:
+
+        0               Normal display attributes
+        1 to 8          Attributes 1 through 8
+        :xx             Delay xx tenths of a second
+        <               Save the current cursor position     (not nestable)
+        >               Restore the previous cursor position (not nestable)
+        @xxyy           Move cursor to xx,yy
+        B               Beep the speaker
+        D               Dark (clear screen)
+        N               Newline (CRLF)
+        R               Select Reverse video
+        Sxx             Display xx spaces
+        T               Perform a Tab
+        \               Display a \ character
+        `               Display a " character
+        |               Display a linefeed character
+
+    The performance of this version of ." will be somewhat slower than
+  a normal TYPE, as the string must be scanned for the "\" escape character.
+
+
+packed_asc>#    ( n1 --- n2 )
+        Convert ascii packed pair n1 into a number n2.
+
+\%spaces        ( a1 n1 --- a2 n2 )
+        Display a number of spaces as specified by the ascii packed pair
+        located at a1,n1 in the segment in SSEG. Returns a2,n2 adjusted
+        past the ascii packed pair.
+
+\%tenths        ( a1 n1 --- a2 n2 )
+        Delay a number of tenths of a second as specified by the ascii
+        packed pair at a1,n1 in the segment in SSEG. Returns a2,n2
+        adjusted past the ascii packed pair.
+
+\%at            ( a1 n1 --- a2 n2 )
+        Move cursor to new location as specified by the two ascii packed
+        pairs located at a1n1 in the segment in SSEG. Returns a1,n2
+        adjusted past the two ascii packed pairs.
+
+\x              ( -- n1 )
+        A place to save cursor column.
+
+\y              ( -- n1 )
+        A place to save cursor rows.
+
+\at-save        ( -- )
+        Save the current cursor position in \x and \y.
+
+\at-rest        ( -- )
+        Restore the cursor position from \x and \y.
+
+"emit           ( -- )
+        Emit an ascii " character.
+
+\emit           ( -- )
+        Emit an ascii \ character.
+
+lfemit          ( -- )
+        Emit an ascii linefeed character.
+
+\chars          ( -- a1 )
+        An array of escape secondary characters for the functions in the
+        DO\CHAR definition.
+
+do\char         ( a1 n1 c1 -- a2 n2 )
+        Handle one escape sequence for secondary character c1. The a1,n1
+        pair point to the character following the escape pair.
+
+\extype         ( seg a1 n1 -- )
+        Interpret the string specified by seg,a1,n1 looking for escape
+        sequences.
+
+(\.")           ( -- )
+        The new definition for (.") which uses \EXTYPE and gets plugged
+        into the (.") defered word.
+
+

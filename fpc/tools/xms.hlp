@@ -1,0 +1,148 @@
+\\ XMS.HLP - Extended memory manager interface. Claus Vogt (Berlin) 1991
+
+   *** General notes to use it: ***
+
+   - XMInit has to be executed (installed into initstuff) first.
+   - If you use one of these words without a XM-Manager (like HIMEM.SYS)
+     present, your forth aborts with a message. If you don't want it
+     to do so, check XMAvail first.
+   - after each word XMResult is set to a non-zero one-byte value, if
+     an error occured. Check XMResult or use ?XM to abort on errors.
+
+
+XMAvail ( -- flag )
+
+        Value is true if XM-Manager is present. Is set by XMINIT
+
+XMResult ( -- 8b )
+
+        An errorflag of the last recent XM-Operation.
+        If no error occured 8b is zero.
+        See also ?XM.
+
+XMInit  ( -- )
+
+        Should be used before first XM-Operation.
+        Is installed into initstuff to be executed each
+        time you boot your system.
+
+?XM     ( -- )
+
+        Checks whether the most recently used XM-Operation leaved
+        an errorflag ( see XMResult ). If so, aborts with a message.
+
+XMSVersion   ( -- XMSVer Revision hma? )
+
+        Checks if the High-Memory-Area ( FFFF:10 .. FFFF:FFFF)
+        is available, and gives back the Version of the supported
+        eXtended-Memory-Standard and the supporting program.
+
+RequestHMA ( SpaceNeeded -- )
+
+        Requests a portion of the HMA. Resident programs should
+        use the really needed space, other applications may use
+        $ffff.
+
+ReleaseHMA      ( -- )
+
+        Gives back the requested HMA to the system
+
+GlobalEnableA20 ( -- )
+GlobalDisableA20  ( -- )
+LocalEnableA20  ( -- )
+LocalDisableA20 ( -- )
+IsA20On         ( -- flag )
+
+        Routines to play around with the 21st Adress-Cable A20.
+        The 8086 wraps around if you used adrresses above 1 Mb.
+        To avoid compatibility-conflicts the AT-Hardware-Model
+        supports this mirroring by a special cable. Your
+        XMS-Manager enables adresses beyond the 1 Mb-adresses
+        by reprogramming this 'cable'. In a few cases (I never
+        saw one) it might be necessary to Disable the A20 to
+        run an application which uses the wrap-around-effect
+        of the A20.
+
+XMSize?         ( -- Total Avail )
+
+        Reports the Kilobytes of the biggest free xm-block (total)
+        and the overall free xm-memory (avail).
+
+XMAlloc         ( Size -- handle )
+
+        Allocates Size kilobytes of xm and returns a handle.
+        If you want its address, see XMLock .
+
+XMDealloc       ( Handle -- )
+
+        Deallocates a block with is allocated by XMAlloc .
+        It must not be locked with XMLock
+
+XMRealloc ( Handle NewSize -- )
+
+        Changes a block (allocated by XMAlloc ) to NewSize kilobytes.
+
+\ The format of the used MoveStruct at StrucAddr is:
+\ TYPE  MoveStruc = RECORD
+\                  CASE INTEGER OF
+\                    0: (BlockLength  : LONGINT;
+\                        SourceHandle : WORD;
+\                        SourceOffset : LONGINT;
+\                        DestHandle   : WORD;
+\                        DestOffset   : LONGINT);
+\                    1: (xxxxxxxxxxx1 : ARRAY[1..6] OF BYTE;
+\                        SourcePtr    : POINTER;
+\                        xxxxxxxxxxx2 : WORD;
+\                        DestPtr      : POINTER);
+\                 END;
+\
+\
+
+LXMMove          ( MStrucSeg MstrucOffs -- )
+
+        Moves a block allocated with XMAlloc.
+        For the format of the MoveStruc see above.
+        The address of the MoveStruc is passed as SEG:OFFS
+
+XMMove          ( MStrucaddr -- )
+
+        Moves a block allocated with XMAlloc.
+        For the format of the MoveStruc see above.
+        The address of the MoveStruc is passed at offset
+        within the F-PC-Data-Segment ( ?DS: ).
+
+XMLock          ( Handle -- 2addr )
+
+        Locks a XM-Block, for it can not be moved by the system.
+        Returns a linear 32-bit-address, high word first.
+
+XMUnlock        ( Handle -- )
+
+        Unlocks a XM-Block which is locked by XMLock.
+        Use always XMUnlock it before XMDealloc.
+
+XMInfo          ( Handle -- LockCount FreeHandles BlockLength )
+
+        Returns information about an allocated XMBlock.
+
+\ 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+\ Speicher "zwischen den Adaptern" anfordern. Gew걆schte
+\ Gr붳e in Paragraphen. "NewSize" gibt bei Fehlern die
+\ L꼗ge des gr붳ten freien UMBs an, ansonsten die Gr붳e
+\ des gerade reservierten Blocks. Zur갷kgegeben wird als
+\ Funktionsergebnis die Segmentadresse des Blocks.
+\ 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+
+UMBAlloc        ( Size -- Size' segment error )
+
+        Allocates a block of Size*16 bytes between the adapters,
+        which is the adress-range from 640 kB to 1 Mb.
+        If an error occured ( error<>0 ) Size' returns
+        the length of the biggest free block and segment is
+        undefined. Otherwise Size' equals Size and segment
+        points to the allocated block.
+
+UMBDealloc      ( Address -- )
+
+        Gives the allocated UMB back to the system.
+

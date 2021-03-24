@@ -1,0 +1,21 @@
+\ HELLO.HLP     Contains the sign on word for Forth.
+
+CDATE           Current date at system generation
+CTIME           Current time at system gerneration.
+
+<.HELLO>        ( --- )
+                Print some information to tell user about FF.
+
+
+.HELLO          ( --- )
+                Defered word, that performes .<hello> by default.
+
+HELLO           ( --- )
+                Cold start initialization for FF.
+
+MARK            ( | name -- )
+                Create a mark, that is define a word "name" that
+                will clear the dictionary back to itself when it
+                is executed.
+
+

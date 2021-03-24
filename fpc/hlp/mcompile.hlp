@@ -1,0 +1,40 @@
+\ MCOMPILE.HLP  Memory compiler                         by Tom Zimmer
+
+
+memfile
+        Handle for what file was last edited, and is in memory.
+
+mload\s
+        Boolean flag. Was "\s" executed while loading from memory?
+
+mlineread       ( n1 --- )
+        Read line n1 from the edit memory buffer to the output buffer.
+
+mload           ( --- )
+        Load the current file that is in memory. This word gets
+        plugged into the defered word LOADER.
+
+?readfile       ( --- )
+        Initialize the editor overlay segments if needed, and then
+        read in the currently open file to the edit buffer if it
+        is not already in the buffer.
+
+ok              ( --- )
+        Compile the file currently open.
+
+\s              ( --- )
+        Redefinition of \s, to allow it to work with memory loaded
+        files.
+
+fload           ( | name --- )
+        Load the file "name". Open the file and then compiles it.
+
+ed              ( --- )
+        Enter the editor on the currently open file. The file will
+        be read into memory if needed, or if it is already present,
+        then the copy in memory will be used.
+
+edit            ( n1 --- )
+        Enter the editor on the current file at line n1.
+
+
